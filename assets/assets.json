@@ -1,0 +1,17 @@
+{
+    "bitmapPath" : "assets/bitmaps/",
+    "bitmaps" : [
+
+        {"name": "font",  "path": "font.png"},
+        
+        {"name": "figure",  "path": "figure.png"},
+        {"name": "tileset",  "path": "tileset.png"}
+    ],
+
+
+    "tilemapPath" : "assets/maps/",
+    "tilemaps" : [
+        {"name": "base",  "path": "base.tmx"},
+        {"name": "background",  "path": "background.tmx"}
+    ]
+}

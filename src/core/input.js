@@ -4,6 +4,8 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { GamePadListener } from "./gamepad.js";
+
 
  export const State = {
 
@@ -23,6 +25,8 @@ export class InputManager {
         this.keyStates = {};
         this.prevent = {};
         this.actions = {};
+
+        this.gamepad = new GamePadListener();
 
         window.addEventListener("keydown", 
             (e) => {
@@ -54,11 +58,13 @@ export class InputManager {
     }
 
     
-    addAction(name, key) {
+    addAction(name, key, button1, button2) {
 
         this.actions[name] = {
             state: State.Up,
-            key: key
+            key: key,
+            button1: button1,
+            button2: button2
         };
         this.prevent[key] = true;
 
@@ -101,6 +107,15 @@ export class InputManager {
         for (let k in this.actions) {
 
             this.actions[k].state = this.keyStates[this.actions[k].key] | State.Up;
+            if (this.actions[k].state == State.Up) {
+
+                if (this.actions[k].button1 != null)
+                    this.actions[k].state = this.gamepad.getButtonState(this.actions[k].button1);
+
+                if (this.actions[k].state == State.Up &&
+                    this.actions[k].button2 != null)
+                    this.actions[k].state = this.gamepad.getButtonState(this.actions[k].button2);
+            }
         }
         this.updateStateArray(this.keyStates);
     }

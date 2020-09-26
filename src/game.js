@@ -5,6 +5,7 @@
  */
 
 import { Scene } from "./core/scene.js";
+import { Vector2 } from "./core/vector.js";
 
 
 export class Game extends Scene {
@@ -13,8 +14,6 @@ export class Game extends Scene {
     constructor(ev, param) {
 
         super(ev, param);
-
-        // ...
     }
 
 

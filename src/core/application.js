@@ -1,13 +1,14 @@
-import { AssetPack } from "./assets.js";
 /**
  * The End of Journey
  * 
  * (c) 2020 Jani Nykänen
  */
 
+
 import { Canvas } from "./canvas.js";
 import { InputManager } from "./input.js";
 import { Scene } from "./scene.js";
+import { AssetPack } from "./assets.js";
 
 
 export class Application {
@@ -31,11 +32,6 @@ export class Application {
                 .addAction("up", "ArrowUp")
                 .addAction("right", "ArrowRight")
                 .addAction("down", "ArrowDown")
-                .addAction("fire1", "KeyZ")
-                .addAction("fire2", "KeyX")
-                .addAction("fire3", "KeyC")
-                .addAction("start", "Enter")
-                .addAction("back", "Escape ")
         };
 
         this.activeScene = new Scene(this.ev);
@@ -74,7 +70,6 @@ export class Application {
             if (assetsLoaded) 
                 this.activeScene.refresh(this.ev);
             
-
             // TODO: We could call this each frame as well,
             // (see how "update" works) I think? Check this
             if (firstFrame) {
@@ -101,6 +96,17 @@ export class Application {
     loadAssets(path) {
 
         this.assets.load(path);
+
+        return this;
+    }
+
+
+    addActions(arr) {
+
+        for (let o of arr) {
+
+            this.ev.input.addAction(o.name, o.key, o.button1, o.button2);
+        }
 
         return this;
     }

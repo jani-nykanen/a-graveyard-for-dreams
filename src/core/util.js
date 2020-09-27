@@ -7,7 +7,10 @@
 
 export function negMod(m, n) {
 
-    return (m % n + n) % n;
+    m |= 0;
+    n |= 0;
+
+    return ((m % n) + n) % n;
 }
 
 

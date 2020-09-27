@@ -14,7 +14,7 @@ export class Camera {
 
         this.pos = new Vector2(x, y);
         this.target = this.pos.clone();
-        this.rpos = new Vector2(x*w, y*h);
+        this.rpos = this.pos.clone();
 
         this.width = w;
         this.height = h;
@@ -47,6 +47,11 @@ export class Camera {
 
             this.moveTimer = 0;
             this.pos = this.target.clone();
+            this.rpos = this.pos.clone();
+
+            this.moving = false;
+
+            return;
         }
 
         // Compute "render position"
@@ -65,7 +70,7 @@ export class Camera {
 
     use(c) {
 
-        c.moveTo(Math.round(this.rpos.x * this.width), 
-            Math.round(this.rpos.y) * this.height);
+        c.moveTo(-Math.round(this.rpos.x * this.width), 
+                 -Math.round(this.rpos.y * this.height));
     }
 }

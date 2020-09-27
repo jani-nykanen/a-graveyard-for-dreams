@@ -17,20 +17,30 @@ export class Game extends Scene {
 
         super(ev, param);
 
-        this.cam = new Camera(0, 0, 160, 144);
+        this.cam = new Camera(5, 3, 160, 144);
         this.stage = new Stage(ev.assets.tilemaps["base"]);
-
-        this.testPos = new Vector2(80, 72);
     }
 
 
     refresh(ev) {
 
-        this.testPos.x += ev.input.stick.x;
-        this.testPos.y += ev.input.stick.y;
+        const EPS = 0.25;
+        const SPEED = 1.0 / 20.0;
 
         this.stage.update(ev);
         this.cam.update(ev);
+
+        let s = ev.input.stick;
+        // TEMP
+        if (s.x > EPS)
+           this.cam.move(1, 0, SPEED);
+        else if (s.x < -EPS)
+            this.cam.move(-1, 0, SPEED);   
+        else if (s.y > EPS)
+            this.cam.move(0, 1, SPEED);
+        else if (s.y < -EPS)
+            this.cam.move(0, -1, SPEED);   
+           
     }
 
 
@@ -43,18 +53,13 @@ export class Game extends Scene {
     redraw(c) {
 
         c.moveTo(0, 0);
-        c.clear(170, 170, 170);
+        c.clear(0, 85, 170);
 
         this.cam.use(c);
-
         this.stage.draw(c, this.cam);
 
-        c.move(this.testPos.x, this.testPos.y);
-        c.setColor(255, 85, 0);
-        c.fillRect(-8, -8, 16, 16);
-
         c.moveTo();
-        c.drawText(c.bitmaps["font"], "Hello world",
-            1, 1, -1, 0, false);
+        c.drawText(c.bitmaps["font"], "v.0.0.1",
+            1, 1, -2, 0, false);
     }
 }

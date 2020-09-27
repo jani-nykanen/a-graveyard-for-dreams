@@ -80,8 +80,7 @@ export class Tilemap {
 
     getLoopedTile(layer, x, y) {
 
-        return this.layers[layer] 
-            [negMod(y, this.height) * this.width + negMod(x, this.width)];
+        return this.layers[layer] [negMod(y, this.height) * this.width + negMod(x, this.width)];
     }
 
 

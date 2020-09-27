@@ -56,8 +56,8 @@ export class Stage {
         // TODO: Make sure the object layer is not drawn
         //
 
-        let startx = ((cam.pos.x*10) | 0) - MARGIN; 
-        let starty = ((cam.pos.y*9) | 0) - MARGIN;
+        let startx = ((cam.rpos.x*10) | 0) - MARGIN; 
+        let starty = ((cam.rpos.y*9) | 0) - MARGIN;
 
         let w = ((c.width / 16) | 0) + MARGIN*2;
         let h = ((c.height / 16) | 0) + MARGIN*2;

@@ -78,6 +78,13 @@ export class Tilemap {
     }
 
 
+    getLoopedTile(layer, x, y) {
+
+        return this.layers[layer] 
+            [negMod(y, this.height) * this.width + negMod(x, this.width)];
+    }
+
+
     setTile(layer, x, y, v) {
 
         x = negMod(x, this.width);

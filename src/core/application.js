@@ -26,7 +26,7 @@ export class Application {
         this.ev = {
 
             step: frameSkip + 1,
-            asset: this.assets,
+            assets: this.assets,
             input: new InputManager()
                 .addAction("left", "ArrowLeft", 14)
                 .addAction("up", "ArrowUp", 12)

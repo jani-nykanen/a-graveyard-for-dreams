@@ -47,6 +47,13 @@ export class Vector2 {
 	}
 
 
+	zeros() {
+
+		this.x = 0;
+		this.y = 0;
+	}
+
+
 	static dot(u, v) {
 
 		return u.x*v.x + u.y*v.y;

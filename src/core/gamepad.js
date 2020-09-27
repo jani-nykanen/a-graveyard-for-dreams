@@ -29,6 +29,8 @@ export class GamePadListener {
             if (func == null)
                 return;
 
+            console.log("Gamepad with index " + String(ev.gamepad.index) + " connected.");
+
             let gp = navigator.getGamepads()[ev.gamepad.index];
             this.index = ev.gamepad.index;
             this.pad = gp;
@@ -144,7 +146,7 @@ export class GamePadListener {
     }
 
 
-    refresh() {
+    refreshGamepads() {
 
         // No gamepad available
         if (this.pad == null) return;
@@ -163,7 +165,7 @@ export class GamePadListener {
         this.stick.x = 0.0;
         this.stick.y = 0.0;
 
-        this.refresh();
+        this.refreshGamepads();
         this.updateGamepad(this.pad);
     }
 

@@ -5,6 +5,7 @@
  */
 
 import { GamePadListener } from "./gamepad.js";
+import { Vector2 } from "./vector.js";
 
 
  export const State = {
@@ -27,6 +28,8 @@ export class InputManager {
         this.actions = {};
 
         this.gamepad = new GamePadListener();
+
+        this.stick = new Vector2();
 
         window.addEventListener("keydown", 
             (e) => {
@@ -102,7 +105,45 @@ export class InputManager {
     }
 
 
-    update() {
+    updateStick() {
+
+        const DEADZONE = 0.1;
+
+        this.stick.zeros();
+        if (this.gamepad.stick.length() > DEADZONE) {
+
+            this.stick = this.gamepad.stick.clone();
+        }
+        
+        if (this.actions["right"].state & State.DownOrPressed) {
+
+            this.stick.x = 1;
+        }
+        else if (this.actions["left"].state & State.DownOrPressed) {
+
+            this.stick.x = -1;
+        }
+
+        if (this.actions["down"].state & State.DownOrPressed) {
+
+            this.stick.y = 1;
+        }
+        else if (this.actions["up"].state & State.DownOrPressed) {
+
+            this.stick.y = -1;
+        }
+
+        // We could normalize the stick here if we were making
+        // a top-down game, not a side-scrolling one
+        // this.stick.normalize();
+    }
+
+
+    // This one is called before the current scene
+    // is "refreshed"
+    preUpdate() {
+
+        this.gamepad.update();
 
         for (let k in this.actions) {
 
@@ -110,13 +151,25 @@ export class InputManager {
             if (this.actions[k].state == State.Up) {
 
                 if (this.actions[k].button1 != null)
-                    this.actions[k].state = this.gamepad.getButtonState(this.actions[k].button1);
+                    this.actions[k].state = this.gamepad
+                        .getButtonState(this.actions[k].button1);
 
                 if (this.actions[k].state == State.Up &&
-                    this.actions[k].button2 != null)
-                    this.actions[k].state = this.gamepad.getButtonState(this.actions[k].button2);
+                    this.actions[k].button2 != null) {
+
+                    this.actions[k].state = this.gamepad
+                        .getButtonState(this.actions[k].button2);
+                }
             }
         }
+
+        this.updateStick();
+    }
+
+
+    // And this one afterwards
+    postUpdate() {
+
         this.updateStateArray(this.keyStates);
     }
 

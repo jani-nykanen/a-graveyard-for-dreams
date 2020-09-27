@@ -28,10 +28,10 @@ export class Application {
             step: frameSkip + 1,
             asset: this.assets,
             input: new InputManager()
-                .addAction("left", "ArrowLeft")
-                .addAction("up", "ArrowUp")
-                .addAction("right", "ArrowRight")
-                .addAction("down", "ArrowDown")
+                .addAction("left", "ArrowLeft", 14)
+                .addAction("up", "ArrowUp", 12)
+                .addAction("right", "ArrowRight", 15)
+                .addAction("down", "ArrowDown", 13)
         };
 
         this.activeScene = new Scene(this.ev);
@@ -67,6 +67,9 @@ export class Application {
 
         while ((refreshCount --) > 0) {
 
+            if (firstFrame)
+                this.ev.input.preUpdate();
+
             if (assetsLoaded) 
                 this.activeScene.refresh(this.ev);
             
@@ -74,7 +77,7 @@ export class Application {
             // (see how "update" works) I think? Check this
             if (firstFrame) {
 
-                this.ev.input.update();
+                this.ev.input.postUpdate();
                 firstFrame = false;
             }
 

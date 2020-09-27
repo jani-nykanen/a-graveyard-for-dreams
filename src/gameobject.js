@@ -14,6 +14,7 @@ export class GameObject {
     constructor(x, y) {
 
         this.pos = new Vector2(x, y);
+        this.oldPos = this.pos.clone();
         this.speed = new Vector2();
         this.target = this.speed.clone();
         this.friction = new Vector2(1, 1);
@@ -60,6 +61,8 @@ export class GameObject {
             }
             return;
         }
+
+        this.oldPos = this.pos.clone();
 
         this.updateLogic(ev);
         this.updateMovement(ev);

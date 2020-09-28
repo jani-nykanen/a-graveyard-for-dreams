@@ -5,12 +5,14 @@
  */
 
 import { Vector2 } from "./core/vector.js";
+import { negMod } from "./core/util.js";
 
 
 export class Camera {
 
     
-    constructor(x, y, w, h) {
+    constructor(x, y, w, h, 
+        screenCountX, screenCountY, loopx, loopy) {
 
         this.pos = new Vector2(x, y);
         this.target = this.pos.clone();
@@ -22,6 +24,11 @@ export class Camera {
         this.moving = false;
         this.moveTimer = 0;
         this.moveSpeed = 0;
+
+        this.screenCountX = screenCountX;
+        this.screenCountY = screenCountY;
+        this.loopx = loopx;
+        this.loopy = loopy;
     }
 
 
@@ -29,11 +36,22 @@ export class Camera {
 
         if (this.moving) return;
 
+        if (!this.loopx && ((this.pos.x == 0 && dx < 0) ||
+            (this.pos.x == this.screenCountX-1 && dx > 0) )) {
+
+            return;
+        }
+        if (!this.loopy && ((this.pos.y == 0 && dy < 0) ||
+            (this.pos.y == this.screenCountY-1 && dy > 0) )) {
+
+            return;
+        }
+
         this.moveTimer = 1.0;
         this.moveSpeed = speed;
 
-        this.target.x = this.pos.x + dx;
-        this.target.y = this.pos.y + dy;
+        this.target.x = (this.pos.x + dx) | 0;
+        this.target.y = (this.pos.y + dy) | 0;
 
         this.moving = true;
     }
@@ -50,6 +68,12 @@ export class Camera {
             this.rpos = this.pos.clone();
 
             this.moving = false;
+
+            if (this.loopx)
+                this.pos.x = negMod(this.pos.x | 0, this.screenCountX);
+
+            if (this.loopy)
+                this.pos.y = negMod(this.pos.y | 0, this.screenCountY);
 
             return;
         }

@@ -5,6 +5,7 @@
  */
 
 import { Flip } from "./core/canvas.js";
+import { negMod } from "./core/util.js";
 
 
 export class Stage {
@@ -16,6 +17,8 @@ export class Stage {
 
         this.width = tilemap.width;
         this.height = tilemap.height;
+
+        this.cloudPos = 0.0;
     }
 
 
@@ -44,7 +47,53 @@ export class Stage {
 
     update(ev) {
 
-        // ...
+        const CLOUD_SPEED = 0.5;
+
+        this.cloudPos = (this.cloudPos + CLOUD_SPEED * ev.step) % 96;
+    }
+
+
+    drawBackground(c, cam) {
+
+        const CLOUD_BASE_Y = 96;
+        const CLOUD_BOTTOM_HEIGHT = 16;
+
+        let cloudRenderPos = negMod(
+            this.cloudPos + (cam.rpos.x * 16),
+            96);
+
+        c.clear(85, 170, 255);
+
+        // Moon
+        c.drawBitmapRegion(c.bitmaps["background"],
+                16, 32, 48, 48, 96, 16, Flip.None);
+
+        let moveY = (cam.rpos.y * 16) | 0;        
+        c.move(0, -moveY);
+
+        // Clouds
+        for (let i = 0; i < 3; ++ i) {
+
+            c.drawBitmapRegion(c.bitmaps["background"],
+                0, 0, 96, 32,
+                Math.round(-cloudRenderPos + i*96), CLOUD_BASE_Y, 
+                Flip.None);
+        } 
+        c.setColor(255, 255, 255);
+        c.fillRect(0, CLOUD_BASE_Y+32, c.width, CLOUD_BOTTOM_HEIGHT);
+
+        // Water
+        let waterY = CLOUD_BASE_Y + 32 + CLOUD_BOTTOM_HEIGHT;
+        for (let x = 0; x < (c.width/16) | 0; ++ x) {
+
+            c.drawBitmapRegion(c.bitmaps["background"],
+                0, 32, 16, 32, x * 16, waterY, Flip.None);
+        }
+        c.setColor(0, 85, 170);
+        c.fillRect(0, waterY+32, c.width, 
+            Math.max(0, c.height+moveY - (waterY+32)));
+        
+        c.move(0, moveY);
     }
 
 

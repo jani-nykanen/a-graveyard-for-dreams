@@ -17,8 +17,11 @@ export class Game extends Scene {
 
         super(ev, param);
 
-        this.cam = new Camera(5, 3, 160, 144);
         this.stage = new Stage(ev.assets.tilemaps["base"]);
+        this.cam = new Camera(5, 3, 160, 144,
+            (this.stage.width/10) | 0,
+            (this.stage.height/9) | 0,
+            true, false);
     }
 
 
@@ -53,7 +56,8 @@ export class Game extends Scene {
     redraw(c) {
 
         c.moveTo(0, 0);
-        c.clear(0, 85, 170);
+        
+        this.stage.drawBackground(c, this.cam);
 
         this.cam.use(c);
         this.stage.draw(c, this.cam);

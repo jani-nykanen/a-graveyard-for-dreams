@@ -19,10 +19,54 @@ export class Stage {
         this.height = tilemap.height;
 
         this.cloudPos = 0.0;
+        this.waterPos = 0.0;
+    }
+
+
+    drawSpecialTile(c, bmp, layer, x, y, tid) {
+
+        const WATER_AMPLITUDE = 1.0;
+
+        let srcx = (tid % 16) | 0;
+        let srcy = (tid / 16) | 0;
+
+        let srcw = 16;
+        let srch = 16;
+        let destY = y*16;
+
+        switch(tid) {
+
+        // Water surface
+        case 133:
+
+            destY += WATER_AMPLITUDE + 
+                WATER_AMPLITUDE * Math.round(Math.sin(this.waterPos/16 * Math.PI*2));
+
+            srcw = (this.waterPos) | 0;
+            if (srcw % 2 != destY % 2)
+                ++ srcx; 
+
+            c.drawBitmapRegion(bmp, 
+                srcx*16 + srcw, srcy*16, 16-srcw, srch,
+                x*16, destY, Flip.None);
+            if (srcw > 0) {
+
+                c.drawBitmapRegion(bmp, 
+                    srcx*16, srcy*16, srcw, srch,
+                    (x+1)*16 - srcw, destY, Flip.None);
+            }
+
+            break;
+
+        default:
+            break;
+        }
     }
 
 
     drawLayer(c, bmp, layer, sx, sy, w, h) {
+
+        const SPECIAL_TILES = [133];
 
         let tid;
         let srcx, srcy;
@@ -33,6 +77,13 @@ export class Stage {
 
                 tid = this.tmap.getLoopedTile(layer, x, y);
                 if ( (tid --) == 0) continue;
+
+                if (SPECIAL_TILES.includes(tid)) {
+
+                    this.drawSpecialTile(c, bmp, layer,
+                        x, y, tid);
+                    continue;
+                }
 
                 srcx = (tid % 16) | 0;
                 srcy = (tid / 16) | 0;
@@ -48,8 +99,11 @@ export class Stage {
     update(ev) {
 
         const CLOUD_SPEED = 0.5;
+        const WATER_SPEED = 0.125;
 
         this.cloudPos = (this.cloudPos + CLOUD_SPEED * ev.step) % 96;
+
+        this.waterPos = (this.waterPos + WATER_SPEED * ev.step) % 16;
     }
 
 
@@ -101,17 +155,13 @@ export class Stage {
 
         const MARGIN = 1;
 
-        //
-        // TODO: Make sure the object layer is not drawn
-        //
-
         let startx = ((cam.rpos.x*10) | 0) - MARGIN; 
         let starty = ((cam.rpos.y*9) | 0) - MARGIN;
 
         let w = ((c.width / 16) | 0) + MARGIN*2;
         let h = ((c.height / 16) | 0) + MARGIN*2;
 
-        for (let i = 0; i < this.tmap.layers.length; ++ i) {
+        for (let i = 0; i < this.tmap.layers.length-1; ++ i) {
 
             this.drawLayer(c, c.bitmaps["tileset"],
                 i, startx, starty, w, h);

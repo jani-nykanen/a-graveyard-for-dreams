@@ -6,8 +6,8 @@ import { Camera } from "./camera.js";
  */
 
 import { Scene } from "./core/scene.js";
-import { Vector2 } from "./core/vector.js";
 import { Stage } from "./stage.js";
+import { ObjectManager } from "./objectmanager.js";
 
 
 export class Game extends Scene {
@@ -17,22 +17,28 @@ export class Game extends Scene {
 
         super(ev, param);
 
-        this.stage = new Stage(ev.assets.tilemaps["base"]);
-        this.cam = new Camera(5, 3, 160, 144,
+        this.stage = new Stage(ev.assets);
+        this.cam = new Camera(0, 0, 160, 144,
             (this.stage.width/10) | 0,
             (this.stage.height/9) | 0,
             true, false);
+
+        this.objects = new ObjectManager();
+        this.stage.parseObjects(this.objects);
+        this.objects.positionCamera(this.cam);
     }
 
 
     refresh(ev) {
 
-        const EPS = 0.25;
-        const SPEED = 1.0 / 20.0;
+        // const EPS = 0.25;
+        // const SPEED = 1.0 / 20.0;
 
         this.stage.update(ev);
+        this.objects.update(this.cam, this.stage, ev);
         this.cam.update(ev);
 
+        /*
         let s = ev.input.stick;
         // TEMP
         if (s.x > EPS)
@@ -43,7 +49,7 @@ export class Game extends Scene {
             this.cam.move(0, 1, SPEED);
         else if (s.y < -EPS)
             this.cam.move(0, -1, SPEED);   
-           
+        */
     }
 
 
@@ -61,6 +67,7 @@ export class Game extends Scene {
 
         this.cam.use(c);
         this.stage.draw(c, this.cam);
+        this.objects.draw(c);
 
         c.moveTo();
         c.drawText(c.bitmaps["font"], "v.0.0.1",

@@ -97,4 +97,12 @@ export class Camera {
         c.moveTo(-Math.round(this.rpos.x * this.width), 
                  -Math.round(this.rpos.y * this.height));
     }
+
+
+    setPosition(x, y) {
+
+        this.pos = new Vector2(x, y);
+        this.target = this.pos.clone();
+        this.rpos = this.pos.clone();
+    }
 }

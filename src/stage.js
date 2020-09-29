@@ -7,23 +7,49 @@
 import { Flip } from "./core/canvas.js";
 import { negMod } from "./core/util.js";
 
+const FLOOR = 1;
+const WALL_LEFT = 2;
+const WALL_RIGHT = 4;
+const CEILING = 8;
+
+
+const COLLISION_TABLE = [
+        FLOOR,
+        WALL_RIGHT,
+        CEILING,
+        WALL_LEFT,
+        FLOOR | CEILING,
+        WALL_LEFT | WALL_RIGHT,
+        WALL_LEFT | FLOOR,
+        WALL_RIGHT | FLOOR,
+        WALL_RIGHT | CEILING,
+        WALL_LEFT | CEILING,
+        WALL_LEFT | FLOOR | WALL_RIGHT,
+        WALL_RIGHT | FLOOR | CEILING,
+        WALL_LEFT | CEILING | WALL_RIGHT,
+        WALL_LEFT | FLOOR | CEILING,
+        WALL_LEFT | FLOOR | WALL_RIGHT | CEILING,
+];
+
+
 
 export class Stage {
 
 
-    constructor(tilemap) {
+    constructor(assets) {
 
-        this.tmap = tilemap;
+        this.tmap = assets.tilemaps["base"];
+        this.colMap = assets.tilemaps["collisions"];
 
-        this.width = tilemap.width;
-        this.height = tilemap.height;
+        this.width =  this.tmap.width;
+        this.height =  this.tmap.height;
 
         this.cloudPos = 0.0;
         this.waterPos = 0.0;
     }
 
 
-    drawSpecialTile(c, bmp, layer, x, y, tid) {
+    drawSpecialTile(c, bmp, x, y, tid) {
 
         const WATER_AMPLITUDE = 1.0;
 
@@ -80,8 +106,7 @@ export class Stage {
 
                 if (SPECIAL_TILES.includes(tid)) {
 
-                    this.drawSpecialTile(c, bmp, layer,
-                        x, y, tid);
+                    this.drawSpecialTile(c, bmp, x, y, tid);
                     continue;
                 }
 
@@ -165,6 +190,60 @@ export class Stage {
 
             this.drawLayer(c, c.bitmaps["tileset"],
                 i, startx, starty, w, h);
+        }
+    }
+
+
+    parseObjects(objects) {
+
+        objects.parseObjectLayer(
+            this.tmap.layers[this.tmap.layers.length-1], 
+            this.width, this.height);
+    }
+
+
+    checkTileCollision(o, tid, x, y, ev) {
+
+        tid |= 0;
+
+        if ((COLLISION_TABLE[tid] & FLOOR) == 1) {
+
+            o.floorCollision(x*16, y*16, 16, ev);
+        }
+    }
+
+
+    objectCollision(o, ev) {
+
+        const MARGIN = 2;
+
+        let px = (o.pos.x / 16) | 0;
+        let py = (o.pos.y / 16) | 0;
+
+        let startx = px - MARGIN;
+        let starty = py - MARGIN;
+
+        let endx = px + MARGIN*2;
+        let endy = py + MARGIN*2;
+
+        let tid = 0;
+        let colId = 0;
+        for (let layer = 0; layer < this.tmap.layers.length-1; ++ layer) {
+
+            for (let y = starty; y <= endy; ++ y) {
+
+                for (let x = startx; x <= endx; ++ x) {
+
+                    tid = this.tmap.getLoopedTile(layer, x, y);
+                    if (tid == 0) continue;
+
+                    colId = this.colMap.layers[0] [tid-1];
+                    if (colId != null && colId > 0 && colId < 16) {
+
+                        this.checkTileCollision(o, colId-1, x, y, ev);
+                    }
+                }
+            }
         }
     }
 }

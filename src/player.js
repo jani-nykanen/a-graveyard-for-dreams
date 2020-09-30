@@ -150,4 +150,47 @@ export class Player extends CollisionObject {
 
 
     }
+
+
+    cameraEvent(cam, ev) {
+
+        const CAM_SPEED = 1.0 / 20.0;
+        const MARGIN = 2;
+
+        let cx = cam.pos.x * cam.width;
+        let cy = cam.pos.y * cam.height;
+
+        let dx = cam.target.x - cam.pos.x;
+        let dy = cam.target.y - cam.pos.y;
+
+        let moveSpeedX = (this.hitbox.x+MARGIN) * cam.moveSpeed;
+        let moveSpeedY = (this.hitbox.y+MARGIN) * cam.moveSpeed;
+
+        let mx = 0;
+        let my = 0;
+
+        if (cam.moving) {
+
+            this.pos.x += dx * moveSpeedX * ev.step;
+            this.pos.y += dy * moveSpeedY * ev.step;
+        }
+        else {
+
+            if (this.speed.x > 0 &&
+                this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)
+                mx = 1;
+            else if (this.speed.x < 0 &&
+                this.pos.x+this.center.x-this.hitbox.x/2 < cx)
+                mx = -1;
+            else if (this.speed.y > 0 &&
+                this.pos.y+this.center.y+this.hitbox.y/2 > cy+cam.height)
+                my = 1;
+            else if (this.speed.y < 0 &&
+                this.pos.y+this.center.y-this.hitbox.y/2 < cy)
+                my = -1;
+
+            if (mx != 0 || my != 0)
+                cam.move(mx, my, CAM_SPEED);
+        }
+    }
 }

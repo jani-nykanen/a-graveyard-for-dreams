@@ -7,10 +7,10 @@
 import { Flip } from "./core/canvas.js";
 import { negMod } from "./core/util.js";
 
-const FLOOR = 1;
-const WALL_LEFT = 2;
-const WALL_RIGHT = 4;
-const CEILING = 8;
+const FLOOR = 0b0001;
+const WALL_LEFT = 0b0010;
+const WALL_RIGHT = 0b0100;
+const CEILING = 0b1000;
 
 
 const COLLISION_TABLE = [
@@ -30,7 +30,6 @@ const COLLISION_TABLE = [
         WALL_LEFT | FLOOR | CEILING,
         WALL_LEFT | FLOOR | WALL_RIGHT | CEILING,
 ];
-
 
 
 export class Stage {
@@ -206,9 +205,21 @@ export class Stage {
 
         tid |= 0;
 
-        if ((COLLISION_TABLE[tid] & FLOOR) == 1) {
+        let colValue = COLLISION_TABLE[tid];
+
+        if ((colValue & FLOOR) == FLOOR) {
 
             o.floorCollision(x*16, y*16, 16, ev);
+        }
+
+        if ((colValue & WALL_RIGHT) == WALL_RIGHT) {
+
+            o.wallCollision(x*16, y*16, 16, 1, ev);
+        }
+
+        if ((colValue & WALL_LEFT) == WALL_LEFT) {
+
+            o.wallCollision((x+1)*16, y*16, 16, -1, ev);
         }
     }
 

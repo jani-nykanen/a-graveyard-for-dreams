@@ -49,8 +49,12 @@ export class ObjectManager {
 
     update(cam, stage, ev) {
 
-        this.player.update(ev);
-        stage.objectCollision(this.player, ev);
+        if (!cam.moving) {
+
+            this.player.update(ev);
+            stage.objectCollision(this.player, ev);
+        }
+        this.player.cameraEvent(cam, ev);
     }
 
 

@@ -93,6 +93,8 @@ export class CollisionObject extends GameObject {
 
     wallCollision(x, y, h, dir, ev) {
 
+        const V_MARGIN = 1;
+
         const NEAR_MARGIN = 1;
         const FAR_MARGIN = 2;
         
@@ -102,15 +104,17 @@ export class CollisionObject extends GameObject {
         let top = this.pos.y + this.center.y - this.collisionBox.y/2;
         let bottom = top + this.collisionBox.y;
 
-        if (bottom < y || top >= y + h)
+        if (bottom <= y+V_MARGIN || top >= y + h - V_MARGIN)
             return false;
 
         let xoff = this.center.x + this.collisionBox.x/2 * dir;
         let nearOld = this.oldPos.x + xoff
         let nearNew = this.pos.x + xoff;
 
-        if ( nearNew >= x - NEAR_MARGIN*dir*ev.step &&
-            nearOld <= x + (FAR_MARGIN + Math.abs(this.speed.x)*dir*ev.step ) ) {
+        if ((dir > 0 && nearNew >= x - NEAR_MARGIN*ev.step &&
+             nearOld <= x + (FAR_MARGIN + this.speed.x)*ev.step) || 
+             (dir < 0 && nearNew <= x + NEAR_MARGIN*ev.step &&
+            nearOld >= x - (FAR_MARGIN - this.speed.x)*ev.step)) {
 
             this.pos.x = x - xoff;
             this.wallCollisionEvent(x, y, h, dir, ev);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="16" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="16" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
  <tileset firstgid="1" source="collision_tiles.tsx"/>
  <layer id="1" name="Laattataso 1" width="16" height="32">
   <data encoding="csv">
@@ -8,12 +8,12 @@
 10,3,9,15,15,10,3,9,10,3,9,14,12,13,16,16,
 0,0,0,0,1,1,0,0,0,0,0,0,0,0,32,16,
 1,0,0,1,1,0,1,1,0,0,0,0,0,0,16,0,
-0,0,0,0,0,0,0,0,1,1,1,1,1,0,1,1,
+0,0,0,0,0,0,1,1,1,1,1,1,1,0,1,1,
 1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,
 7,1,8,0,0,30,30,1,0,0,0,0,0,0,0,0,
-4,0,2,0,0,31,0,0,1,1,0,0,0,0,0,0,
-10,3,9,0,0,0,0,0,0,0,0,0,0,0,0,0,
+4,0,2,0,0,31,0,0,1,1,0,0,0,15,0,0,
+10,3,9,0,0,0,0,0,0,0,0,1,0,0,14,0,
 1,1,1,0,1,0,0,0,7,1,8,0,0,0,0,0,
 0,0,0,0,0,0,0,0,4,0,2,0,0,0,0,0,
 0,0,0,0,0,0,1,0,10,3,9,0,0,0,0,0,

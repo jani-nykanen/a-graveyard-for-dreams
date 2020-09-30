@@ -31,12 +31,16 @@ export class Player extends CollisionObject {
         this.doubleJump = false;
 
         this.jumpMargin = 0;
+
+        this.climbing = false;
+        this.climbingBegun = false;
     }
 
 
     control(ev) {
 
         const BASE_SPEED = 1.0;
+        const CLIMB_SPEED = 0.5;
         const BASE_GRAVITY = 2.0;
         const JUMP_TIME = 14.0;
         const DOUBLE_JUMP_TIME = 8.0;
@@ -46,11 +50,29 @@ export class Player extends CollisionObject {
 
         let jumpButtonState = ev.input.actions["fire1"].state;
 
+        // Climbing
+        if (this.climbing) {
+
+            this.target.y = CLIMB_SPEED * ev.input.stick.y;
+            this.target.x = 0.0;
+
+            if (jumpButtonState == State.Pressed) {
+
+                this.jumpTimer = JUMP_TIME;
+                this.doubleJump = false;
+
+                this.climbing = false;
+                this.climbingBegun = false;
+            }
+            return;
+        }
+
+        // Jumping and related actions
         if (jumpButtonState == State.Pressed) {
 
-            if (this.jumpMargin > 0 || !this.doubleJump) {
+            if (this.canJump || this.jumpMargin > 0 || !this.doubleJump) {
 
-                this.doubleJump = this.jumpMargin <= 0;
+                this.doubleJump = !this.canJump && this.jumpMargin <= 0;
                 this.jumpTimer = this.doubleJump ? DOUBLE_JUMP_TIME : JUMP_TIME;
                 this.canJump = false;
                 this.jumpMargin = 0;
@@ -80,6 +102,17 @@ export class Player extends CollisionObject {
             this.flip = this.target.x < 0 ? Flip.Horizontal : Flip.None;
         }
 
+        // Climbing
+        if (this.climbing) {
+
+            if (Math.abs(this.target.y) > EPS) {
+
+                this.spr.animate(3, 3, 4, 10, ev.step);
+            }
+            return;
+        }
+
+        // Jumping & walking
         if (this.canJump) {
 
             if (Math.abs(this.speed.x) < EPS &&
@@ -130,9 +163,16 @@ export class Player extends CollisionObject {
 
     updateLogic(ev) {
 
+        if (this.climbingBegun && !this.climbing) {
+
+            this.climbingBegun = false;
+        }
+
         this.control(ev);
         this.updateTimers(ev);
         this.animate(ev);
+
+        this.climbing = false;
     }
 
 
@@ -159,6 +199,9 @@ export class Player extends CollisionObject {
         this.doubleJump = false;
 
         this.jumpMargin = JUMP_MARGIN;
+
+        this.climbing = false;
+        this.climbingBegun = false;
     }
 
 
@@ -171,6 +214,50 @@ export class Player extends CollisionObject {
     ceilingCollisionEvent(x, y, w, ev) {
 
         this.jumpTimer = 0;
+    }
+
+
+    ladderCollision(x, y, w, h, ev, yjump) {
+
+        const EPS = 0.25;
+        const MINUS_MARGIN = 8;
+
+        // ...this looks a bit... ugly?
+        if (!this.overlay(x+MINUS_MARGIN/2, y, w-MINUS_MARGIN, h)) {
+
+            return false;
+        }
+        
+        if (this.climbingBegun) {
+
+            if (yjump == undefined)
+                this.climbing = true;
+                
+            return true;
+        }
+
+        let up = ev.input.stick.y < 0 && 
+            ev.input.oldStick.y >= -EPS &&
+            ev.input.stickDelta.y < -EPS;
+
+        let down = ev.input.stick.y > 0 && 
+            ev.input.oldStick.y <= EPS &&
+            ev.input.stickDelta.y > EPS;
+
+        if (up || down) {
+
+            this.climbing = true;
+            this.climbingBegun = true;
+
+            this.pos.x = x + 8;
+            if (yjump != undefined)
+                this.pos.y = y + yjump;
+
+            this.stopMovement();
+
+            return true;
+        }
+        return false;
     }
 
 

@@ -27,6 +27,8 @@ export class CollisionObject extends GameObject {
 
     floorCollision(x, y, w, ev) {
 
+        const H_MARGIN = 1;
+
         const TOP_MARGIN = 1;
         const BOTTOM_MARGIN = 2;
         
@@ -36,7 +38,8 @@ export class CollisionObject extends GameObject {
         let left = this.pos.x + this.center.x - this.collisionBox.x/2;
         let right = left + this.collisionBox.x;
 
-        if (right < x || left >= x + w) 
+        if (right <= x + H_MARGIN || 
+            left >= x + w - H_MARGIN) 
             return false;
 
         let yoff = this.center.y + this.collisionBox.y/2;
@@ -60,6 +63,8 @@ export class CollisionObject extends GameObject {
 
     ceilingCollision(x, y, w, ev) {
 
+        const H_MARGIN = 1;
+
         const TOP_MARGIN = 2;
         const BOTTOM_MARGIN = 1;
         
@@ -69,7 +74,8 @@ export class CollisionObject extends GameObject {
         let left = this.pos.x + this.center.x - this.collisionBox.x/2;
         let right = left + this.collisionBox.x;
         
-        if (right < x || left >= x + w) 
+        if (right <= x + H_MARGIN || 
+            left >= x + w - H_MARGIN) 
             return false;
 
         let yoff = this.center.y - this.collisionBox.y/2;

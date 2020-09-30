@@ -30,6 +30,8 @@ export class InputManager {
         this.gamepad = new GamePadListener();
 
         this.stick = new Vector2();
+        this.oldStick = new Vector2();
+        this.stickDelta = new Vector2();
 
         window.addEventListener("keydown", 
             (e) => {
@@ -109,6 +111,8 @@ export class InputManager {
 
         const DEADZONE = 0.1;
 
+        this.oldStick = this.stick.clone();
+
         this.stick.zeros();
         if (this.gamepad.stick.length() > DEADZONE) {
 
@@ -136,6 +140,11 @@ export class InputManager {
         // We could normalize the stick here if we were making
         // a top-down game, not a side-scrolling one
         // this.stick.normalize();
+
+        this.stickDelta = new Vector2(
+            this.stick.x - this.oldStick.x,
+            this.stick.y - this.oldStick.y
+        );
     }
 
 

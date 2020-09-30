@@ -72,4 +72,21 @@ export class GameObject {
 
 
     draw(c) {}
+
+
+    overlay(x, y, w, h) {
+
+        let px = this.pos.x + this.center.x - this.hitbox.x/2;
+        let py = this.pos.y + this.center.y - this.hitbox.y/2;
+
+        return px + this.hitbox.x >= x && px < x+w &&
+               py + this.hitbox.y >= y && py < y+h;
+    }
+
+
+    stopMovement() {
+
+        this.speed.zeros();
+        this.target.zeros();
+    }
 }

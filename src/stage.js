@@ -231,12 +231,21 @@ export class Stage {
 
         switch(tid) {
 
+        // Ladder, bottom
+        case 15:
+
+            if (o.ladderCollision != undefined) {
+
+                o.ladderCollision(x*16, y*16, 16, 16, ev);
+            }
+            
+            break;
+
+        // Ladder, upper
         case 31:
 
-            if (o.floorCollision(x*16, (y+1)*16, 16, ev)) {
-
-                // Climb, if down key pressed?
-            }
+            o.floorCollision(x*16, (y+1)*16, 16, ev);
+            o.ladderCollision(x*16, y*16+8, 16, 8, ev, 4);
 
             break;
         

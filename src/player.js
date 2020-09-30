@@ -28,6 +28,9 @@ export class Player extends CollisionObject {
 
         this.canJump = false;
         this.jumpTimer = 0;
+        this.doubleJump = false;
+
+        this.jumpMargin = 0;
     }
 
 
@@ -36,6 +39,7 @@ export class Player extends CollisionObject {
         const BASE_SPEED = 1.0;
         const BASE_GRAVITY = 2.0;
         const JUMP_TIME = 14.0;
+        const DOUBLE_JUMP_TIME = 8.0;
 
         this.target.x = BASE_SPEED * ev.input.stick.x;
         this.target.y = BASE_GRAVITY;
@@ -44,10 +48,12 @@ export class Player extends CollisionObject {
 
         if (jumpButtonState == State.Pressed) {
 
-            if (this.canJump) {
+            if (this.jumpMargin > 0 || !this.doubleJump) {
 
-                this.jumpTimer = JUMP_TIME;
+                this.doubleJump = this.jumpMargin <= 0;
+                this.jumpTimer = this.doubleJump ? DOUBLE_JUMP_TIME : JUMP_TIME;
                 this.canJump = false;
+                this.jumpMargin = 0;
             }
             // Else: double jump etc.
         }
@@ -63,6 +69,7 @@ export class Player extends CollisionObject {
 
         const EPS = 0.1;
         const JUMP_EPS = 0.5;
+        const DOUBLE_JUMP_ANIM_SPEED = 4;
 
         let animSpeed = 0.0;
         let animFrame = 0;
@@ -88,13 +95,20 @@ export class Player extends CollisionObject {
         }
         else {
 
-            animFrame = 0;
-            if (Math.abs(this.speed.y) < JUMP_EPS)
-                animFrame = 1;
-            else if (this.speed.y > 0)
-                animFrame = 2;
+            if (this.doubleJump && this.speed.y < 0) {
 
-            this.spr.setFrame(animFrame, 1);
+                this.spr.animate(2, 0, 4, DOUBLE_JUMP_ANIM_SPEED, ev.step);
+            }
+            else {
+
+                animFrame = 0;
+                if (Math.abs(this.speed.y) < JUMP_EPS)
+                    animFrame = 1;
+                else if (this.speed.y > 0)
+                    animFrame = 2;
+
+                this.spr.setFrame(animFrame, 1);
+            }
         }
     }
 
@@ -108,6 +122,9 @@ export class Player extends CollisionObject {
             this.speed.y = JUMP_SPEED;
             this.jumpTimer -= ev.step;
         }
+
+        if (this.jumpMargin > 0)
+            this.jumpMargin -= ev.step;
     }
 
 
@@ -136,7 +153,12 @@ export class Player extends CollisionObject {
 
     floorCollisionEvent(x, y, w, ev) {
 
+        const JUMP_MARGIN = 12;
+
         this.canJump = true;
+        this.doubleJump = false;
+
+        this.jumpMargin = JUMP_MARGIN;
     }
 
 
@@ -148,7 +170,7 @@ export class Player extends CollisionObject {
 
     ceilingCollisionEvent(x, y, w, ev) {
 
-
+        this.jumpTimer = 0;
     }
 
 
@@ -191,6 +213,8 @@ export class Player extends CollisionObject {
 
             if (mx != 0 || my != 0)
                 cam.move(mx, my, CAM_SPEED);
+
+            // TODO: Check looping
         }
     }
 }

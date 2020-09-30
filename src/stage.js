@@ -201,7 +201,7 @@ export class Stage {
     }
 
 
-    checkTileCollision(o, tid, x, y, ev) {
+    checkBaseTileCollision(o, tid, x, y, ev) {
 
         tid |= 0;
 
@@ -211,15 +211,37 @@ export class Stage {
 
             o.floorCollision(x*16, y*16, 16, ev);
         }
+        if ((colValue & CEILING) == CEILING) {
+
+            o.ceilingCollision(x*16, (y+1)*16, 16, ev);
+        }
 
         if ((colValue & WALL_RIGHT) == WALL_RIGHT) {
 
-            o.wallCollision(x*16, y*16, 16, 1, ev);
+            o.wallCollision((x+1)*16, y*16, 16, -1, ev);
         }
-
         if ((colValue & WALL_LEFT) == WALL_LEFT) {
 
-            o.wallCollision((x+1)*16, y*16, 16, -1, ev);
+            o.wallCollision(x*16, y*16, 16, 1, ev);
+        }
+    }
+
+
+    checkSpecialTileCollision(o, tid, x, y, ev) {
+
+        switch(tid) {
+
+        case 31:
+
+            if (o.floorCollision(x*16, (y+1)*16, 16, ev)) {
+
+                // Climb, if down key pressed?
+            }
+
+            break;
+        
+        default:
+            break;
         }
     }
 
@@ -249,9 +271,12 @@ export class Stage {
                     if (tid == 0) continue;
 
                     colId = this.colMap.layers[0] [tid-1];
-                    if (colId != null && colId > 0 && colId < 16) {
+                    if (colId != null) {
 
-                        this.checkTileCollision(o, colId-1, x, y, ev);
+                        if (colId > 0 && colId <= COLLISION_TABLE.length)
+                            this.checkBaseTileCollision(o, colId-1, x, y, ev);
+                        else
+                            this.checkSpecialTileCollision(o, colId-1, x, y, ev);
                     }
                 }
             }

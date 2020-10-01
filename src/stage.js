@@ -238,7 +238,24 @@ export class Stage {
 
                 o.ladderCollision(x*16, y*16, 16, 16, ev);
             }
-            
+            break;
+
+        // Water, surface
+        case 29:
+
+            if (o.waterCollision != undefined) {
+    
+                o.waterCollision(x*16, y*16+8, 16, 8, ev);
+            }
+            break;
+
+        // Water, "deep"
+        case 30:
+
+            if (o.waterCollision != undefined) {
+
+                o.waterCollision(x*16, y*16, 16, 16, ev);
+            }
             break;
 
         // Ladder, upper

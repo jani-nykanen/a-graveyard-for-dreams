@@ -34,6 +34,8 @@ export class Player extends CollisionObject {
 
         this.climbing = false;
         this.climbingBegun = false;
+    
+        this.swimming = false;
     }
 
 
@@ -44,11 +46,26 @@ export class Player extends CollisionObject {
         const BASE_GRAVITY = 2.0;
         const JUMP_TIME = 14.0;
         const DOUBLE_JUMP_TIME = 8.0;
+        const BASE_FRICTION_X = 0.1;
+        const BASE_FRICTION_Y = 0.15;
+        const SWIMMING_MOD_X = 0.5;
+        const SWIMMING_MOD_Y = 0.25;
 
         this.target.x = BASE_SPEED * ev.input.stick.x;
         this.target.y = BASE_GRAVITY;
 
         let jumpButtonState = ev.input.actions["fire1"].state;
+
+        // If swimming, lower the friction (and target speeds)
+        this.friction = new Vector2(BASE_FRICTION_X, BASE_FRICTION_Y);
+        if (this.swimming) {
+
+            this.friction.x *= SWIMMING_MOD_X;
+            this.friction.y *= SWIMMING_MOD_Y;
+
+            this.target.x *= SWIMMING_MOD_X;
+            this.target.y *= SWIMMING_MOD_Y;
+        }
 
         // Climbing
         if (this.climbing) {
@@ -102,6 +119,23 @@ export class Player extends CollisionObject {
             this.flip = this.target.x < 0 ? Flip.Horizontal : Flip.None;
         }
 
+        // Swimming
+        if (this.swimming) {
+
+            if (this.speed.y >= 0 &&
+                Math.abs(this.target.x) > EPS) {
+
+                this.spr.animate(3, 0, 1, 10, ev.step);
+            }
+            else {
+
+                animFrame = this.speed.y < 0 ? 2 : 0;
+                this.spr.setFrame(animFrame, 3);
+            }
+
+            return;
+        }
+
         // Climbing
         if (this.climbing) {
 
@@ -149,10 +183,14 @@ export class Player extends CollisionObject {
     updateTimers(ev) {
 
         const JUMP_SPEED = -2.0;
+        const SWIMMING_MOD_Y = 0.5;
 
         if (this.jumpTimer > 0) {
 
             this.speed.y = JUMP_SPEED;
+            if (this.swimming)
+                this.speed.y *= SWIMMING_MOD_Y;
+
             this.jumpTimer -= ev.step;
         }
 
@@ -173,6 +211,7 @@ export class Player extends CollisionObject {
         this.animate(ev);
 
         this.climbing = false;
+        this.swimming = false;
     }
 
 
@@ -254,6 +293,20 @@ export class Player extends CollisionObject {
                 this.pos.y = y + yjump;
 
             this.stopMovement();
+
+            return true;
+        }
+        return false;
+    }
+
+
+    waterCollision(x, y, w, h, ev) {
+
+        if (this.overlay(x, y, w, h)) {
+
+            this.swimming = true;
+            this.jumpMargin = 1;
+            this.doubleJump = false;
 
             return true;
         }

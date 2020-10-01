@@ -36,10 +36,17 @@ export class Player extends CollisionObject {
         this.climbingBegun = false;
     
         this.swimming = false;
+
+        this.sliderTimer = 0;
+
+        this.attackTimer = 0;
+        this.canAttack = false;
     }
 
 
     control(ev) {
+
+        const EPS = 0.1;
 
         const BASE_SPEED = 1.0;
         const CLIMB_SPEED = 0.5;
@@ -50,11 +57,34 @@ export class Player extends CollisionObject {
         const BASE_FRICTION_Y = 0.15;
         const SWIMMING_MOD_X = 0.5;
         const SWIMMING_MOD_Y = 0.25;
+        const SLIDE_TIME = 20;
+        const ATTACK_TIME = 20;
+
+        if (this.attackTimer > 0) return;
 
         this.target.x = BASE_SPEED * ev.input.stick.x;
         this.target.y = BASE_GRAVITY;
 
         let jumpButtonState = ev.input.actions["fire1"].state;
+
+        // Attacking
+        if (this.canAttack &&
+            ev.input.actions["fire2"].state == State.Pressed) {
+
+            if (ev.input.stick.x > EPS) 
+                this.flip = Flip.None;
+            else if (ev.input.stick.x < -EPS)
+                this.flip = Flip.Horizontal;
+
+            this.canAttack = false;
+            this.attackTimer = ATTACK_TIME;
+            this.stopMovement();
+
+            this.jumpTimer = 0;
+            this.sliderTimer = 0;
+
+            return;
+        }
 
         // If swimming, lower the friction (and target speeds)
         this.friction = new Vector2(BASE_FRICTION_X, BASE_FRICTION_Y);
@@ -75,7 +105,9 @@ export class Player extends CollisionObject {
 
             if (jumpButtonState == State.Pressed) {
 
-                this.jumpTimer = JUMP_TIME;
+                if (ev.input.stick.y < EPS)
+                    this.jumpTimer = JUMP_TIME;
+
                 this.doubleJump = false;
 
                 this.climbing = false;
@@ -87,7 +119,11 @@ export class Player extends CollisionObject {
         // Jumping and related actions
         if (jumpButtonState == State.Pressed) {
 
-            if (this.canJump || this.jumpMargin > 0 || !this.doubleJump) {
+            if (this.canJump && ev.input.stick.y > EPS) {
+
+                this.sliderTimer = SLIDE_TIME;
+            }
+            else if (this.canJump || this.jumpMargin > 0 || !this.doubleJump) {
 
                 this.doubleJump = !this.canJump && this.jumpMargin <= 0;
                 this.jumpTimer = this.doubleJump ? DOUBLE_JUMP_TIME : JUMP_TIME;
@@ -96,10 +132,13 @@ export class Player extends CollisionObject {
             }
             // Else: double jump etc.
         }
-        else if (jumpButtonState == State.Released &&
-                this.jumpTimer > 0) {
+        else if (jumpButtonState == State.Released ) {
 
-            this.jumpTimer = 0.0;
+            if (this.jumpTimer > 0)
+                this.jumpTimer = 0.0;
+
+            else if (this.sliderTimer > 0)
+                this.sliderTimer = 0.0;
         }
     }
 
@@ -112,6 +151,20 @@ export class Player extends CollisionObject {
 
         let animSpeed = 0.0;
         let animFrame = 0;
+
+        // Attacking, obviously
+        if (this.attackTimer > 0) {
+
+            this.spr.setFrame(0, 4);
+            return;
+        }
+
+        // Sliding
+        if (this.sliderTimer > 0) {
+
+            this.spr.setFrame(4, 1);
+            return;
+        }
 
         // Determine flipping first
         if (Math.abs(this.target.x) > EPS) {
@@ -139,7 +192,8 @@ export class Player extends CollisionObject {
         // Climbing
         if (this.climbing) {
 
-            if (Math.abs(this.target.y) > EPS) {
+            if (this.spr.row != 3 ||
+                Math.abs(this.target.y) > EPS) {
 
                 this.spr.animate(3, 3, 4, 10, ev.step);
             }
@@ -184,6 +238,7 @@ export class Player extends CollisionObject {
 
         const JUMP_SPEED = -2.0;
         const SWIMMING_MOD_Y = 0.5;
+        const SLIDE_SPEED = 2.0;
 
         if (this.jumpTimer > 0) {
 
@@ -194,8 +249,19 @@ export class Player extends CollisionObject {
             this.jumpTimer -= ev.step;
         }
 
+        if (this.sliderTimer > 0) {
+
+            this.speed.x = (this.flip == Flip.None ? 1 : -1) * SLIDE_SPEED;
+            this.target.x = this.speed.x;
+
+            this.sliderTimer -= ev.step;
+        }
+
         if (this.jumpMargin > 0)
             this.jumpMargin -= ev.step;
+
+         if (this.attackTimer > 0)
+            this.attackTimer -= ev.step;   
     }
 
 
@@ -226,6 +292,14 @@ export class Player extends CollisionObject {
         let px = Math.round(this.pos.x-8);
         let py = Math.round(this.pos.y-7);
 
+        if (this.attackTimer > 0) {
+
+            this.spr.drawFrame(c, c.bitmaps["figure"], 
+                2, 4,
+                px+12 - 24*this.flip, 
+                py+1, this.flip);
+        }
+
         this.spr.draw(c, c.bitmaps["figure"], px, py, this.flip);
     }
 
@@ -233,14 +307,20 @@ export class Player extends CollisionObject {
     floorCollisionEvent(x, y, w, ev) {
 
         const JUMP_MARGIN = 12;
+        const EPS = 0.1;
 
         this.canJump = true;
         this.doubleJump = false;
 
         this.jumpMargin = JUMP_MARGIN;
 
-        this.climbing = false;
-        this.climbingBegun = false;
+        if (this.speed.y > EPS) {
+
+            this.climbing = false;
+            this.climbingBegun = false;
+        }
+
+        this.canAttack = true;
     }
 
 
@@ -263,12 +343,13 @@ export class Player extends CollisionObject {
 
         // ...this looks a bit... ugly?
         if (!this.overlay(x+MINUS_MARGIN/2, y, w-MINUS_MARGIN, h)) {
-
+            
             return false;
         }
         
         if (this.climbingBegun) {
 
+            this.canAttack = true;
             if (yjump == undefined)
                 this.climbing = true;
                 
@@ -285,6 +366,7 @@ export class Player extends CollisionObject {
 
         if (up || down) {
 
+            this.canAttack = true;
             this.climbing = true;
             this.climbingBegun = true;
 
@@ -307,6 +389,9 @@ export class Player extends CollisionObject {
             this.swimming = true;
             this.jumpMargin = 1;
             this.doubleJump = false;
+            this.sliderTimer = 0;
+
+            this.canAttack = true;
 
             return true;
         }

@@ -240,6 +240,15 @@ export class Stage {
             }
             break;
 
+        // Ladder, special
+        case 27:
+
+            if (o.ladderCollision != undefined) {
+
+                o.ladderCollision(x*16+8, y*16, 16, 16, ev);
+            }
+            break;
+
         // Water, surface
         case 29:
 

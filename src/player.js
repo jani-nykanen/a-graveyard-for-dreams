@@ -41,6 +41,13 @@ export class Player extends CollisionObject {
 
         this.attackTimer = 0;
         this.canAttack = false;
+
+        this.downAttack = false;
+        this.downAttackWaitTimer = 0;
+
+        this.touchWall = false;
+        this.wallJumpMargin = 0;
+        this.wallDir = 0;
     }
 
 
@@ -59,31 +66,55 @@ export class Player extends CollisionObject {
         const SWIMMING_MOD_Y = 0.25;
         const SLIDE_TIME = 20;
         const ATTACK_TIME = 20;
+        const DOWN_ATTACK_GRAVITY = 8.0;
+        const DOWN_ATTACK_INITIAL_SPEED = -3.0;
+        const DOWN_ATTACK_FRICTION = 0.35;
+        const WALL_RIDE_REDUCE_GRAVITY = 0.25;
+        const WALL_JUMP_BONUS = -2.0;
 
-        if (this.attackTimer > 0) return;
+        if (this.attackTimer > 0 || this.downAttack) return;
 
         this.target.x = BASE_SPEED * ev.input.stick.x;
         this.target.y = BASE_GRAVITY;
+        if (this.touchWall)
+            this.target.y *= WALL_RIDE_REDUCE_GRAVITY;
 
         let jumpButtonState = ev.input.actions["fire1"].state;
 
         // Attacking
-        if (this.canAttack &&
-            ev.input.actions["fire2"].state == State.Pressed) {
+        if (ev.input.actions["fire2"].state == State.Pressed) {
 
-            if (ev.input.stick.x > EPS) 
-                this.flip = Flip.None;
-            else if (ev.input.stick.x < -EPS)
-                this.flip = Flip.Horizontal;
+            // Down attack
+            if (!this.canJump && ev.input.stick.y > EPS) {
+                
+                this.stopMovement();
+                this.speed.y = DOWN_ATTACK_INITIAL_SPEED;
+                this.target.y = DOWN_ATTACK_GRAVITY;
+                this.friction.y = DOWN_ATTACK_FRICTION;
 
-            this.canAttack = false;
-            this.attackTimer = ATTACK_TIME;
-            this.stopMovement();
+                this.downAttack = true;
+                this.downAttackWaitTimer = 0;
 
-            this.jumpTimer = 0;
-            this.sliderTimer = 0;
+                return;
+            }
 
-            return;
+            // Base attack
+            if (this.canAttack) {
+
+                if (ev.input.stick.x > EPS) 
+                    this.flip = Flip.None;
+                else if (ev.input.stick.x < -EPS)
+                    this.flip = Flip.Horizontal;
+
+                this.canAttack = false;
+                this.attackTimer = ATTACK_TIME;
+                this.stopMovement();
+
+                this.jumpTimer = 0;
+                this.sliderTimer = 0;
+
+                return;
+            }
         }
 
         // If swimming, lower the friction (and target speeds)
@@ -123,14 +154,26 @@ export class Player extends CollisionObject {
 
                 this.sliderTimer = SLIDE_TIME;
             }
-            else if (this.canJump || this.jumpMargin > 0 || !this.doubleJump) {
+            else if (this.canJump || this.jumpMargin > 0 || 
+                !this.doubleJump ||
+                this.wallJumpMargin > 0) {
 
-                this.doubleJump = !this.canJump && this.jumpMargin <= 0;
+                this.doubleJump = !this.canJump && 
+                    this.jumpMargin <= 0 && 
+                    this.wallJumpMargin <= 0;
+
                 this.jumpTimer = this.doubleJump ? DOUBLE_JUMP_TIME : JUMP_TIME;
                 this.canJump = false;
-                this.jumpMargin = 0;
+                this.jumpMargin = 0;  
+
+                // Horizontal bonus for the wall jump
+                if (this.wallJumpMargin > 0) {
+
+                    this.speed.x = WALL_JUMP_BONUS * this.wallDir; 
+                }
+                this.touchWall = false;
+                this.wallJumpMargin = 0;
             }
-            // Else: double jump etc.
         }
         else if (jumpButtonState == State.Released ) {
 
@@ -152,6 +195,13 @@ export class Player extends CollisionObject {
         let animSpeed = 0.0;
         let animFrame = 0;
 
+        // Down attack
+        if (this.downAttack) {
+
+            this.spr.setFrame(1, 4);
+            return;
+        }
+
         // Attacking, obviously
         if (this.attackTimer > 0) {
 
@@ -170,6 +220,13 @@ export class Player extends CollisionObject {
         if (Math.abs(this.target.x) > EPS) {
 
             this.flip = this.target.x < 0 ? Flip.Horizontal : Flip.None;
+        }
+
+        // Wall-riding
+        if (this.touchWall) {
+
+            this.spr.setFrame(3, 1);
+            return;
         }
 
         // Swimming
@@ -260,8 +317,19 @@ export class Player extends CollisionObject {
         if (this.jumpMargin > 0)
             this.jumpMargin -= ev.step;
 
-         if (this.attackTimer > 0)
-            this.attackTimer -= ev.step;   
+        if (this.wallJumpMargin > 0)
+            this.wallJumpMargin -= ev.step;   
+
+        if (this.attackTimer > 0)
+            this.attackTimer -= ev.step;      
+
+        if (this.downAttackWaitTimer > 0) {
+
+            if ((this.downAttackWaitTimer -= ev.step) <= 0) {
+
+                this.downAttack = false;
+            }
+        }
     }
 
 
@@ -284,6 +352,7 @@ export class Player extends CollisionObject {
     postUpdate(ev) {
 
         this.canJump = false;
+        this.touchWall = false;
     }
     
 
@@ -301,12 +370,21 @@ export class Player extends CollisionObject {
         }
 
         this.spr.draw(c, c.bitmaps["figure"], px, py, this.flip);
+
+        if (this.downAttack) {
+
+            this.spr.drawFrame(c, c.bitmaps["figure"], 
+                3, 4,
+                px+3 - 6*this.flip, 
+                py+7, this.flip);
+        }
     }
 
 
     floorCollisionEvent(x, y, w, ev) {
 
         const JUMP_MARGIN = 12;
+        const DOWN_ATTACK_WAIT = 20;
         const EPS = 0.1;
 
         this.canJump = true;
@@ -321,12 +399,35 @@ export class Player extends CollisionObject {
         }
 
         this.canAttack = true;
+
+        if (this.downAttack &&
+            this.downAttackWaitTimer <= 0.0) {
+
+            this.downAttackWaitTimer = DOWN_ATTACK_WAIT;
+        }
+
+        this.wallJumpMargin = 0;
+        this.touchWall = false;
     }
 
 
     wallCollisionEvent(x, y, h, dir, ev) {
 
+        const EPS = 0.1;
+        const WALL_JUMP_MARGIN = 15.0;
 
+        if (!this.climbing &&
+            !this.downAttack &&
+            this.attackTimer <= 0 &&
+            !this.swimming &&
+            this.speed.y > 0.0 &&
+            ev.input.stick.x*dir > EPS) {
+
+            this.touchWall = true;
+            this.wallJumpMargin = WALL_JUMP_MARGIN;
+
+            this.wallDir = dir;
+        }
     }
 
 

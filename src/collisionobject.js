@@ -17,6 +17,8 @@ export class CollisionObject extends GameObject {
         // Collision box is used for non-object collisions,
         // hitbox for object-to-object ones
         this.collisionBox = this.hitbox.clone();
+
+        this.disableCollisions = false;
     }
 
 
@@ -32,7 +34,8 @@ export class CollisionObject extends GameObject {
         const TOP_MARGIN = 1;
         const BOTTOM_MARGIN = 2;
         
-        if (!this.exist || this.dying || this.speed.y < 0) 
+        if (this.disableCollisions ||
+            !this.exist || this.dying || this.speed.y < 0) 
             return false;
 
         let left = this.pos.x + this.center.x - this.collisionBox.x/2;
@@ -68,7 +71,8 @@ export class CollisionObject extends GameObject {
         const TOP_MARGIN = 2;
         const BOTTOM_MARGIN = 1;
         
-        if (!this.exist || this.dying || this.speed.y > 0) 
+        if (this.disableCollisions ||
+            !this.exist || this.dying || this.speed.y > 0) 
             return false;
 
         let left = this.pos.x + this.center.x - this.collisionBox.x/2;
@@ -104,7 +108,8 @@ export class CollisionObject extends GameObject {
         const NEAR_MARGIN = 1;
         const FAR_MARGIN = 2;
         
-        if (!this.exist || this.dying || this.speed.x*dir < 0) 
+        if (this.disableCollisions ||
+            !this.exist || this.dying || this.speed.x*dir < 0) 
             return false;
 
         let top = this.pos.y + this.center.y - this.collisionBox.y/2;

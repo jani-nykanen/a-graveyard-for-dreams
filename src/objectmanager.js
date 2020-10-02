@@ -53,6 +53,10 @@ export class ObjectManager {
 
             this.player.update(ev);
             stage.objectCollision(this.player, ev);
+            if (this.player.boomerang != null) {
+
+                stage.objectCollision(this.player.boomerang, ev);
+            }
         }
         this.player.cameraEvent(cam, ev);
     }

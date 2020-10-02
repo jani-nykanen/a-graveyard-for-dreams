@@ -9,6 +9,7 @@ import { Sprite } from "./core/sprite.js";
 import { Vector2 } from "./core/vector.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
+import { Boomerang } from "./boomerang.js";
 
 
 export class Player extends CollisionObject {
@@ -40,6 +41,7 @@ export class Player extends CollisionObject {
         this.sliderTimer = 0;
 
         this.attackTimer = 0;
+        this.swordAttack = false;
         this.canAttack = false;
 
         this.downAttack = false;
@@ -48,44 +50,26 @@ export class Player extends CollisionObject {
         this.touchWall = false;
         this.wallJumpMargin = 0;
         this.wallDir = 0;
+
+        this.boomerang = null;
     }
 
 
-    control(ev) {
+    handleAttack(ev) {
 
         const EPS = 0.1;
 
-        const BASE_SPEED = 1.0;
-        const CLIMB_SPEED = 0.5;
-        const BASE_GRAVITY = 2.0;
-        const JUMP_TIME = 14.0;
-        const DOUBLE_JUMP_TIME = 8.0;
-        const BASE_FRICTION_X = 0.1;
-        const BASE_FRICTION_Y = 0.15;
-        const SWIMMING_MOD_X = 0.5;
-        const SWIMMING_MOD_Y = 0.25;
-        const SLIDE_TIME = 20;
         const ATTACK_TIME = 20;
-        const DOWN_ATTACK_GRAVITY = 8.0;
+        const DOWN_ATTACK_GRAVITY = 4.0;
         const DOWN_ATTACK_INITIAL_SPEED = -3.0;
         const DOWN_ATTACK_FRICTION = 0.35;
-        const WALL_RIDE_REDUCE_GRAVITY = 0.25;
-        const WALL_JUMP_BONUS = -2.0;
-
-        if (this.attackTimer > 0 || this.downAttack) return;
-
-        this.target.x = BASE_SPEED * ev.input.stick.x;
-        this.target.y = BASE_GRAVITY;
-        if (this.touchWall)
-            this.target.y *= WALL_RIDE_REDUCE_GRAVITY;
-
-        let jumpButtonState = ev.input.actions["fire1"].state;
 
         // Attacking
         if (ev.input.actions["fire2"].state == State.Pressed) {
 
             // Down attack
-            if (!this.canJump && ev.input.stick.y > EPS) {
+            if (!this.climbing && !this.swimming &&
+                !this.canJump && ev.input.stick.y > EPS) {
                 
                 this.stopMovement();
                 this.speed.y = DOWN_ATTACK_INITIAL_SPEED;
@@ -95,16 +79,11 @@ export class Player extends CollisionObject {
                 this.downAttack = true;
                 this.downAttackWaitTimer = 0;
 
-                return;
+                return true;
             }
 
             // Base attack
             if (this.canAttack) {
-
-                if (ev.input.stick.x > EPS) 
-                    this.flip = Flip.None;
-                else if (ev.input.stick.x < -EPS)
-                    this.flip = Flip.Horizontal;
 
                 this.canAttack = false;
                 this.attackTimer = ATTACK_TIME;
@@ -113,12 +92,21 @@ export class Player extends CollisionObject {
                 this.jumpTimer = 0;
                 this.sliderTimer = 0;
 
-                return;
+                this.swordAttack = true;
+
+                return true;
             }
         }
+        return false;
+    }
+
+
+    handleSwimming(ev) {
+
+        const SWIMMING_MOD_X = 0.5;
+        const SWIMMING_MOD_Y = 0.25;
 
         // If swimming, lower the friction (and target speeds)
-        this.friction = new Vector2(BASE_FRICTION_X, BASE_FRICTION_Y);
         if (this.swimming) {
 
             this.friction.x *= SWIMMING_MOD_X;
@@ -126,10 +114,30 @@ export class Player extends CollisionObject {
 
             this.target.x *= SWIMMING_MOD_X;
             this.target.y *= SWIMMING_MOD_Y;
+
+            this.touchWall = false;
+            this.wallJumpMargin = 0;
         }
+
+    }
+
+
+    handleClimbing(ev) {
+
+        const EPS = 0.1;
+
+        const CLIMB_SPEED = 0.5;
+        const JUMP_TIME = 14.0;
+
+        let jumpButtonState = ev.input.actions["fire1"].state;
 
         // Climbing
         if (this.climbing) {
+
+            if (ev.input.stick.x > EPS) 
+                this.flip = Flip.None;
+            else if (ev.input.stick.x < -EPS)
+                this.flip = Flip.Horizontal;
 
             this.target.y = CLIMB_SPEED * ev.input.stick.y;
             this.target.x = 0.0;
@@ -144,8 +152,22 @@ export class Player extends CollisionObject {
                 this.climbing = false;
                 this.climbingBegun = false;
             }
-            return;
+            return true;
         }
+        return false;
+    }
+
+
+    handleJump(ev) {
+
+        const EPS = 0.1;
+        
+        const JUMP_TIME = 14.0;
+        const DOUBLE_JUMP_TIME = 8.0;
+        const SLIDE_TIME = 20;
+        const WALL_JUMP_BONUS = -2.0;
+
+        let jumpButtonState = ev.input.actions["fire1"].state;
 
         // Jumping and related actions
         if (jumpButtonState == State.Pressed) {
@@ -183,6 +205,70 @@ export class Player extends CollisionObject {
             else if (this.sliderTimer > 0)
                 this.sliderTimer = 0.0;
         }
+    }
+
+
+    handleBoomerang(ev) {
+
+        const THROW_SPEED = 2.0;
+        const THROW_TIME = 15;
+        const RETURN_TIME = 24;
+
+        if (this.boomerang != null && this.boomerang.exist)
+            return false;
+
+        let dir = this.flip == Flip.None ? 1 : -1;
+        
+        if (ev.input.actions["fire3"].state == State.Pressed) {
+
+            this.boomerang = new Boomerang(
+                this.pos.x+4*dir, this.pos.y+2,
+                THROW_SPEED*dir, 0, RETURN_TIME,
+                this);
+
+            // Required for collisions, when throwing the boomerang
+            // next to a wall
+            this.boomerang.oldPos.x = this.pos.x;
+
+            this.stopMovement();
+            this.attackTimer = THROW_TIME;
+            this.swordAttack = false;
+
+            this.jumpTimer = 0;
+            this.sliderTimer = 0;
+
+            return true;
+        }
+        return false;
+    }
+
+
+    control(ev) {
+
+        const BASE_SPEED = 1.0;
+        const BASE_GRAVITY = 2.0;
+        const BASE_FRICTION_X = 0.1;
+        const BASE_FRICTION_Y = 0.15;
+        const WALL_RIDE_REDUCE_GRAVITY = 0.25;
+
+        if (this.attackTimer > 0 || this.downAttack) return;
+
+        this.target.x = BASE_SPEED * ev.input.stick.x;
+        this.target.y = BASE_GRAVITY;
+        if (this.touchWall)
+            this.target.y *= WALL_RIDE_REDUCE_GRAVITY;
+
+        this.friction = new Vector2(BASE_FRICTION_X, BASE_FRICTION_Y);
+
+        // Pretty. 
+        // TODO: Refactor this, please
+        if (this.handleAttack(ev) ||
+            this.handleBoomerang(ev))
+            return;
+        this.handleSwimming(ev);
+        if (this.handleClimbing(ev))
+            return;
+        this.handleJump(ev);
     }
 
 
@@ -344,6 +430,11 @@ export class Player extends CollisionObject {
         this.updateTimers(ev);
         this.animate(ev);
 
+        if (this.boomerang != null) {
+
+            this.boomerang.update(ev);
+        }
+
         this.climbing = false;
         this.swimming = false;
     }
@@ -361,7 +452,7 @@ export class Player extends CollisionObject {
         let px = Math.round(this.pos.x-8);
         let py = Math.round(this.pos.y-7);
 
-        if (this.attackTimer > 0) {
+        if (this.attackTimer > 0 && this.swordAttack) {
 
             this.spr.drawFrame(c, c.bitmaps["figure"], 
                 2, 4,
@@ -377,6 +468,11 @@ export class Player extends CollisionObject {
                 3, 4,
                 px+3 - 6*this.flip, 
                 py+7, this.flip);
+        }
+
+        if (this.boomerang != null) {
+
+            this.boomerang.draw(c);
         }
     }
 

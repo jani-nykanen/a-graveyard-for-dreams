@@ -31,25 +31,9 @@ export class Game extends Scene {
 
     refresh(ev) {
 
-        // const EPS = 0.25;
-        // const SPEED = 1.0 / 20.0;
-
         this.stage.update(ev);
         this.objects.update(this.cam, this.stage, ev);
         this.cam.update(ev);
-
-        /*
-        let s = ev.input.stick;
-        // TEMP
-        if (s.x > EPS)
-           this.cam.move(1, 0, SPEED);
-        else if (s.x < -EPS)
-            this.cam.move(-1, 0, SPEED);   
-        else if (s.y > EPS)
-            this.cam.move(0, 1, SPEED);
-        else if (s.y < -EPS)
-            this.cam.move(0, -1, SPEED);   
-        */
     }
 
 

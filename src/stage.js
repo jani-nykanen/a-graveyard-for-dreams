@@ -271,7 +271,9 @@ export class Stage {
         case 31:
 
             o.floorCollision(x*16, (y+1)*16, 16, ev);
-            o.ladderCollision(x*16, y*16+8, 16, 8, ev, 4);
+            
+            if (o.ladderCollision != undefined)
+                o.ladderCollision(x*16, y*16+8, 16, 8, ev, 4);
 
             break;
         

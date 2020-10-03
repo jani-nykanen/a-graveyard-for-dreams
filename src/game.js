@@ -54,7 +54,7 @@ export class Game extends Scene {
         this.objects.draw(c);
 
         c.moveTo();
-        c.drawText(c.bitmaps["font"], "v.0.0.1",
+        c.drawText(c.bitmaps["font"], "v.0.1.0",
             1, 1, -2, 0, false);
     }
 }

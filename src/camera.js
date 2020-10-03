@@ -105,4 +105,18 @@ export class Camera {
         this.target = this.pos.clone();
         this.rpos = this.pos.clone();
     }
+
+
+    isObjectInside(o) {
+
+        if (o.spr == undefined) return false;
+
+        let left = this.rpos.x * this.width;
+        let top = this.rpos.y * this.height;
+
+        return o.pos.x + o.spr.width/2 >= left &&
+               o.pos.y + o.spr.height/2 >= top &&
+               o.pos.x - o.spr.width/2 < left + this.width &&
+               o.pos.y - o.spr.height/2 < top + this.height;
+    }
 }

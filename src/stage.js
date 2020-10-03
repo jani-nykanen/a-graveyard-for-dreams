@@ -240,6 +240,19 @@ export class Stage {
             }
             break;
 
+        // Collisions
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+
+            if (o.hurtCollision != undefined) {
+
+                o.hurtCollision(x*16+2, y*16+2, 12, 12, ev);
+            }
+
+            break;
+
         // Ladder, special
         case 27:
 

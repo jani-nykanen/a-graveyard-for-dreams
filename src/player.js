@@ -62,6 +62,9 @@ export class Player extends CollisionObject {
         this.boomerang = null;
 
         this.dir = 1;
+
+        this.hurtTimer = 0;
+        this.knockBackTimer = 0;
     }
 
 
@@ -243,7 +246,7 @@ export class Player extends CollisionObject {
     handleBoomerang(ev) {
 
         const THROW_SPEED = 2.0;
-        const THROW_TIME = 15;
+        const THROW_TIME = 30;
         const RETURN_TIME = 24;
 
         if (this.boomerang != null && this.boomerang.exist)
@@ -310,7 +313,10 @@ export class Player extends CollisionObject {
 
         this.handleSpecialAttack(ev);
 
-        if (this.attackTimer > 0 || this.downAttack) return;
+        if (this.attackTimer > 0 || 
+            this.downAttack ||
+            this.knockBackTimer > 0) 
+            return;
 
         this.target.x = BASE_SPEED * ev.input.stick.x;
         this.target.y = BASE_GRAVITY;
@@ -340,6 +346,13 @@ export class Player extends CollisionObject {
 
         let animSpeed = 0.0;
         let animFrame = 0;
+
+        // Hurt
+        if (this.knockBackTimer > 0) {
+
+            this.spr.setFrame(0, 5);
+            return;
+        }
 
         // Down attack
         if (this.downAttack) {
@@ -497,6 +510,18 @@ export class Player extends CollisionObject {
 
             this.chargeTimer = (this.chargeTimer + ev.step) % CHARGE_MAX;
         }
+
+        if (this.hurtTimer > 0) {
+
+            if (this.knockBackTimer > 0) {
+
+                this.knockBackTimer -= ev.step;
+            }
+            else {
+
+                this.hurtTimer -= ev.step;
+            }
+        }
     }
 
 
@@ -529,6 +554,10 @@ export class Player extends CollisionObject {
     
 
     draw(c) {
+
+        if (this.hurtTimer > 0 &&
+            Math.floor(this.hurtTimer /2) % 2 != 0)
+            return;
 
         let frame = this.spr.frame;
         if (this.charging && Math.floor(this.chargeTimer/2) % 2 == 0) {
@@ -732,5 +761,34 @@ export class Player extends CollisionObject {
 
             this.boomerang.exist = false;
         }
+    }
+
+
+    hurtCollision(x, y, w, h, ev) {
+
+        const HURT_TIME = 60;
+        const KNOCKBACK_TIME = 30;
+        const KNOCKBACK_SPEED = 2.0;
+
+        if (this.hurtTimer > 0) return;
+
+        if (this.overlay(x, y, w, h)) {
+
+            this.hurtTimer = HURT_TIME;
+            this.knockBackTimer = KNOCKBACK_TIME;
+
+            this.target.x = 0.0;
+            this.speed.x = KNOCKBACK_SPEED * (-this.dir);
+
+            // TODO: A method for disabling actions?
+            this.climbing = false;
+            this.attackTimer = 0;
+            this.downAttack = false;
+            this.touchWall = false;
+            this.charging = false;
+
+            return true;
+        }
+        return false;
     }
 }

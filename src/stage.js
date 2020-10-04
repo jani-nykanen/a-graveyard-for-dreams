@@ -229,6 +229,11 @@ export class Stage {
 
     checkSpecialTileCollision(o, tid, x, y, ev) {
 
+        const SPIKE_COLLISION_X = [2, 0, 2, 8];
+        const SPIKE_COLLISION_Y = [8, 2, 0, 2];
+        const SPIKE_COLLISION_WIDTH = [12, 8, 12, 8];
+        const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
+
         switch(tid) {
 
         // Ladder, bottom
@@ -248,7 +253,11 @@ export class Stage {
 
             if (o.hurtCollision != undefined) {
 
-                o.hurtCollision(x*16+2, y*16+2, 12, 12, ev);
+                o.hurtCollision(x*16 + SPIKE_COLLISION_X[tid-16],
+                    y*16 + SPIKE_COLLISION_Y[tid-16], 
+                    SPIKE_COLLISION_WIDTH[tid-16], 
+                    SPIKE_COLLISION_HEIGHT[tid-16], 
+                    ev);
             }
 
             break;

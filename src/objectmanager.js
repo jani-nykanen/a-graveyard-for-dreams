@@ -10,9 +10,10 @@ import { Player } from "./player.js";
 export class ObjectManager {
 
 
-    constructor() {
+    constructor(progress) {
 
         this.player = null;
+        this.progress = progress;
     }
 
 
@@ -32,7 +33,7 @@ export class ObjectManager {
                 // Player
                 case 0:
 
-                    this.player = new Player(x*16+8, y*16+8);
+                    this.player = new Player(x*16+8, y*16+8, this.progress );
                     break;
                 }
             }

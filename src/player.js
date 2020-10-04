@@ -19,7 +19,7 @@ const SPC_RELEASE_TIME = 10;
 export class Player extends CollisionObject {
 
 
-    constructor(x, y) {
+    constructor(x, y, progress) {
 
         super(x, y);
 
@@ -65,6 +65,8 @@ export class Player extends CollisionObject {
 
         this.hurtTimer = 0;
         this.knockBackTimer = 0;
+
+        this.progress = progress;
     }
 
 
@@ -774,6 +776,9 @@ export class Player extends CollisionObject {
 
         if (this.overlay(x, y, w, h)) {
 
+            this.dir = this.pos.x < x+w/2 ? 1 : -1;
+            this.flip = this.dir > 0 ? Flip.None : Flip.Horizontal;
+
             this.hurtTimer = HURT_TIME;
             this.knockBackTimer = KNOCKBACK_TIME;
 
@@ -786,6 +791,8 @@ export class Player extends CollisionObject {
             this.downAttack = false;
             this.touchWall = false;
             this.charging = false;
+
+            this.progress.reduceHealth(2);
 
             return true;
         }

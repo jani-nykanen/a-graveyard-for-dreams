@@ -8,6 +8,7 @@ import { Camera } from "./camera.js";
 import { Scene } from "./core/scene.js";
 import { Stage } from "./stage.js";
 import { ObjectManager } from "./objectmanager.js";
+import { GameProgress } from "./progress.js";
 
 
 export class Game extends Scene {
@@ -23,9 +24,38 @@ export class Game extends Scene {
             (this.stage.height/9) | 0,
             true, false);
 
-        this.objects = new ObjectManager();
+        this.progress = new GameProgress();
+
+        this.objects = new ObjectManager(this.progress);
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
+        
+    }
+
+
+    drawHUD(c) {
+
+        let bmp = c.bitmaps["font"];
+
+        let x;
+        for (let i = 0; i < this.progress.maxHealth; ++ i) {
+
+            x = ((i / 2) | 0)*9;
+
+            // Gray
+            if (i % 2 == 0) {
+
+                c.drawBitmapRegion(bmp, 40, 0, 8, 8,
+                    1 + x, 1);
+            }
+
+            // Red
+            if (this.progress.health > i) {
+
+                c.drawBitmapRegion(bmp, 32 + (i % 2)*4, 0, 4, 8,
+                    1 + x + (i % 2) * 4, 1);
+            }
+        }
     }
 
 
@@ -54,7 +84,6 @@ export class Game extends Scene {
         this.objects.draw(c);
 
         c.moveTo();
-        c.drawText(c.bitmaps["font"], "v.0.1.0",
-            1, 1, -2, 0, false);
+        this.drawHUD(c);
     }
 }

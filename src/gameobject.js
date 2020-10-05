@@ -15,14 +15,14 @@ export class GameObject {
 
         this.pos = new Vector2(x, y);
         this.oldPos = this.pos.clone();
-        this.speed = new Vector2();
+        this.speed = new Vector2(0, 0);
         this.target = this.speed.clone();
         this.friction = new Vector2(1, 1);
 
         // Center is the center point of the object,
         // relative to the "physical" position
-        this.center = new Vector2();
-        this.hitbox = new Vector2();
+        this.center = new Vector2(0, 0);
+        this.hitbox = new Vector2(0, 0);
 
         this.exist = true;
         this.dying = false;

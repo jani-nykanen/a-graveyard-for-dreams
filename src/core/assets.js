@@ -12,8 +12,8 @@ export class AssetPack {
 
     constructor() {
 
-        this.bitmaps = new Array();
-        this.tilemaps = new Array();
+        this.bitmaps = {}
+        this.tilemaps = {};
 
         this.total = 0;
         this.loaded = 0;
@@ -54,6 +54,7 @@ export class AssetPack {
     loadListFile(path) {
 
         this.loadTextfile(path, "json", (str) => 
+
             this.parseAssetList(JSON.parse(str))
         );
     }
@@ -61,21 +62,26 @@ export class AssetPack {
 
     parseAssetList(data) {
 
+        //
+        // The following monsters are required so that
+        // Closure compiler can compile things nicely
+        //
+
         // Load bitmaps
-        for (let b of data.bitmaps) {
+        for (let k in data["bitmaps"]) {
 
             this.loadBitmap(
-                b.name,
-                data.bitmapPath + b.path
+                data["bitmaps"][k]["name"],
+                data["bitmapPath"] + data["bitmaps"][k]["path"]
             );
         }
 
         // Load tilemaps
-        for (let t of data.tilemaps) {
+        for (let k in data["tilemaps"]) {
 
             this.loadTilemap(
-                t.name,
-                data.tilemapPath + t.path
+                data["tilemaps"][k]["name"],
+                data["tilemapPath"] +  data["tilemaps"][k]["path"]
             );
         }
     }

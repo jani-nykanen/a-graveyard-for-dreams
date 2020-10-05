@@ -59,7 +59,10 @@ export class Player extends CollisionObject {
         this.wallJumpMargin = 0;
         this.wallDir = 0;
 
-        this.boomerang = null;
+        // Can't make this null because otherwise Closure
+        // compiler won't like me
+        this.boomerang = new Boomerang(0, 0, 0, 0, 0, null);
+        this.boomerang.exist = false;
 
         this.dir = 1;
 

@@ -41,7 +41,7 @@ export class Boomerang extends CollisionObject {
         );
 
         let dist = dir.length();
-        dir.normalize();
+        dir.normalize(false);
 
         if (!this.returning) {
 

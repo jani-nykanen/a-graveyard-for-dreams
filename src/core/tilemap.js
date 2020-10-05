@@ -52,7 +52,7 @@ export class Tilemap {
         }
 
         // Read (optional) properties
-        this.properties = new Array();
+        this.properties = {};
         let prop = root.getElementsByTagName("properties")[0];
 
         if (prop != undefined) {

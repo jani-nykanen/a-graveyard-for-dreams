@@ -29,9 +29,9 @@ export class InputManager {
 
         this.gamepad = new GamePadListener();
 
-        this.stick = new Vector2();
-        this.oldStick = new Vector2();
-        this.stickDelta = new Vector2();
+        this.stick = new Vector2(0, 0);
+        this.oldStick = new Vector2(0, 0);
+        this.stickDelta = new Vector2(0, 0);
 
         window.addEventListener("keydown", 
             (e) => {

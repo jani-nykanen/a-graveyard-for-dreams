@@ -28,13 +28,13 @@ export class Application {
             step: frameSkip + 1,
             assets: this.assets,
             input: new InputManager()
-                .addAction("left", "ArrowLeft", 14)
-                .addAction("up", "ArrowUp", 12)
-                .addAction("right", "ArrowRight", 15)
-                .addAction("down", "ArrowDown", 13)
+                .addAction("left", "ArrowLeft", 14, null)
+                .addAction("up", "ArrowUp", 12, null)
+                .addAction("right", "ArrowRight", 15, null)
+                .addAction("down", "ArrowDown", 13, null)
         };
 
-        this.activeScene = new Scene(this.ev);
+        this.activeScene = new Scene(this.ev, null);
 
         this.sceneInitialized = false;
         this.initialScene = this.activeScene;

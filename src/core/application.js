@@ -9,6 +9,7 @@ import { Canvas } from "./canvas.js";
 import { InputManager } from "./input.js";
 import { Scene } from "./scene.js";
 import { AssetPack } from "./assets.js";
+import { AudioPlayer } from "./audioplayer.js";
 
 
 export class Application {
@@ -19,7 +20,8 @@ export class Application {
         this.oldTime = 0;
         this.timeSum = 0;
 
-        this.assets = new AssetPack();
+        this.audio = new AudioPlayer();
+        this.assets = new AssetPack(this.audio);
         this.canvas = new Canvas(canvasWidth, canvasHeight, 
             this.assets.bitmaps);
 
@@ -27,6 +29,7 @@ export class Application {
 
             step: frameSkip + 1,
             assets: this.assets,
+            audio: this.audio,
             input: new InputManager()
                 .addAction("left", "ArrowLeft", 14, null)
                 .addAction("up", "ArrowUp", 12, null)

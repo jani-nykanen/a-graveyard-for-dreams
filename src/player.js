@@ -59,9 +59,8 @@ export class Player extends CollisionObject {
         this.wallJumpMargin = 0;
         this.wallDir = 0;
 
-        // Can't make this null because otherwise Closure
-        // compiler won't like me
-        this.boomerang = new Boomerang(0, 0, 0, 0, 0, null);
+
+        this.boomerang = new Boomerang();
         this.boomerang.exist = false;
 
         this.dir = 1;
@@ -235,6 +234,9 @@ export class Player extends CollisionObject {
                 this.wallJumpMargin = 0;
 
                 this.canAttack = true;
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["jump"], 0.50);
             }
         }
         else if (jumpButtonState == State.Released ) {
@@ -261,7 +263,7 @@ export class Player extends CollisionObject {
         
         if (ev.input.actions["fire3"].state == State.Pressed) {
 
-            this.boomerang = new Boomerang(
+            this.boomerang.spawn(
                 this.pos.x+4*dir, this.pos.y+2,
                 THROW_SPEED*dir, 0, RETURN_TIME,
                 this);

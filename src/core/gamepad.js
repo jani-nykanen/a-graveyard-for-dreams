@@ -21,16 +21,12 @@ export class GamePadListener {
 
         window.addEventListener("gamepadconnected", (ev) => {
 
-            let func = navigator.getGamepads ?  
-                navigator.getGamepads : 
-                navigator.webkitGetGamepad;
-            if (func == null)
-                return;
+            console.log("Gamepad with index " + 
+                String(ev["gamepad"].index) + 
+                " connected.");
 
-            console.log("Gamepad with index " + String(ev.gamepad.index) + " connected.");
-
-            let gp = navigator.getGamepads()[ev.gamepad.index];
-            this.index = ev.gamepad.index;
+            let gp = navigator.getGamepads()[ev["gamepad"].index];
+            this.index = ev["gamepad"].index;
             this.pad = gp;
 
             this.updateGamepad(this.pad);

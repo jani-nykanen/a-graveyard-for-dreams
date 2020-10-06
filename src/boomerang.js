@@ -7,14 +7,34 @@ import { Flip } from "./core/canvas.js";
 export class Boomerang extends CollisionObject {
 
 
-    constructor(x, y, sx, sy, returnTime, returnObject) {
+    constructor() {
 
-        super(x, y);
+        super(0, 0);
+
+        this.spr = new Sprite(16, 16);
+
+        this.returning = false;
+        this.returnTime = 0;
+
+        this.returnObject = null;
+
+        this.totalSpeed = 0;
+
+        this.friction = new Vector2(0.1, 0.1);
+
+        this.collisionBox = new Vector2(4, 4);
+        this.hitbox = new Vector2(8, 8);
+
+        this.exist = false;
+    }
+
+
+    spawn(x, y, sx, sy, returnTime, returnObject) {
+
+        this.pos = new Vector2(x, y);
 
         this.speed = new Vector2(sx, sy);
         this.target = this.speed.clone();
-
-        this.spr = new Sprite(16, 16);
 
         this.returning = false;
         this.returnTime = returnTime;
@@ -23,10 +43,7 @@ export class Boomerang extends CollisionObject {
 
         this.totalSpeed = this.speed.length();
 
-        this.friction = new Vector2(0.1, 0.1);
-
-        this.collisionBox = new Vector2(4, 4);
-        this.hitbox = new Vector2(8, 8);
+        this.exist = true;
     }
 
 

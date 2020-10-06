@@ -1,3 +1,4 @@
+import { AudioSample } from "./sample.js";
 /**
  * The End of Journey
  * 
@@ -10,13 +11,16 @@ import { Tilemap } from "./tilemap.js";
 export class AssetPack {
 
 
-    constructor() {
+    constructor(audioPlayer) {
 
         this.bitmaps = {}
         this.tilemaps = {};
+        this.samples = {};
 
         this.total = 0;
         this.loaded = 0;
+
+        this.audioPlayer = audioPlayer;
     }
 
 
@@ -84,6 +88,15 @@ export class AssetPack {
                 data["tilemapPath"] +  data["tilemaps"][k]["path"]
             );
         }
+
+        // Load samples
+        for (let k in data["samples"]) {
+
+            this.loadSample(
+                data["samples"][k]["name"],
+                data["samplePath"] +  data["samples"][k]["path"]
+            );
+        }
     }
 
 
@@ -110,6 +123,29 @@ export class AssetPack {
             this.tilemaps[name] = new Tilemap(str);
             ++ this.loaded;
         });
+    }
+
+
+    loadSample(name, path) {
+
+        ++ this.total;
+
+        var request = new XMLHttpRequest();
+        request.open("GET", path, true);
+        request.responseType = "arraybuffer";
+
+        // TODO: Check why this is different than loading text files
+        request.onload = () => {
+
+            this.audioPlayer.ctx
+                .decodeAudioData(request.response, (data) => {
+                
+                ++ this.loaded;
+                this.samples[name] = new AudioSample(this.audioPlayer, data);
+
+            });
+        }
+        request.send();
     }
 
 

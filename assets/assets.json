@@ -14,5 +14,11 @@
     "tilemaps" : [
         {"name": "base",  "path": "base.tmx"},
         {"name": "collisions",  "path": "collisions.tmx"}
+    ],
+
+
+    "samplePath" : "assets/audio/",
+    "samples" : [
+        {"name": "jump",  "path": "jump.wav"}
     ]
 }

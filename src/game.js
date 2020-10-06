@@ -22,7 +22,7 @@ export class Game extends Scene {
         this.cam = new Camera(0, 0, 160, 144,
             (this.stage.width/10) | 0,
             (this.stage.height/9) | 0,
-            true, false);
+            true);
 
         this.progress = new GameProgress();
 

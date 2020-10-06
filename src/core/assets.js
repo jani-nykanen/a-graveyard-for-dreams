@@ -137,11 +137,10 @@ export class AssetPack {
         // TODO: Check why this is different than loading text files
         request.onload = () => {
 
-            this.audioPlayer.ctx
-                .decodeAudioData(request.response, (data) => {
+            this.audioPlayer.ctx.decodeAudioData(request.response, (data) => {
                 
                 ++ this.loaded;
-                this.samples[name] = new AudioSample(this.audioPlayer, data);
+                this.samples[name] = new AudioSample(this.audioPlayer.ctx, data);
 
             });
         }

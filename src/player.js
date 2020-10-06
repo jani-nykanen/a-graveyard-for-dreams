@@ -10,6 +10,7 @@ import { Vector2 } from "./core/vector.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
+import { negMod } from "./core/util.js";
 
 
 const ATTACK_TIME = 20;
@@ -43,7 +44,7 @@ export class Player extends CollisionObject {
     
         this.swimming = false;
 
-        this.sliderTimer = 0;
+        this.slideTimer = 0;
 
         this.attackTimer = 0;
         this.swordAttack = false;
@@ -92,7 +93,7 @@ export class Player extends CollisionObject {
         this.specialAttack = special;
 
         this.jumpTimer = 0;
-        this.sliderTimer = 0;
+        this.slideTimer = 0;
 
         this.swordAttack = true;
         
@@ -131,6 +132,10 @@ export class Player extends CollisionObject {
             if (this.canAttack) {
 
                 this.startBaseAttack(false);
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["sword"], 0.50);
+
                 return true;
             }
         }
@@ -188,6 +193,9 @@ export class Player extends CollisionObject {
 
                 this.climbing = false;
                 this.climbingBegun = false;
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["jump"], 0.50);
             }
             return true;
         }
@@ -211,7 +219,10 @@ export class Player extends CollisionObject {
 
             if (this.canJump && ev.input.stick.y > EPS) {
 
-                this.sliderTimer = SLIDE_TIME;
+                this.slideTimer = SLIDE_TIME;
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["jump"], 0.50);
             }
             else if (this.canJump || this.jumpMargin > 0 || 
                 !this.doubleJump ||
@@ -244,8 +255,8 @@ export class Player extends CollisionObject {
             if (this.jumpTimer > 0)
                 this.jumpTimer = 0.0;
 
-            else if (this.sliderTimer > 0)
-                this.sliderTimer = 0.0;
+            else if (this.slideTimer > 0)
+                this.slideTimer = 0.0;
         }
     }
 
@@ -277,7 +288,7 @@ export class Player extends CollisionObject {
             this.swordAttack = false;
 
             this.jumpTimer = 0;
-            this.sliderTimer = 0;
+            this.slideTimer = 0;
 
             return true;
         }
@@ -353,6 +364,8 @@ export class Player extends CollisionObject {
 
         let animSpeed = 0.0;
         let animFrame = 0;
+        let oldFrame = this.spr.frame;
+        let oldRow = this.spr.row;
 
         // Hurt
         if (this.knockBackTimer > 0) {
@@ -383,7 +396,7 @@ export class Player extends CollisionObject {
         }
 
         // Sliding
-        if (this.sliderTimer > 0) {
+        if (this.slideTimer > 0) {
 
             this.spr.setFrame(4, 1);
             return;
@@ -426,6 +439,13 @@ export class Player extends CollisionObject {
                 Math.abs(this.target.y) > EPS) {
 
                 this.spr.animate(3, 3, 4, 10, ev.step);
+
+                if (this.spr.row != oldRow ||
+                    (this.spr.frame != oldFrame && this.spr.frame == 3)) {
+
+                    // Sound effect
+                    ev.audio.playSample(ev.assets.samples["climb"], 0.60);
+                }
             }
             return;
         }
@@ -480,12 +500,12 @@ export class Player extends CollisionObject {
             this.jumpTimer -= ev.step;
         }
 
-        if (this.sliderTimer > 0) {
+        if (this.slideTimer > 0) {
 
             this.speed.x = this.dir * SLIDE_SPEED;
             this.target.x = this.speed.x;
 
-            this.sliderTimer -= ev.step;
+            this.slideTimer -= ev.step;
         }
 
         if (this.jumpMargin > 0)
@@ -709,7 +729,7 @@ export class Player extends CollisionObject {
             this.swimming = true;
             this.jumpMargin = 1;
             this.doubleJump = false;
-            this.sliderTimer = 0;
+            this.slideTimer = 0;
 
             this.canAttack = true;
 
@@ -736,6 +756,8 @@ export class Player extends CollisionObject {
         let mx = 0;
         let my = 0;
 
+        let dir;
+
         if (cam.moving) {
 
             this.pos.x += dx * moveSpeedX * ev.step;
@@ -756,10 +778,14 @@ export class Player extends CollisionObject {
                 this.pos.y+this.center.y-this.hitbox.y/2 < cy)
                 my = -1;
 
-            if (mx != 0 || my != 0)
-                cam.move(mx, my, CAM_SPEED);
+            if (mx != 0 || my != 0) {
 
-            // TODO: Check looping
+                if ( (dir = cam.move(mx, my, CAM_SPEED)) != 0) {
+
+                    // Loop
+                    this.pos.x += dir * cam.width * cam.screenCountX;
+                }
+            }
         }
 
         // Check if boomerang has left the room
@@ -771,7 +797,7 @@ export class Player extends CollisionObject {
     }
 
 
-    hurtCollision(x, y, w, h, ev) {
+    hurtCollision(x, y, w, h, dmg, ev) {
 
         const HURT_TIME = 60;
         const KNOCKBACK_TIME = 30;
@@ -797,7 +823,10 @@ export class Player extends CollisionObject {
             this.touchWall = false;
             this.charging = false;
 
-            this.progress.reduceHealth(2);
+            this.progress.reduceHealth(dmg);
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["hurt"], 0.50);
 
             return true;
         }

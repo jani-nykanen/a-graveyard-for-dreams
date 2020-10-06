@@ -12,7 +12,7 @@ export class Camera {
 
     
     constructor(x, y, w, h, 
-        screenCountX, screenCountY, loopx, loopy) {
+        screenCountX, screenCountY, loopx) {
 
         this.pos = new Vector2(x, y);
         this.target = this.pos.clone();
@@ -28,23 +28,22 @@ export class Camera {
         this.screenCountX = screenCountX;
         this.screenCountY = screenCountY;
         this.loopx = loopx;
-        this.loopy = loopy;
     }
 
 
     move(dx, dy, speed) {
 
-        if (this.moving) return;
+        if (this.moving) return 0;
 
         if (!this.loopx && ((this.pos.x == 0 && dx < 0) ||
             (this.pos.x == this.screenCountX-1 && dx > 0) )) {
 
-            return;
+            return 0;
         }
         if (!this.loopy && ((this.pos.y == 0 && dy < 0) ||
             (this.pos.y == this.screenCountY-1 && dy > 0) )) {
-
-            return;
+ 
+            return 0;
         }
 
         this.moveTimer = 1.0;
@@ -54,6 +53,22 @@ export class Camera {
         this.target.y = (this.pos.y + dy) | 0;
 
         this.moving = true;
+
+        if (this.loopx && this.target.x < 0) {
+
+            this.pos.x += this.screenCountX;
+            this.target.x += this.screenCountX;
+
+            return 1;
+        }
+        else if (this.loopx && this.target.x >= this.screenCountX) {
+
+            this.pos.x -= this.screenCountX;
+            this.target.x -= this.screenCountX;
+
+            return -1;
+        }
+        return 0;
     }
 
 
@@ -68,12 +83,6 @@ export class Camera {
             this.rpos = this.pos.clone();
 
             this.moving = false;
-
-            if (this.loopx)
-                this.pos.x = negMod(this.pos.x | 0, this.screenCountX);
-
-            if (this.loopy)
-                this.pos.y = negMod(this.pos.y | 0, this.screenCountY);
 
             return;
         }

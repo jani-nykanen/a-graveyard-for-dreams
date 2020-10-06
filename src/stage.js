@@ -233,6 +233,7 @@ export class Stage {
         const SPIKE_COLLISION_Y = [8, 2, 0, 2];
         const SPIKE_COLLISION_WIDTH = [12, 8, 12, 8];
         const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
+        const SPIKE_DAMAGE = 2;
 
         switch(tid) {
 
@@ -257,6 +258,7 @@ export class Stage {
                     y*16 + SPIKE_COLLISION_Y[tid-16], 
                     SPIKE_COLLISION_WIDTH[tid-16], 
                     SPIKE_COLLISION_HEIGHT[tid-16], 
+                    SPIKE_DAMAGE,
                     ev);
             }
 

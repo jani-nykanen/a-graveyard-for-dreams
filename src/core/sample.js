@@ -4,19 +4,23 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { clamp } from "./util.js";
+
 
 export class AudioSample {
 
 
-    constructor(player, data) {
+    constructor(ctx, data) {
 
         this.data = data;
 
         this.activeBuffer = null;
+
+        this.gain = ctx.createGain();
     }
 
 
-    play(ctx, gain) {
+    play(ctx, vol) {
 
         if (this.activeBuffer != null) {
 
@@ -27,7 +31,9 @@ export class AudioSample {
         let bufferSource = ctx.createBufferSource();
         bufferSource.buffer = this.data;
 
-        bufferSource.connect(gain).connect(ctx.destination);
+        this.gain.gain.value = clamp(vol, 0.0, 1.0);
+
+        bufferSource.connect(this.gain).connect(ctx.destination);
         bufferSource.start(0);
 
         this.activeBuffer = bufferSource;

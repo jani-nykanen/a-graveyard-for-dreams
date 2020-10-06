@@ -19,6 +19,9 @@
 
     "samplePath" : "assets/audio/",
     "samples" : [
-        {"name": "jump",  "path": "jump.wav"}
+        {"name": "jump",  "path": "jump.wav"},
+        {"name": "climb",  "path": "climb.wav"},
+        {"name": "hurt",  "path": "hurt.wav"},
+        {"name": "sword",  "path": "sword.wav"}
     ]
 }

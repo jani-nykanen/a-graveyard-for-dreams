@@ -7,8 +7,11 @@
 import { GamePadListener } from "./gamepad.js";
 import { Vector2 } from "./vector.js";
 
+// Yes it's a perfect name
+const SPECIAL_EPS = 0.25;
 
- export const State = {
+
+export const State = {
 
     Up : 0, 
     Released : 2,
@@ -180,6 +183,41 @@ export class InputManager {
     postUpdate() {
 
         this.updateStateArray(this.keyStates);
+    }
+
+
+    //
+    // The next functions makes dealing with gamepad
+    // easier in menus
+    //
+
+    upPress() {
+
+        return this.stick.y < 0 && 
+            this.oldStick.y >= -SPECIAL_EPS &&
+            this.stickDelta.y < -SPECIAL_EPS;
+    }
+
+    downPress() {
+
+        return this.stick.y > 0 && 
+            this.oldStick.y <= SPECIAL_EPS &&
+            this.stickDelta.y > SPECIAL_EPS;
+    }
+
+
+    leftPress() {
+
+        return this.stick.x < 0 && 
+            this.oldStick.x >= -SPECIAL_EPS &&
+            this.stickDelta.x < -SPECIAL_EPS;
+    }
+
+    rightPress() {
+
+        return this.stick.x > 0 && 
+            this.oldStick.x <= SPECIAL_EPS &&
+            this.stickDelta.x > SPECIAL_EPS;
     }
 
 }

@@ -44,6 +44,33 @@ export class Application {
     }
 
 
+    drawLoadingScreen(c) {
+
+        let barWidth = c.width / 4;
+        let barHeight = barWidth / 8;
+
+        c.clear(0, 0, 0);
+    
+        let t = this.assets.dataLoadedPercentage();
+        let x = c.width/2 - barWidth/2;
+        let y = c.height/2 - barHeight/2;
+
+        x |= 0;
+        y |= 0;
+    
+        // Outlines
+        c.setColor(255, 255, 255);
+        c.fillRect(x-2, y-2, barWidth+4, barHeight+4);
+        c.setColor(0);
+        c.fillRect(x-1, y-1, barWidth+2, barHeight+2);
+    
+        // Bar
+        let w = (barWidth*t) | 0;
+        c.setColor(255);
+        c.fillRect(x, y, w, barHeight);
+    }
+
+
     loop(ts) {
 
         const MAX_REFRESH_COUNT = 5;
@@ -90,8 +117,7 @@ export class Application {
         if (this.assets.hasLoaded())
             this.activeScene.redraw(this.canvas);
         else
-            // TODO: Loading screen
-            this.canvas.clear(0, 0, 0);
+            this.drawLoadingScreen(this.canvas);
 
         window.requestAnimationFrame(
             (ts) => this.loop(ts)

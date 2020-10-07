@@ -30,6 +30,8 @@ export class Game extends Scene {
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
         
+        // Test
+        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
     }
 
 

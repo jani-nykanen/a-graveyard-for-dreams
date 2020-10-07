@@ -20,7 +20,7 @@ export class AudioSample {
     }
 
 
-    play(ctx, vol) {
+    play(ctx, vol, loop) {
 
         if (this.activeBuffer != null) {
 
@@ -30,6 +30,7 @@ export class AudioSample {
 
         let bufferSource = ctx.createBufferSource();
         bufferSource.buffer = this.data;
+        bufferSource.loop = Boolean(loop);
 
         this.gain.gain.value = clamp(vol, 0.0, 1.0);
 
@@ -37,5 +38,12 @@ export class AudioSample {
         bufferSource.start(0);
 
         this.activeBuffer = bufferSource;
+    }
+
+
+    stop() {
+
+        this.activeBuffer.disconnect();
+        this.activeBuffer = null;
     }
 }

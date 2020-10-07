@@ -10,7 +10,6 @@ import { Vector2 } from "./core/vector.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
-import { negMod } from "./core/util.js";
 
 
 const ATTACK_TIME = 20;
@@ -124,6 +123,9 @@ export class Player extends CollisionObject {
 
                 this.downAttack = true;
                 this.downAttackWaitTimer = 0;
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["downAttack"], 0.60);
 
                 return true;
             }
@@ -290,6 +292,9 @@ export class Player extends CollisionObject {
             this.jumpTimer = 0;
             this.slideTimer = 0;
 
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["throw"], 0.60);
+
             return true;
         }
         return false;
@@ -309,6 +314,9 @@ export class Player extends CollisionObject {
             this.chargeTimer = 0.0;
 
             this.startBaseAttack(true);
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["powerAttack"], 0.60);
         }
         else if (!this.specialAttack &&
             this.attackTimer > 0 && 
@@ -517,11 +525,15 @@ export class Player extends CollisionObject {
         if (this.attackTimer > 0) {
 
             this.attackTimer -= ev.step;    
+             // "Charge attack"
             if (!this.specialAttack &&
                 this.swordAttack && 
                 this.attackTimer <= 0) {
 
                 this.charging = true;
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["charge"], 0.50);
             }
         }  
 
@@ -696,15 +708,7 @@ export class Player extends CollisionObject {
             return true;
         }
 
-        let up = ev.input.stick.y < 0 && 
-            ev.input.oldStick.y >= -EPS &&
-            ev.input.stickDelta.y < -EPS;
-
-        let down = ev.input.stick.y > 0 && 
-            ev.input.oldStick.y <= EPS &&
-            ev.input.stickDelta.y > EPS;
-
-        if (up || down) {
+        if (ev.input.upPress() || ev.input.downPress()) {
 
             this.canAttack = true;
             this.climbing = true;

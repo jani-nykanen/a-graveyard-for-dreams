@@ -22,6 +22,12 @@
         {"name": "jump",  "path": "jump.wav"},
         {"name": "climb",  "path": "climb.wav"},
         {"name": "hurt",  "path": "hurt.wav"},
-        {"name": "sword",  "path": "sword.wav"}
+        {"name": "sword",  "path": "sword.wav"},
+        {"name": "powerAttack",  "path": "powerattack.wav"},
+        {"name": "charge",  "path": "charge.wav"},
+        {"name": "downAttack",  "path": "downattack.wav"},
+        {"name": "throw",  "path": "throw.wav"},
+
+        {"name": "testTrack",  "path": "test_track.ogg"}
     ]
 }

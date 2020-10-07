@@ -1,4 +1,3 @@
-import { AudioSample } from "./sample.js";
 /**
  * The End of Journey
  * 
@@ -6,6 +5,7 @@ import { AudioSample } from "./sample.js";
  */
 
 import { Tilemap } from "./tilemap.js";
+import { AudioSample } from "./sample.js";
 
 
 export class AssetPack {
@@ -16,6 +16,7 @@ export class AssetPack {
         this.bitmaps = {}
         this.tilemaps = {};
         this.samples = {};
+        this.music = {};
 
         this.total = 0;
         this.loaded = 0;
@@ -71,7 +72,7 @@ export class AssetPack {
         // Closure compiler can compile things nicely
         //
 
-        // Load bitmaps
+        // Bitmaps
         for (let k in data["bitmaps"]) {
 
             this.loadBitmap(
@@ -80,7 +81,7 @@ export class AssetPack {
             );
         }
 
-        // Load tilemaps
+        // Tilemaps
         for (let k in data["tilemaps"]) {
 
             this.loadTilemap(
@@ -89,7 +90,7 @@ export class AssetPack {
             );
         }
 
-        // Load samples
+        // Samples
         for (let k in data["samples"]) {
 
             this.loadSample(
@@ -130,21 +131,21 @@ export class AssetPack {
 
         ++ this.total;
 
-        var request = new XMLHttpRequest();
-        request.open("GET", path, true);
-        request.responseType = "arraybuffer";
+        let xobj = new XMLHttpRequest();
+        xobj.open("GET", path, true);
+        xobj.responseType = "arraybuffer";
 
         // TODO: Check why this is different than loading text files
-        request.onload = () => {
+        xobj.onload = () => {
 
-            this.audioPlayer.ctx.decodeAudioData(request.response, (data) => {
+            this.audioPlayer.ctx.decodeAudioData(xobj.response, (data) => {
                 
                 ++ this.loaded;
                 this.samples[name] = new AudioSample(this.audioPlayer.ctx, data);
 
             });
         }
-        request.send();
+        xobj.send(null);
     }
 
 
@@ -155,6 +156,7 @@ export class AssetPack {
     }
 
 
+    // Not really percentage, but in range [0, 1]
     dataLoadedPercentage() {
 
         return this.total == 0 ? 0 :

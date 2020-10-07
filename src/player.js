@@ -10,6 +10,7 @@ import { Vector2 } from "./core/vector.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
+import { Hitbox } from "./hitbox.js";
 
 
 const ATTACK_TIME = 20;
@@ -51,6 +52,7 @@ export class Player extends CollisionObject {
         this.charging = false;
         this.chargeTimer = 0;
         this.specialAttack = false;
+        this.swordHitbox = new Hitbox(12, 8);
 
         this.downAttack = false;
         this.downAttackWaitTimer = 0;
@@ -58,7 +60,6 @@ export class Player extends CollisionObject {
         this.touchWall = false;
         this.wallJumpMargin = 0;
         this.wallDir = 0;
-
 
         this.boomerang = new Boomerang();
         this.boomerang.exist = false;
@@ -561,6 +562,21 @@ export class Player extends CollisionObject {
                 this.hurtTimer -= ev.step;
             }
         }
+    }
+
+
+    computeSwordHitbox() {
+
+        if (!this.swordAttack || this.attackTimer <= 0) {
+
+            this.swordHitbox.deactivate();
+            return;
+        }
+
+        this.swordHitbox.activate(
+            // ...  
+        );
+
     }
 
 

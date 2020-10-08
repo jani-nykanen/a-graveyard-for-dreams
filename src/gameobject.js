@@ -4,7 +4,7 @@
  * (c) 2020 Jani Nykänen
  */
 
-import { updateSpeedAxis } from "./core/util.js";
+import { overlay, updateSpeedAxis } from "./core/util.js";
 import { Vector2 } from "./core/vector.js";
 
 
@@ -76,11 +76,8 @@ export class GameObject {
 
     overlay(x, y, w, h) {
 
-        let px = this.pos.x + this.center.x - this.hitbox.x/2;
-        let py = this.pos.y + this.center.y - this.hitbox.y/2;
-
-        return px + this.hitbox.x >= x && px < x+w &&
-               py + this.hitbox.y >= y && py < y+h;
+        return overlay(this.pos, this.center, this.hitbox,
+            x, y, w, h);
     }
 
 

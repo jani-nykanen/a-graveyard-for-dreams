@@ -227,7 +227,7 @@ export class Stage {
     }
 
 
-    checkSpecialTileCollision(o, tid, x, y, ev) {
+    checkSpecialTileCollision(o, tid, x, y, layer, ev) {
 
         const SPIKE_COLLISION_X = [2, 0, 2, 8];
         const SPIKE_COLLISION_Y = [8, 2, 0, 2];
@@ -246,7 +246,7 @@ export class Stage {
             }
             break;
 
-        // Collisions
+        // Hurt collisions
         case 16:
         case 17:
         case 18:
@@ -261,6 +261,23 @@ export class Stage {
                     SPIKE_DAMAGE,
                     ev);
             }
+
+            break;
+
+        // Breaking tiles
+        case 20:
+        case 21:
+        case 22:
+ 
+            if (o.breakCollision != undefined) {
+
+                if (o.breakCollision(x*16, y*16, 16, 16, ev)-1 >= (tid-20)) {
+
+                    this.tmap.setTile(layer, x, y, 0);
+                    return;
+                }
+            }
+            this.checkBaseTileCollision(o, 14, x, y, ev);
 
             break;
 
@@ -337,7 +354,7 @@ export class Stage {
                         if (colId > 0 && colId <= COLLISION_TABLE.length)
                             this.checkBaseTileCollision(o, colId-1, x, y, ev);
                         else
-                            this.checkSpecialTileCollision(o, colId-1, x, y, ev);
+                            this.checkSpecialTileCollision(o, colId-1, x, y, layer, ev);
                     }
                 }
             }

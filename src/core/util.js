@@ -4,6 +4,8 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { Vector2 } from "./vector.js";
+
 
 export function negMod(m, n) {
 
@@ -38,4 +40,17 @@ export function updateSpeedAxis(speed, target, step) {
         return Math.min(target, speed+step);
     }
     return Math.max(target, speed-step);
+}
+
+
+export function overlay(pos, center, hitbox, x, y, w, h) {
+
+    if (center == null)
+        center = new Vector2(0, 0);
+
+    let px = pos.x + center.x - hitbox.x/2;
+    let py = pos.y + center.y - hitbox.y/2;
+
+    return px + hitbox.x >= x && px < x+w &&
+           py + hitbox.y >= y && py < y+h;
 }

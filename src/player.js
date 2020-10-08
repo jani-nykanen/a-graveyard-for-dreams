@@ -10,8 +10,7 @@ import { Vector2 } from "./core/vector.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
-import { Hitbox } from "./hitbox.js";
-
+import { overlay } from "./core/util.js";
 
 const ATTACK_TIME = 20;
 const SPC_RELEASE_TIME = 10;
@@ -52,7 +51,10 @@ export class Player extends CollisionObject {
         this.charging = false;
         this.chargeTimer = 0;
         this.specialAttack = false;
-        this.swordHitbox = new Hitbox(12, 8);
+
+        this.swordHitPos = new Vector2(0, 0);
+        this.swordHitSize = new Vector2(0, 0);
+        this.attackId = 0;
 
         this.downAttack = false;
         this.downAttackWaitTimer = 0;
@@ -73,9 +75,29 @@ export class Player extends CollisionObject {
     }
 
 
+    setSwordHitbox(x, y, w, h) {
+
+        this.swordHitPos.x = x;
+        this.swordHitPos.y = y;
+
+        this.swordHitSize.x = w;
+        this.swordHitSize.y = h;
+
+        ++ this.attackId;
+    }
+
+
     startBaseAttack(special) {
 
         const SPECIAL_RUSH_SPEED = 1.25;
+
+        // TODO: Make sure this happens only if
+        // wall-riding has been learned!
+        if (this.touchWall) {
+
+            this.dir *= -1;
+            this.flip = this.flip == Flip.None ? Flip.Horizontal : Flip.None;
+        }
 
         this.canAttack = false;
         this.attackTimer = ATTACK_TIME;
@@ -96,7 +118,11 @@ export class Player extends CollisionObject {
         this.slideTimer = 0;
 
         this.swordAttack = true;
-        
+
+        this.setSwordHitbox(
+            this.pos.x + 12*this.dir,
+            this.pos.y + 2, 
+            12, 4);
     }
 
 
@@ -124,6 +150,11 @@ export class Player extends CollisionObject {
 
                 this.downAttack = true;
                 this.downAttackWaitTimer = 0;
+
+                this.setSwordHitbox(
+                    this.pos.x + 1*this.dir,
+                    this.pos.y + 8, 
+                    6, 12);
 
                 // Sound effect
                 ev.audio.playSample(ev.assets.samples["downAttack"], 0.60);
@@ -270,16 +301,22 @@ export class Player extends CollisionObject {
         const THROW_TIME = 30;
         const RETURN_TIME = 24;
 
-        if (this.boomerang != null && this.boomerang.exist)
+        if (this.boomerang.exist)
             return false;
 
-        let dir = this.flip == Flip.None ? 1 : -1;
+        // TODO: Make sure this happens only if
+        // wall-riding has been learned!
+        if (this.touchWall) {
+
+            this.dir *= -1;
+            this.flip = this.flip == Flip.None ? Flip.Horizontal : Flip.None;
+        }
         
         if (ev.input.actions["fire3"].state == State.Pressed) {
 
             this.boomerang.spawn(
-                this.pos.x+4*dir, this.pos.y+2,
-                THROW_SPEED*dir, 0, RETURN_TIME,
+                this.pos.x+4*this.dir, this.pos.y+2,
+                THROW_SPEED*this.dir, 0, RETURN_TIME,
                 this);
 
             // Required for collisions, when throwing the boomerang
@@ -395,7 +432,7 @@ export class Player extends CollisionObject {
         if (this.attackTimer > 0) {
 
             this.spr.setFrame(0, 4);
-            if (this.specialAttack) 
+            if (this.specialAttack)
                 this.swordSpr.animate(4, 7, 8,
                      SWORD_SPC_SPEED, ev.step);
             else
@@ -493,6 +530,19 @@ export class Player extends CollisionObject {
     }
 
 
+    updateSwordHitbox(ev) {
+
+        if (this.attackTimer > 0 && this.specialAttack) {
+
+            this.swordHitPos.x += this.speed.x * ev.step;
+        }
+        else if (this.downAttack) {
+
+            this.swordHitPos.y += this.speed.y * ev.step;
+        }
+    }
+
+
     updateTimers(ev) {
 
         const JUMP_SPEED = -2.0;
@@ -526,6 +576,7 @@ export class Player extends CollisionObject {
         if (this.attackTimer > 0) {
 
             this.attackTimer -= ev.step;    
+
              // "Charge attack"
             if (!this.specialAttack &&
                 this.swordAttack && 
@@ -565,21 +616,6 @@ export class Player extends CollisionObject {
     }
 
 
-    computeSwordHitbox() {
-
-        if (!this.swordAttack || this.attackTimer <= 0) {
-
-            this.swordHitbox.deactivate();
-            return;
-        }
-
-        this.swordHitbox.activate(
-            // ...  
-        );
-
-    }
-
-
     updateLogic(ev) {
 
         if (this.climbingBegun && !this.climbing) {
@@ -588,13 +624,11 @@ export class Player extends CollisionObject {
         }
 
         this.control(ev);
+        this.updateSwordHitbox(ev);
         this.updateTimers(ev);
         this.animate(ev);
 
-        if (this.boomerang != null) {
-
-            this.boomerang.update(ev);
-        }
+        this.boomerang.update(ev);
 
         this.climbing = false;
         this.swimming = false;
@@ -641,10 +675,7 @@ export class Player extends CollisionObject {
                 py+7, this.flip);
         }
 
-        if (this.boomerang != null) {
-
-            this.boomerang.draw(c);
-        }
+        this.boomerang.draw(c);
     }
 
 
@@ -694,6 +725,8 @@ export class Player extends CollisionObject {
             this.wallJumpMargin = WALL_JUMP_MARGIN;
 
             this.wallDir = dir;
+
+            this.canAttack = true;
         }
     }
 
@@ -851,5 +884,22 @@ export class Player extends CollisionObject {
             return true;
         }
         return false;
+    }
+
+
+    breakCollision(x, y, w, h, ev) {
+
+        if ((this.attackTimer > 0 && this.swordAttack) ||
+             (this.downAttack || this.downAttackWaitTimer > 0) ) {
+
+            if(overlay(this.swordHitPos, null, 
+                    this.swordHitSize,
+                    x, y, w, h)) {
+
+                return this.specialAttack || this.downAttack ? 2 : 1;
+            }
+        }
+
+        return 0;
     }
 }

@@ -72,6 +72,10 @@ export class Player extends CollisionObject {
         this.knockBackTimer = 0;
 
         this.progress = progress;
+
+        // hahah f(l)apping
+        this.flapping = false;
+        this.jumpReleased = false;
     }
 
 
@@ -245,6 +249,7 @@ export class Player extends CollisionObject {
         const DOUBLE_JUMP_TIME = 8.0;
         const SLIDE_TIME = 20;
         const WALL_JUMP_BONUS = -2.0;
+        const FLAP_SPEED = 0.5;
 
         let jumpButtonState = ev.input.actions["fire1"].state;
 
@@ -280,6 +285,8 @@ export class Player extends CollisionObject {
 
                 this.canAttack = true;
 
+                this.jumpReleased = false;
+
                 // Sound effect
                 ev.audio.playSample(ev.assets.samples["jump"], 0.50);
             }
@@ -291,6 +298,23 @@ export class Player extends CollisionObject {
 
             else if (this.slideTimer > 0)
                 this.slideTimer = 0.0;
+
+            this.jumpReleased = true;
+        }
+    
+        // Flapping
+        this.flapping = 
+            this.jumpReleased &&
+            this.doubleJump &&
+            this.attackTimer <= 0 &&
+            this.doubleJump &&
+            (jumpButtonState & State.DownOrPressed) == 1 &&
+            this.jumpTimer <= 0;
+
+        if (this.flapping) {
+
+            this.target.y = FLAP_SPEED;
+            this.speed.y = this.target.y;
         }
     }
 
@@ -407,6 +431,7 @@ export class Player extends CollisionObject {
         const JUMP_EPS = 0.5;
         const DOUBLE_JUMP_ANIM_SPEED = 4;
         const SWORD_SPC_SPEED = 4;
+        const FLAP_ANIM_SPEED = 3;
 
         let animSpeed = 0.0;
         let animFrame = 0;
@@ -493,6 +518,14 @@ export class Player extends CollisionObject {
                     ev.audio.playSample(ev.assets.samples["climb"], 0.60);
                 }
             }
+            return;
+        }
+
+        // Flapping
+        if (this.flapping) {
+
+            this.spr.animate(6, 0, 3, FLAP_ANIM_SPEED, ev.step);
+
             return;
         }
 

@@ -63,7 +63,7 @@ export class Game extends Scene {
 
     refresh(ev) {
 
-        this.stage.update(ev);
+        this.stage.update(this.cam, ev);
         this.objects.update(this.cam, this.stage, ev);
         this.cam.update(ev);
     }

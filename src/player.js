@@ -76,6 +76,8 @@ export class Player extends CollisionObject {
         // hahah f(l)apping
         this.flapping = false;
         this.jumpReleased = false;
+
+        this.inCamera = true;
     }
 
 
@@ -256,7 +258,8 @@ export class Player extends CollisionObject {
         // Jumping and related actions
         if (jumpButtonState == State.Pressed) {
 
-            if (this.canJump && ev.input.stick.y > EPS) {
+            if (!this.swimming && 
+                this.canJump && ev.input.stick.y > EPS) {
 
                 this.slideTimer = SLIDE_TIME;
 

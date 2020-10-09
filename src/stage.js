@@ -1,3 +1,4 @@
+import { Chip } from "./chip.js";
 /**
  * The End of Journey
  * 
@@ -5,7 +6,7 @@
  */
 
 import { Flip } from "./core/canvas.js";
-import { negMod } from "./core/util.js";
+import { negMod, nextObject } from "./core/util.js";
 
 const FLOOR = 0b0001;
 const WALL_LEFT = 0b0010;
@@ -45,6 +46,8 @@ export class Stage {
 
         this.cloudPos = 0.0;
         this.waterPos = 0.0;
+
+        this.chips = new Array();
     }
 
 
@@ -120,7 +123,37 @@ export class Stage {
     }
 
 
-    update(ev) {
+    spawnChips(x, y, amount, startAngle, row, ev) {
+
+        const MIN_SPEED = 1.0;
+        const MAX_SPEED = 2.5;
+
+        const MOD_X = 1;
+        const MOD_Y = 1.75;
+
+        let angleStep = Math.PI*2 / amount;
+        let angle = 0;
+        let speed = 0;
+
+        for (let i = 0; i < amount; ++ i) {
+
+            angle = startAngle + angleStep * i;
+            speed = Math.random() * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+
+            nextObject(this.chips, Chip).spawn(
+                x, y, 
+                Math.cos(angle) * speed * MOD_X,
+                Math.sin(angle) * speed * MOD_Y,
+                row);
+        }
+
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["break"], 0.50);
+
+    }
+
+
+    update(cam, ev) {
 
         const CLOUD_SPEED = 0.5;
         const WATER_SPEED = 0.125;
@@ -128,6 +161,14 @@ export class Stage {
         this.cloudPos = (this.cloudPos + CLOUD_SPEED * ev.step) % 96;
 
         this.waterPos = (this.waterPos + WATER_SPEED * ev.step) % 16;
+
+        for (let c of this.chips) {
+
+            c.checkIfInCamera(cam);
+            c.update(ev);
+
+            this.objectCollision(c, ev);
+        }
     }
 
 
@@ -185,10 +226,17 @@ export class Stage {
         let w = ((c.width / 16) | 0) + MARGIN*2;
         let h = ((c.height / 16) | 0) + MARGIN*2;
 
+        // Draw layers
         for (let i = 0; i < this.tmap.layers.length-1; ++ i) {
 
             this.drawLayer(c, c.bitmaps["tileset"],
                 i, startx, starty, w, h);
+        }
+
+        // Chips
+        for (let o of this.chips) {
+
+            o.draw(c);
         }
     }
 
@@ -234,6 +282,8 @@ export class Stage {
         const SPIKE_COLLISION_WIDTH = [12, 8, 12, 8];
         const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
         const SPIKE_DAMAGE = 2;
+        
+        const CHIP_COUNT = 6;
 
         switch(tid) {
 
@@ -274,6 +324,10 @@ export class Stage {
                 if (o.breakCollision(x*16, y*16, 16, 16, ev)-1 >= (tid-20)) {
 
                     this.tmap.setTile(layer, x, y, 0);
+                    this.spawnChips(x*16+8, y*16+8, 
+                        CHIP_COUNT, Math.random() * Math.PI,
+                        tid-20, ev);
+
                     return;
                 }
             }
@@ -327,6 +381,8 @@ export class Stage {
     objectCollision(o, ev) {
 
         const MARGIN = 2;
+
+        if (!o.exist || !o.inCamera || o.dying) return;
 
         let px = (o.pos.x / 16) | 0;
         let py = (o.pos.y / 16) | 0;

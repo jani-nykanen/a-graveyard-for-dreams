@@ -26,6 +26,7 @@ export class Boomerang extends CollisionObject {
         this.hitbox = new Vector2(8, 8);
 
         this.exist = false;
+        this.inCamera = false;
     }
 
 
@@ -44,6 +45,7 @@ export class Boomerang extends CollisionObject {
         this.totalSpeed = this.speed.length();
 
         this.exist = true;
+        this.inCamera = true;
     }
 
 

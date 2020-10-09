@@ -1,3 +1,4 @@
+import { Sprite } from "./core/sprite.js";
 /**
  * The End of Journey
  * 
@@ -26,6 +27,13 @@ export class GameObject {
 
         this.exist = true;
         this.dying = false;
+
+        this.inCamera = false;
+
+        // For the camera check, otherwise abstract 
+        // game object does not "need" a sprite
+        // (although all of them will have one)
+        this.spr = new Sprite(0, 0);
     }
 
 
@@ -41,6 +49,7 @@ export class GameObject {
     }
 
 
+    outsideCameraEvent(ev) {}
     updateLogic(ev) {}
     postUpdate(ev) {}
 
@@ -51,6 +60,12 @@ export class GameObject {
     update(ev) {
 
         if (!this.exist) return;
+
+        if (!this.inCamera) {
+
+            this.outsideCameraEvent(ev);
+            return;
+        }
 
         if (this.dying) {
 
@@ -85,5 +100,11 @@ export class GameObject {
 
         this.speed.zeros();
         this.target.zeros();
+    }
+
+
+    checkIfInCamera(cam) {
+
+        this.inCamera = cam.isObjectInside(this);
     }
 }

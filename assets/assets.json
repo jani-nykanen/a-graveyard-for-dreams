@@ -6,6 +6,7 @@
         
         {"name": "figure",  "path": "figure.png"},
         {"name": "background",  "path": "background.png"},
+        {"name": "chips",  "path": "chips.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 
@@ -28,6 +29,7 @@
         {"name": "downAttack",  "path": "downattack.wav"},
         {"name": "throw",  "path": "throw.wav"},
         {"name": "flap",  "path": "flap.wav"},
+        {"name": "break",  "path": "break.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

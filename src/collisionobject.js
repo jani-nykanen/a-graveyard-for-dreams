@@ -19,6 +19,9 @@ export class CollisionObject extends GameObject {
         this.collisionBox = this.hitbox.clone();
 
         this.disableCollisions = false;
+
+        this.bounceX = 0.0;
+        this.bounceY = 0.0;
     }
 
 
@@ -34,7 +37,8 @@ export class CollisionObject extends GameObject {
         const TOP_MARGIN = 1;
         const BOTTOM_MARGIN = 2;
         
-        if (this.disableCollisions ||
+        if (!this.inCamera ||
+            this.disableCollisions ||
             !this.exist || this.dying || this.speed.y < 0) 
             return false;
 
@@ -55,7 +59,7 @@ export class CollisionObject extends GameObject {
             this.pos.y = y - yoff;
             this.floorCollisionEvent(x, y, w, ev);
 
-            this.speed.y = 0.0;
+            this.speed.y *= -this.bounceY;
 
             return true;
         }
@@ -71,7 +75,8 @@ export class CollisionObject extends GameObject {
         const TOP_MARGIN = 2;
         const BOTTOM_MARGIN = 1;
         
-        if (this.disableCollisions ||
+        if (!this.inCamera ||
+            this.disableCollisions ||
             !this.exist || this.dying || this.speed.y > 0) 
             return false;
 
@@ -92,7 +97,7 @@ export class CollisionObject extends GameObject {
             this.pos.y = y - yoff;
             this.ceilingCollisionEvent(x, y, w, ev);
 
-            this.speed.y = 0.0;
+            this.speed.y *= -this.bounceY;
 
             return true;
         }
@@ -108,7 +113,8 @@ export class CollisionObject extends GameObject {
         const NEAR_MARGIN = 1;
         const FAR_MARGIN = 2;
         
-        if (this.disableCollisions ||
+        if (!this.inCamera ||
+            this.disableCollisions ||
             !this.exist || this.dying || this.speed.x*dir < 0) 
             return false;
 
@@ -130,7 +136,7 @@ export class CollisionObject extends GameObject {
             this.pos.x = x - xoff;
             this.wallCollisionEvent(x, y, h, dir, ev);
 
-            this.speed.x = 0.0;
+            this.speed.x *= -this.bounceX;
 
             return true;
         }

@@ -526,6 +526,13 @@ export class Player extends CollisionObject {
 
             this.spr.animate(6, 0, 3, FLAP_ANIM_SPEED, ev.step);
 
+            if (this.spr.row != oldRow ||
+                (this.spr.frame != oldFrame && this.spr.frame == 0)) {
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["flap"], 0.50);
+            }
+
             return;
         }
 

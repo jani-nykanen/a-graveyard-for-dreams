@@ -115,7 +115,8 @@ export class CollisionObject extends GameObject {
         
         if (!this.inCamera ||
             this.disableCollisions ||
-            !this.exist || this.dying || this.speed.x*dir < 0) 
+            !this.exist || this.dying || 
+            this.speed.x*dir < 0) 
             return false;
 
         let top = this.pos.y + this.center.y - this.collisionBox.y/2;
@@ -131,7 +132,7 @@ export class CollisionObject extends GameObject {
         if ((dir > 0 && nearNew >= x - NEAR_MARGIN*ev.step &&
              nearOld <= x + (FAR_MARGIN + this.speed.x)*ev.step) || 
              (dir < 0 && nearNew <= x + NEAR_MARGIN*ev.step &&
-            nearOld >= x - (FAR_MARGIN - this.speed.x)*ev.step)) {
+             nearOld >= x - (FAR_MARGIN - this.speed.x)*ev.step)) {
 
             this.pos.x = x - xoff;
             this.wallCollisionEvent(x, y, h, dir, ev);

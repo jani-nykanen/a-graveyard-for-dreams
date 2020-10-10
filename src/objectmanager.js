@@ -43,7 +43,8 @@ export class ObjectManager {
 
     positionCamera(cam) {
 
-        cam.setPosition((this.player.pos.x / 160) | 0, 
+        cam.setPosition(
+            (this.player.pos.x / 160) | 0, 
             (this.player.pos.y / 144) | 0);
     }
 
@@ -54,7 +55,7 @@ export class ObjectManager {
 
             this.player.update(ev);
             stage.objectCollision(this.player, ev);
-            if (this.player.boomerang != null) {
+            if (this.player.boomerang.exist) {
 
                 stage.objectCollision(this.player.boomerang, ev);
             }

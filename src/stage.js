@@ -330,6 +330,7 @@ export class Stage {
 
                     return;
                 }
+                
             }
             this.checkBaseTileCollision(o, 14, x, y, ev);
 

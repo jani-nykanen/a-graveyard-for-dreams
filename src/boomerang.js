@@ -45,19 +45,20 @@ export class Boomerang extends CollisionObject {
 
         this.returning = false;
         this.returnTime = returnTime;
-
         this.returnObject = returnObject;
 
         this.totalSpeed = this.speed.length();
 
         this.exist = true;
         this.inCamera = true;
+        this.dying = false;
+        this.disableCollisions = false;
     }
 
 
     updateLogic(ev) {
 
-        const EPS = 8.0;
+        const EPS = 12.0;
         const ANIM_SPEED = 4;
 
         let dir = new Vector2(
@@ -70,7 +71,7 @@ export class Boomerang extends CollisionObject {
 
         if (!this.returning) {
 
-            if ((this.returnTime -= ev.step) <= 0)
+            if ((this.returnTime -= ev.step) <= 0) 
                 this.returning = true;
         }
         else {
@@ -105,6 +106,19 @@ export class Boomerang extends CollisionObject {
     wallCollisionEvent(x, y, h, dir, ev) {
 
         if (this.returning) return;
+
+        this.returnTime = 0;
+        this.returning = true;
+    }
+
+    
+    breakCollision(x, y, w, h, ev) {
+
+        return this.exist && this.overlay(x, y, w, h) ? 1 : 0;
+    }
+
+
+    forceReturn() {
 
         this.returnTime = 0;
         this.returning = true;

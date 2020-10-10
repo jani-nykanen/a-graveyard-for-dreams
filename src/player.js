@@ -933,7 +933,8 @@ export class Player extends CollisionObject {
     breakCollision(x, y, w, h, ev) {
 
         if ((this.attackTimer > 0 && this.swordAttack) ||
-             (this.downAttack || this.downAttackWaitTimer > 0) ) {
+             ((this.speed.y > 0 && this.downAttack) 
+               || this.downAttackWaitTimer > 0) ) {
 
             if(overlay(this.swordHitPos, null, 
                     this.swordHitSize,
@@ -942,7 +943,7 @@ export class Player extends CollisionObject {
                 return this.specialAttack || this.downAttack ? 2 : 1;
             }
         }
-
+        
         return 0;
     }
 }

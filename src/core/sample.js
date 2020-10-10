@@ -17,10 +17,15 @@ export class AudioSample {
         this.activeBuffer = null;
 
         this.gain = ctx.createGain();
+    
+        this.startTime = 0;
+        this.pauseTime = 0;
+        this.playVol = 0;
+        this.loop = false;
     }
 
 
-    play(ctx, vol, loop) {
+    play(ctx, vol, loop, startTime) {
 
         if (this.activeBuffer != null) {
 
@@ -32,10 +37,16 @@ export class AudioSample {
         bufferSource.buffer = this.data;
         bufferSource.loop = Boolean(loop);
 
-        this.gain.gain.value = clamp(vol, 0.0, 1.0);
+        vol = clamp(vol, 0.0, 1.0);
+        this.gain.gain.value = vol;
+
+        this.startTime = ctx.currentTime - startTime;
+        this.pauseTime = 0;
+        this.playVol = vol;
+        this.loop = loop;
 
         bufferSource.connect(this.gain).connect(ctx.destination);
-        bufferSource.start(0);
+        bufferSource.start(0, startTime);
 
         this.activeBuffer = bufferSource;
     }
@@ -44,6 +55,23 @@ export class AudioSample {
     stop() {
 
         this.activeBuffer.disconnect();
+        this.activeBuffer.stop(0);
         this.activeBuffer = null;
+    }
+
+
+    pause(ctx) {
+
+        if (this.activeBuffer == null) return;
+
+        this.pauseTime = ctx.currentTime - this.startTime;
+
+        this.stop();
+    }
+
+
+    resume(ctx) {
+
+        this.play(ctx, this.playVol, this.loop, this.pauseTime);
     }
 }

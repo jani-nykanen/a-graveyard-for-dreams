@@ -6,6 +6,7 @@
 
 import { Application } from "./core/application.js";
 import { Game } from "./game.js";
+import { AudioIntro } from "./audiointro.js";
 
 
 window.onload = () => (new Application(160, 144, 0))
@@ -20,4 +21,4 @@ window.onload = () => (new Application(160, 144, 0))
             {name: "back", key: "Escape"},
         ]
     )
-    .run(Game);
+    .run(AudioIntro);

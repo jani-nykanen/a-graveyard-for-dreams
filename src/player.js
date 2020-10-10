@@ -128,7 +128,7 @@ export class Player extends CollisionObject {
         this.setSwordHitbox(
             this.pos.x + 12*this.dir,
             this.pos.y + 2, 
-            12, 4);
+            10, special ? 10 : 4);
     }
 
 
@@ -158,9 +158,9 @@ export class Player extends CollisionObject {
                 this.downAttackWaitTimer = 0;
 
                 this.setSwordHitbox(
-                    this.pos.x + 1*this.dir,
+                    this.pos.x,
                     this.pos.y + 8, 
-                    6, 12);
+                    12, 16);
 
                 // Sound effect
                 ev.audio.playSample(ev.assets.samples["downAttack"], 0.60);

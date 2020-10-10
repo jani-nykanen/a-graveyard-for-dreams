@@ -1,3 +1,9 @@
+/**
+ * The End of Journey
+ * 
+ * (c) 2020 Jani Nykänen
+ */
+
 import { CollisionObject } from "./collisionobject.js";
 import { Vector2 } from "./core/vector.js";
 import { Sprite } from "./core/sprite.js";

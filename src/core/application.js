@@ -34,7 +34,10 @@ export class Application {
                 .addAction("left", "ArrowLeft", 14, null)
                 .addAction("up", "ArrowUp", 12, null)
                 .addAction("right", "ArrowRight", 15, null)
-                .addAction("down", "ArrowDown", 13, null)
+                .addAction("down", "ArrowDown", 13, null),
+
+            
+            changeScene: scene => this.changeScene(scene),
         };
 
         this.activeScene = new Scene(this.ev, null);
@@ -150,6 +153,14 @@ export class Application {
         this.sceneInitialized = false;
 
         this.loop(0);
+    }
+
+
+    changeScene(scene) {
+
+        let param = this.activeScene.dispose();
+
+        this.activeScene = new scene.prototype.constructor(this.ev, param);
     }
 
 } 

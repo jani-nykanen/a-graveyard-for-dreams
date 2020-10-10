@@ -30,6 +30,8 @@
         {"name": "throw",  "path": "throw.wav"},
         {"name": "flap",  "path": "flap.wav"},
         {"name": "break",  "path": "break.wav"},
+        {"name": "accept",  "path": "accept.wav"},
+        {"name": "next",  "path": "next.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

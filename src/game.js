@@ -1,4 +1,3 @@
-import { Camera } from "./camera.js";
 /**
  * The End of Journey
  * 
@@ -9,6 +8,8 @@ import { Scene } from "./core/scene.js";
 import { Stage } from "./stage.js";
 import { ObjectManager } from "./objectmanager.js";
 import { GameProgress } from "./progress.js";
+import { Camera } from "./camera.js";
+import { State } from "./core/input.js";
 
 
 export class Game extends Scene {
@@ -30,6 +31,8 @@ export class Game extends Scene {
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
         
+        this.paused = false;
+
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
     }
@@ -63,6 +66,24 @@ export class Game extends Scene {
 
     refresh(ev) {
 
+        // TEMP
+        if (ev.input.actions["start"].state == State.Pressed) {
+
+            this.paused = !this.paused;
+            if (this.paused)
+                ev.audio.pauseMusic();
+            else
+                ev.audio.resumeMusic();
+
+            // And sound effect!
+            // Later
+        }
+
+        if (this.paused) {
+            
+            return;
+        }
+
         this.stage.update(this.cam, ev);
         this.objects.update(this.cam, this.stage, ev);
         this.cam.update(ev);
@@ -87,5 +108,14 @@ export class Game extends Scene {
 
         c.moveTo();
         this.drawHUD(c);
+
+        if (this.paused) {
+
+            c.setColor(0, 0, 0, 0.67);
+            c.fillRect(0, 0, c.width, c.height);
+
+            c.drawText(c.bitmaps["font"], "PAUSED",
+                c.width/2, c.height/2-4, 0, 0, true);
+        }
     }
 }

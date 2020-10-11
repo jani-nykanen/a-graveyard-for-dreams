@@ -33,6 +33,8 @@ export class Boomerang extends CollisionObject {
 
         this.exist = false;
         this.inCamera = false;
+
+        this.directionChanged = false;
     }
 
 
@@ -53,6 +55,8 @@ export class Boomerang extends CollisionObject {
         this.inCamera = true;
         this.dying = false;
         this.disableCollisions = false;
+
+        this.directionChanged = false;
     }
 
 
@@ -78,6 +82,13 @@ export class Boomerang extends CollisionObject {
 
             this.target.x = -dir.x * this.totalSpeed;
             this.target.y = -dir.y * this.totalSpeed;
+
+            if (!this.directionChanged) {
+
+                this.directionChanged = 
+                    Math.sign(this.target.x) == Math.sign(this.speed.x) &&
+                    Math.sign(this.target.y) == Math.sign(this.speed.y);
+            }
             
             if (dist < EPS) {
 
@@ -88,7 +99,7 @@ export class Boomerang extends CollisionObject {
         // Animate
         this.spr.animate(5, 1, 4, ANIM_SPEED, ev.step);
 
-        this.disableCollisions = this.returning;
+        this.disableCollisions = this.returning && this.directionChanged;
     }
 
 
@@ -104,6 +115,8 @@ export class Boomerang extends CollisionObject {
 
 
     wallCollisionEvent(x, y, h, dir, ev) {
+
+        this.directionChanged = true;
 
         if (this.returning) return;
 

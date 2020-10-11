@@ -7,6 +7,7 @@ import { Chip } from "./chip.js";
 
 import { Flip } from "./core/canvas.js";
 import { negMod, nextObject } from "./core/util.js";
+import { Vector2 } from "./core/vector.js";
 
 const FLOOR = 0b0001;
 const WALL_LEFT = 0b0010;
@@ -33,6 +34,66 @@ const COLLISION_TABLE = [
 ];
 
 
+export class FallingBarrel {
+
+
+    constructor() {
+
+        this.pos = new Vector2(0, 0);
+        this.timer = 0;
+        this.speed = 0;
+
+        this.layer = 0;
+        this.tid = 0;
+
+        this.exist = false;
+    }
+
+
+    spawn(x, y, layer, speed, tid) {
+
+        this.timer = 0
+        this.speed = speed;
+        this.layer = layer;
+        this.tid = tid;
+
+        this.pos = new Vector2(x, y);
+
+        this.exist = true;
+    }
+
+
+    update(stage, ev) {
+
+        if (!this.exist) return;
+
+        if ((this.timer += this.speed * ev.step) >= 16) {
+
+            stage.tmap.setTile(this.layer, 
+                this.pos.x, this.pos.y+1, this.tid+1);
+
+            this.exist = false;
+        }
+    }
+
+
+    draw(c) {
+
+        if (!this.exist) return;
+
+        let sx = this.tid % 16;
+        let sy = (this.tid / 16) | 0;
+
+        let py = this.pos.y * 16 + this.timer;
+
+        c.drawBitmapRegion(c.bitmaps["tileset"],
+            sx*16, sy*16, 16, 16,
+            this.pos.x*16, py | 0,
+            Flip.None);
+    }
+}
+
+
 export class Stage {
 
 
@@ -48,6 +109,7 @@ export class Stage {
         this.waterPos = 0.0;
 
         this.chips = new Array();
+        this.fallingBarrels = new Array();
     }
 
 
@@ -153,6 +215,13 @@ export class Stage {
     }
 
 
+    spawnFallingBarrel(x, y, speed, tid, layer) {
+
+        nextObject(this.fallingBarrels, FallingBarrel).spawn(
+            x, y, layer, speed, tid);
+    }
+
+
     update(cam, ev) {
 
         const CLOUD_SPEED = 0.5;
@@ -168,6 +237,11 @@ export class Stage {
             c.update(ev);
 
             this.objectCollision(c, ev);
+        }
+
+        for (let b of this.fallingBarrels) {
+
+            b.update(this, ev);
         }
     }
 
@@ -233,6 +307,12 @@ export class Stage {
                 i, startx, starty, w, h);
         }
 
+        // Falling barrle
+        for (let b of this.fallingBarrels) {
+
+            b.draw(c);
+        }
+
         // Chips
         for (let o of this.chips) {
 
@@ -275,7 +355,7 @@ export class Stage {
     }
 
 
-    checkSpecialTileCollision(o, tid, x, y, layer, ev) {
+    checkSpecialTileCollision(o, tid, baseId, x, y, layer, ev) {
 
         const SPIKE_COLLISION_X = [2, 0, 2, 8];
         const SPIKE_COLLISION_Y = [8, 2, 0, 2];
@@ -327,6 +407,13 @@ export class Stage {
                     this.spawnChips(x*16+8, y*16+8, 
                         CHIP_COUNT, Math.random() * Math.PI,
                         tid-20, ev);
+
+                    if (tid == 20 &&
+                       this.tmap.getLoopedTile(layer, x, y-1) == baseId+1) {
+
+                        this.tmap.setTile(layer, x, y-1, 0);
+                        this.spawnFallingBarrel(x, y-1, 0.5, baseId, layer);
+                    }
 
                     return;
                 }
@@ -411,7 +498,8 @@ export class Stage {
                         if (colId > 0 && colId <= COLLISION_TABLE.length)
                             this.checkBaseTileCollision(o, colId-1, x, y, ev);
                         else
-                            this.checkSpecialTileCollision(o, colId-1, x, y, layer, ev);
+                            this.checkSpecialTileCollision(o, colId-1, tid-1, 
+                                x, y, layer, ev);
                     }
                 }
             }

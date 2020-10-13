@@ -7,6 +7,7 @@
         {"name": "figure",  "path": "figure.png"},
         {"name": "background",  "path": "background.png"},
         {"name": "chips",  "path": "chips.png"},
+        {"name": "enemies",  "path": "enemies.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

@@ -391,7 +391,6 @@ export class Stage {
                     SPIKE_DAMAGE,
                     ev);
             }
-
             break;
 
         // Breaking tiles

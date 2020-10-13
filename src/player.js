@@ -405,12 +405,14 @@ export class Player extends CollisionObject {
         this.handleSpecialAttack(ev);
 
         if (this.attackTimer > 0 || 
-            this.downAttack ||
-            this.knockBackTimer > 0) 
+            this.downAttack)
             return;
 
+            this.target.y = BASE_GRAVITY;
+
+        if (this.knockBackTimer > 0) return;
+
         this.target.x = BASE_SPEED * ev.input.stick.x;
-        this.target.y = BASE_GRAVITY;
         if (this.touchWall)
             this.target.y *= WALL_RIDE_REDUCE_GRAVITY;
 
@@ -918,6 +920,8 @@ export class Player extends CollisionObject {
             this.downAttack = false;
             this.touchWall = false;
             this.charging = false;
+            this.flapping = false;
+            // this.jumpReleased = false;
 
             this.progress.reduceHealth(dmg);
 
@@ -945,5 +949,25 @@ export class Player extends CollisionObject {
         }
         
         return 0;
+    }
+
+
+    isSwordActive() {
+
+        return this.swordAttack && this.attackTimer > 0;
+    }
+
+
+    getAttackDamage() {
+
+        return this.specialAttack ? 2 : 1;
+    }
+
+
+    getAttackKnockback() {
+
+        const BASE_KNOCKBACK = 2.0;
+
+        return BASE_KNOCKBACK * (this.specialAttack ? 2 : 1);
     }
 }

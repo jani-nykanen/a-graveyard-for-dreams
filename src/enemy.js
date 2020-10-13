@@ -150,8 +150,10 @@ export class Enemy extends CollisionObject {
                     ev);
 
                 this.hurtIndex = pl.attackId;
-                
-                pl.stopSpecialAttackMovement();
+				
+				if (!this.dying)
+					pl.stopSpecialAttackMovement();
+				
                 pl.bounce();
 				
 				return true;
@@ -338,6 +340,9 @@ export class Turtle extends Enemy {
 }
 
 
+const FUNGUS_JUMP_TIME_BASE = 60;
+
+
 export class Fungus extends Enemy {
 	
 	
@@ -348,9 +353,14 @@ export class Fungus extends Enemy {
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 12);
         // this.hitbox = new Vector2(8, 8);
-        this.renderOffset.y = 1;
+		this.renderOffset.y = 1;
+		
+		this.friction.y = 0.05;
 
-        this.mass = 0.5;
+		this.mass = 0.5;
+		
+		this.jumpTimer = FUNGUS_JUMP_TIME_BASE + 
+			(((x / 16) | 0) % 2) * (FUNGUS_JUMP_TIME_BASE/2);
 	}
 
 
@@ -364,15 +374,31 @@ export class Fungus extends Enemy {
 
 	updateAI(ev) {
 		
-        // ...
+		const JUMP_HEIGHT = -1.75;
+		
+		if (this.canJump) {
+
+			if ((this.jumpTimer -= ev.step) <= 0) {
+
+				this.jumpTimer += FUNGUS_JUMP_TIME_BASE;
+				this.speed.y = JUMP_HEIGHT;
+			}
+		}
 	}
 	
 	
 	animate(ev) {
 		
+		const EPS = 0.5;
 
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
-	
+
+		let frame = 0;
+
+		if (Math.abs(this.speed.y) > EPS)
+			frame = this.speed.y < 0 ? 1 : 2;
+
+		this.spr.setFrame(frame, this.spr.row);
 	}
 
 

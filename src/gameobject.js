@@ -96,6 +96,15 @@ export class GameObject {
     }
 
 
+    overlayObject(o) {
+
+        return this.overlay(
+            o.pos.x-o.hitbox.x/2,
+            o.pos.y-o.hitbox.y/2,
+            o.hitbox.x, o.hitbox.y);
+    }
+
+
     stopMovement() {
 
         this.speed.zeros();

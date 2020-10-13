@@ -29,7 +29,8 @@ export class Enemy extends CollisionObject {
 		this.damage = dmg;
 		
 		this.hurtTimer = 0;
-		this.hurtIndex = -1;
+        this.hurtIndex = -1;
+        this.rangedHurtIndex = -1;
 		
 		this.dir = 1;
 		this.flip = Flip.None;
@@ -58,9 +59,9 @@ export class Enemy extends CollisionObject {
 	die(ev) {
 		
 		const DEATH_SPEED = 6;
-		
+    
 		this.spr.animate(0, 0, 4, DEATH_SPEED, ev.step);
-		return this.spr.frame == 4;
+		return this.spr.frame >= 4;
 	}
 
 	
@@ -83,20 +84,48 @@ export class Enemy extends CollisionObject {
         
         this.updateAI(ev);
         this.animate(ev);
+
+        if (this.hurtTimer > 0) {
+
+            this.hurtTimer -= ev.step;
+        }
 	}
 	
 	
 	postUpdate(ev) {
 		
 		this.canJump = false;
-	}
+    }
+    
+
+    hurt(knockback, dmg, ev) {
+
+        const HURT_TIME = 30;
+
+        this.health -= dmg;
+		this.speed.x = this.mass * knockback;
+					
+		this.hurtTimer = HURT_TIME + (this.hurtTimer % 2);
+        
+        if (this.health <= 0) {
+
+            this.hurtTimer = 0;
+
+            this.dying = true;
+            this.flip = Flip.None;
+            this.spr.setFrame(0, 0);
+        }
+
+        // Sound effect
+        ev.audio.playSample(
+            ev.assets.samples[this.dying ? "kill" : "hit"], 0.60);
+    }
 	
 	
 	playerCollision(pl, ev) {
 		
-		const HURT_TIME = 30;
-		
-		if (this.deactivated) 
+        if (!this.exist || this.dying || !this.inCamera ||
+            this.deactivated) 
 			return false;
 	
         this.playerEvent(pl, ev);
@@ -107,21 +136,41 @@ export class Enemy extends CollisionObject {
 			this.hitbox.x, this.hitbox.y,
 			this.damage, ev);
 		
-		if (pl.isSwordActive() && pl.attackId > this.hurtIndex) {
+        if (pl.isSwordActive() && 
+            pl.attackId > this.hurtIndex) {
 			
 			if (overlay(this.pos, this.center, this.hitbox,
-				pl.swordHitPos.x, pl.swordHitPos.y,
+                pl.swordHitPos.x - pl.swordHitSize.x/2, 
+                pl.swordHitPos.y - pl.swordHitSize.y/2,
 				pl.swordHitSize.x, pl.swordHitSize.y)) {
 
-				this.health -= pl.getAttackDamage();
-				this.speed.x = this.mass * pl.getAttackKnockback();
-					
-				this.hurtTimer = HURT_TIME;
-				this.hurtIndex = pl.attackId;
+                this.hurt(
+                    pl.getAttackKnockback(), 
+                    pl.getAttackDamage(),
+                    ev);
+
+                this.hurtIndex = pl.attackId;
+                
+                pl.stopSpecialAttackMovement();
+                pl.bounce();
 				
 				return true;
 			}
-		}
+        }
+        
+        if (pl.boomerang.exist &&
+            pl.boomerang.hitId > this.rangedHurtIndex) {
+
+            if (this.overlayObject(pl.boomerang)) {
+
+                // TODO: Get attack power somewhere
+                this.hurt(pl.boomerang.getKnockback(this), 1, ev);
+
+                pl.boomerang.forceReturn();
+
+                this.rangedHurtIndex = pl.boomerang.hitId;
+            }
+        }
 		
 		return false;
 	}
@@ -133,12 +182,13 @@ export class Enemy extends CollisionObject {
 			!this.exist || !this.inCamera ||
 			(this.hurtTimer > 0 && 
 			Math.floor(this.hurtTimer/2) % 2 == 0)) 
-			return;
+            return;
 		
 		let px = this.pos.x + this.renderOffset.x - this.spr.width/2;
         let py = this.pos.y + this.renderOffset.y - this.spr.height/2;
 
-		this.spr.draw(c, c.bitmaps["enemies"], px | 0, py | 0, this.flip);
+        this.spr.draw(c, c.bitmaps["enemies"], 
+            px | 0, py | 0, this.flip);
 	}
 	
 	
@@ -210,7 +260,7 @@ export class Walker extends Enemy {
 		
 		super(x, y, 0, 2, 1);
 		
-		this.friction.x = 0.05;
+		this.friction.x = 0.025;
 		
 		this.oldCanJump = true;
 		
@@ -218,6 +268,8 @@ export class Walker extends Enemy {
 		this.collisionBox = new Vector2(4, 12);
         // this.hitbox = new Vector2(8, 8);
         this.renderOffset.y = 1;
+
+        this.mass = 0.5;
 	}
 	
 	
@@ -237,8 +289,11 @@ export class Walker extends Enemy {
 	
 	updateAI(ev) {
 		
-		// If going to move off the ledge, change direction
-		if (this.oldCanJump && !this.canJump) {
+        // If going to move off the ledge, change direction
+        // (unless hurt, then fall, to make it look like the
+        // player attack sent you flying!)
+        if (this.oldCanJump && !this.canJump &&
+            this.hurtTimer <= 0) {
 			
 			this.dir *= -1;
 			this.speed.x *= -1;

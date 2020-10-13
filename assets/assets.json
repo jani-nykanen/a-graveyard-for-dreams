@@ -33,6 +33,8 @@
         {"name": "break",  "path": "break.wav"},
         {"name": "accept",  "path": "accept.wav"},
         {"name": "next",  "path": "next.wav"},
+        {"name": "kill",  "path": "kill.wav"},
+        {"name": "hit",  "path": "hit.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

@@ -17,3 +17,6 @@ assets:
 test:
 	rm -rf test
 	unzip dist.zip -d test
+
+linecount:
+	(cd src; find . -name '*.js' | xargs wc -l)

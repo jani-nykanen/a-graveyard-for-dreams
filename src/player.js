@@ -126,9 +126,9 @@ export class Player extends CollisionObject {
         this.swordAttack = true;
 
         this.setSwordHitbox(
-            this.pos.x + 12*this.dir,
+            this.pos.x + 13*this.dir,
             this.pos.y + 2, 
-            10, special ? 10 : 4);
+            12, special ? 10 : 4);
     }
 
 
@@ -721,6 +721,18 @@ export class Player extends CollisionObject {
         }
 
         this.boomerang.draw(c);
+
+/*
+        c.setColor(255, 0, 0);
+        if (this.attackTimer > 0 && this.swordAttack) {
+
+            c.fillRect(
+                this.swordHitPos.x-this.swordHitSize.x/2,
+                this.swordHitPos.y-this.swordHitSize.y/2,
+                this.swordHitSize.x, this.swordHitSize.y);
+            
+        }
+*/
     }
 
 
@@ -954,20 +966,49 @@ export class Player extends CollisionObject {
 
     isSwordActive() {
 
-        return this.swordAttack && this.attackTimer > 0;
+        return this.downAttack || 
+            (this.swordAttack && this.attackTimer > 0);
     }
 
 
     getAttackDamage() {
 
-        return this.specialAttack ? 2 : 1;
+        return this.specialAttack || this.downAttack ? 2 : 1;
     }
 
 
     getAttackKnockback() {
 
         const BASE_KNOCKBACK = 2.0;
+        const SPECIAL_MUL = 1.5;
 
-        return BASE_KNOCKBACK * (this.specialAttack ? 2 : 1);
+        if (this.downAttack)
+            return 0;
+
+        return this.dir * BASE_KNOCKBACK * 
+            (this.specialAttack ? SPECIAL_MUL : 1);
+    }
+
+    
+    stopSpecialAttackMovement() {
+
+        if (this.specialAttack && this.attackTimer > 0) {
+
+            this.speed.x = 0;
+            this.target.x = 0;
+        }
+    }
+
+
+    bounce() {
+
+        const BOUNCE_TIME = 8.0;
+
+        if (this.downAttack) {
+
+            this.downAttack = false;
+            this.jumpTimer = BOUNCE_TIME;
+            this.doubleJump = false;
+        }
     }
 }

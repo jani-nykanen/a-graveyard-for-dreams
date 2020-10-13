@@ -35,6 +35,8 @@ export class Boomerang extends CollisionObject {
         this.inCamera = false;
 
         this.directionChanged = false;
+
+        this.hitId = 0;
     }
 
 
@@ -57,6 +59,8 @@ export class Boomerang extends CollisionObject {
         this.disableCollisions = false;
 
         this.directionChanged = false;
+
+        ++ this.hitId;
     }
 
 
@@ -135,5 +139,12 @@ export class Boomerang extends CollisionObject {
 
         this.returnTime = 0;
         this.returning = true;
+    }
+
+    
+    getKnockback(o) {
+
+        // Just return something
+        return 2.0 * (o.pos.x < this.pos.x ? -1 : 1);
     }
 }

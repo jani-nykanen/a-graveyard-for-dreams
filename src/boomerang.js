@@ -29,7 +29,7 @@ export class Boomerang extends CollisionObject {
         this.friction = new Vector2(0.1, 0.1);
 
         this.collisionBox = new Vector2(4, 4);
-        this.hitbox = new Vector2(8, 8);
+        this.hitbox = new Vector2(10, 10);
 
         this.exist = false;
         this.inCamera = false;
@@ -136,6 +136,10 @@ export class Boomerang extends CollisionObject {
 
 
     forceReturn() {
+
+        if (this.returning) true;
+
+        this.stopMovement();
 
         this.returnTime = 0;
         this.returning = true;

@@ -363,6 +363,7 @@ export class Stage {
         const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
         const SPIKE_DAMAGE = 2;
         
+        const BREAK_X_MARGIN = 2;
         const CHIP_COUNT = 6;
 
         switch(tid) {
@@ -400,7 +401,9 @@ export class Stage {
  
             if (o.breakCollision != undefined) {
 
-                if (o.breakCollision(x*16, y*16, 16, 16, ev)-1 >= (tid-20)) {
+                if (o.breakCollision(
+                        x*16+BREAK_X_MARGIN, y*16, 
+                        16-BREAK_X_MARGIN*2, 16, ev)-1 >= (tid-20)) {
 
                     this.tmap.setTile(layer, x, y, 0);
                     this.spawnChips(x*16+8, y*16+8, 

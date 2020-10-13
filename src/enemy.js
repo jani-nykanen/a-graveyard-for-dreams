@@ -205,10 +205,19 @@ export class Enemy extends CollisionObject {
 		let oldState = this.inCamera;
 		this.inCamera = cam.isObjectInside(this);
 		
-		if (!this.inCamera && this.deactivated) {
-			
-			this.activate();
-			return;
+		if (!this.inCamera) {
+
+			if (this.dying) {
+
+				this.exist = false;
+				return;
+			}
+
+			if (this.deactivated) {
+				
+				this.activate();
+				return;
+			}
 		}
 		
 		// If left the camera, return to the original position
@@ -247,13 +256,13 @@ export class Enemy extends CollisionObject {
 
 export function getEnemyType(index) {
 
-    const TYPES = [Walker];
+    const TYPES = [Turtle, Fungus];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
 
 
-export class Walker extends Enemy {
+export class Turtle extends Enemy {
 	
 	
 	constructor(x, y) {
@@ -327,3 +336,50 @@ export class Walker extends Enemy {
 		this.dir *= -1;
 	}
 }
+
+
+export class Fungus extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 1, 1, 1);
+
+		this.center.y = 2;
+		this.collisionBox = new Vector2(4, 12);
+        // this.hitbox = new Vector2(8, 8);
+        this.renderOffset.y = 1;
+
+        this.mass = 0.5;
+	}
+
+
+	init(x, y) {
+
+		const BASE_GRAVITY = 2.0;
+
+		this.target.y = BASE_GRAVITY;
+	}
+
+
+	updateAI(ev) {
+		
+        // ...
+	}
+	
+	
+	animate(ev) {
+		
+
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+	
+	}
+
+
+	playerEvent(pl, ev) {
+
+		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
+	}
+
+}
+

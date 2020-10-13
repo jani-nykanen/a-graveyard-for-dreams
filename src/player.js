@@ -159,8 +159,8 @@ export class Player extends CollisionObject {
 
                 this.setSwordHitbox(
                     this.pos.x,
-                    this.pos.y + 8, 
-                    12, 16);
+                    this.pos.y + 16, 
+                    8, 12);
 
                 // Sound effect
                 ev.audio.playSample(ev.assets.samples["downAttack"], 0.60);
@@ -875,10 +875,10 @@ export class Player extends CollisionObject {
         }
         else {
 
-            if (this.speed.x > 0 &&
+            if (this.target.x > 0 &&
                 this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)
                 mx = 1;
-            else if (this.speed.x < 0 &&
+            else if (this.target.x < 0 &&
                 this.pos.x+this.center.x-this.hitbox.x/2 < cx)
                 mx = -1;
             else if (this.speed.y > 0 &&
@@ -896,6 +896,12 @@ export class Player extends CollisionObject {
                     this.pos.x += dir * cam.width * cam.screenCountX;
                 }
             }
+
+            // In the case of knockback
+            this.wallCollision(cam.rpos.x * cam.width, 
+                cam.rpos.y * cam.height, cam.height, -1, ev);
+            this.wallCollision((cam.rpos.x+1) * cam.width, 
+                cam.rpos.y * cam.height, cam.height, 1, ev);    
         }
 
         // Check if boomerang has left the room

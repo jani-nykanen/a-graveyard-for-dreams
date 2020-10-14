@@ -875,33 +875,38 @@ export class Player extends CollisionObject {
         }
         else {
 
-            if (this.target.x > 0 &&
-                this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)
-                mx = 1;
-            else if (this.target.x < 0 &&
-                this.pos.x+this.center.x-this.hitbox.x/2 < cx)
-                mx = -1;
-            else if (this.speed.y > 0 &&
-                this.pos.y+this.center.y+this.hitbox.y/2 > cy+cam.height)
-                my = 1;
-            else if (this.speed.y < 0 &&
-                this.pos.y+this.center.y-this.hitbox.y/2 < cy)
-                my = -1;
+            if (this.knockBackTimer <= 0) {
 
-            if (mx != 0 || my != 0) {
+                if (this.speed.x > 0 &&
+                    this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)
+                    mx = 1;
+                else if (this.speed.x < 0 &&
+                    this.pos.x+this.center.x-this.hitbox.x/2 < cx)
+                    mx = -1;
+                else if (this.speed.y > 0 &&
+                    this.pos.y+this.center.y+this.hitbox.y/2 > cy+cam.height)
+                    my = 1;
+                else if (this.speed.y < 0 &&
+                    this.pos.y+this.center.y-this.hitbox.y/2 < cy)
+                    my = -1;
 
-                if ( (dir = cam.move(mx, my, CAM_SPEED)) != 0) {
+                if (mx != 0 || my != 0) {
 
-                    // Loop
-                    this.pos.x += dir * cam.width * cam.screenCountX;
+                    if ( (dir = cam.move(mx, my, CAM_SPEED)) != 0) {
+
+                        // Loop
+                        this.pos.x += dir * cam.width * cam.screenCountX;
+                    }
                 }
-            }
 
-            // In the case of knockback
-            this.wallCollision(cam.rpos.x * cam.width, 
-                cam.rpos.y * cam.height, cam.height, -1, ev);
-            this.wallCollision((cam.rpos.x+1) * cam.width, 
-                cam.rpos.y * cam.height, cam.height, 1, ev);    
+            }
+            else  {
+
+                this.wallCollision(cam.rpos.x * cam.width, 
+                    cam.rpos.y * cam.height, cam.height, -1, ev);
+                this.wallCollision((cam.rpos.x+1) * cam.width, 
+                    cam.rpos.y * cam.height, cam.height, 1, ev);    
+            }
         }
 
         // Check if boomerang has left the room
@@ -974,6 +979,13 @@ export class Player extends CollisionObject {
 
         return this.downAttack || 
             (this.swordAttack && this.attackTimer > 0);
+    }
+
+
+    isBoomerangGoingForward() {
+
+        return this.boomerang.exist &&
+            !this.boomerang.returning;
     }
 
 

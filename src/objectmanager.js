@@ -1,5 +1,4 @@
-import { nextObject } from "./core/util.js";
-import { getEnemyType } from "./enemy.js";
+import { getEnemyType } from "./enemytypes.js";
 /**
  * The End of Journey
  * 

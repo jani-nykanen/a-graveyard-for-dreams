@@ -35,6 +35,7 @@
         {"name": "next",  "path": "next.wav"},
         {"name": "kill",  "path": "kill.wav"},
         {"name": "hit",  "path": "hit.wav"},
+        {"name": "jump2",  "path": "jump2.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

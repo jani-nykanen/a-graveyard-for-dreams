@@ -136,7 +136,10 @@ export class Fungus extends Enemy {
 			if ((this.jumpTimer -= ev.step) <= 0) {
 
 				this.jumpTimer += FUNGUS_JUMP_TIME_BASE;
-				this.speed.y = JUMP_HEIGHT;
+                this.speed.y = JUMP_HEIGHT;
+                
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["jump2"], 0.50);
 			}
 		}
 	}
@@ -302,6 +305,9 @@ export class Bunny extends Enemy {
                 this.speed.x = this.target.x;
 
                 this.dir = this.targetDir;
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["jump2"], 0.50);
 			}
         }
         else {

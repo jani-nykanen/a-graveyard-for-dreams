@@ -13,7 +13,7 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, BlueGuy];
+    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -364,14 +364,17 @@ export class Bunny extends Enemy {
 }
 
 
-export class BlueGuy extends Enemy {
+const SAND_EGG_WAIT = 60;
+
+
+export class SandEgg extends Enemy {
 	
 	
 	constructor(x, y) {
 		
 		super(x, y, 4, 2, 1);
 		
-		this.friction.x = 0.025;
+		this.friction.x = 0.05;
 		
 		this.oldCanJump = true;
 		
@@ -380,38 +383,74 @@ export class BlueGuy extends Enemy {
         // this.hitbox = new Vector2(8, 8);
         this.renderOffset.y = 1;
 
-        this.mass = 0.5;
+		this.mass = 0.5;
+		
+		this.waitTimer = SAND_EGG_WAIT;
+		this.waiting = true;
+
+		// Use Fibonacci sequence to determine
+		// direction in a pseudo-random way
+		this.fprev = 0;
+		this.fcurrent = 1;
 	}
 	
 	
 	init(x, y) {
 		
-		const BASE_SPEED = 0.25;
-		const BASE_GRAVITY = 2.0;
+		const BASE_GRAVITY = 3.0;
 		
 		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
-		this.target.x = BASE_SPEED;
-		this.speed.x = this.target.x;
 		this.target.y = BASE_GRAVITY;
 	}
 	
 	
 	updateAI(ev) {
 
+		const BASE_SPEED = 0.5;
+
+		let prev = this.fcurrent;
+
+		if ((this.waitTimer -= ev.step) <= 0) {
+
+			this.waitTimer += SAND_EGG_WAIT;
+			if (this.waiting) {
+
+				this.fcurrent += this.fprev;
+				this.fprev = prev;
+
+				this.dir = 1 - 2 * (this.fcurrent % 2);
+
+				this.waitTimer += ((this.pos.x | 0)) % SAND_EGG_WAIT;
+			}
+
+			this.waiting = !this.waiting;
+		}
+
+		if (this.waiting) {
+
+			this.target.x = 0;
+		}
+		else {
+
+			this.target.x = BASE_SPEED * this.dir;
+		}
 	}
 	
 	
 	animate(ev) {
 		
-		const WALK_ANIM_SPEED = 6.0;
+		const WALK_ANIM_SPEED = 8.0;
 		
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		if (this.canJump) {
 			
-			this.spr.animate(this.spr.row, 0, 3, WALK_ANIM_SPEED, ev.step);
+			if (this.waiting)
+				this.spr.setFrame(0, this.spr.row);
+			else
+				this.spr.animate(this.spr.row, 0, 3, WALK_ANIM_SPEED, ev.step);
 		}
 		else {
 
@@ -422,9 +461,7 @@ export class BlueGuy extends Enemy {
 	
 	wallCollisionEvent(x, y, h, dir, ev) {
 		
-		this.speed.x *= -1;
-		this.target.x *= -1;
-		
-		this.dir *= -1;
+		if (!this.waiting)
+			this.dir *= -1;
 	}
 }

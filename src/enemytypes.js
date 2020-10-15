@@ -184,7 +184,9 @@ export class Caterpillar extends Enemy {
         this.hitbox = new Vector2(8, 6);
         this.renderOffset.y = 1;
 
-        this.mass = 0.5;
+		this.mass = 0.5;
+		
+		this.canFall = false;
 	}
 	
 	
@@ -213,7 +215,8 @@ export class Caterpillar extends Enemy {
         // (unless hurt, then fall, to make it look like the
         // player attack sent you flying!)
         
-        if (this.oldCanJump && !this.canJump &&
+		if (!this.canFall &&
+			this.oldCanJump && !this.canJump &&
             this.hurtTimer <= 0) {
 			
 			this.dir *= -1;
@@ -249,6 +252,15 @@ export class Caterpillar extends Enemy {
 	wallCollisionEvent(x, y, h, dir, ev) {
 
 		this.dir = -dir;
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const MARGIN = 16;
+
+		this.canFall = pl.pos.y > this.pos.y+MARGIN &&
+			(this.pos.x - pl.pos.x) * this.dir < 0;
 	}
 }
 

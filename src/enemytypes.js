@@ -13,7 +13,7 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg];
+    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -24,7 +24,7 @@ export class Turtle extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 0, 2, 1);
+		super(x, y, 0, 2, 2);
 		
 		this.friction.x = 0.025;
 		
@@ -270,7 +270,7 @@ export class Bunny extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 2, 2, 1);
+		super(x, y, 2, 2, 2);
 
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 10);
@@ -365,6 +365,7 @@ export class Bunny extends Enemy {
 
 
 const SAND_EGG_WAIT = 60;
+const FIBONACCI_MAX_ITER = 20;
 
 
 export class SandEgg extends Enemy {
@@ -372,7 +373,7 @@ export class SandEgg extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 4, 2, 1);
+		super(x, y, 4, 2, 2);
 		
 		this.friction.x = 0.05;
 		
@@ -392,6 +393,7 @@ export class SandEgg extends Enemy {
 		// direction in a pseudo-random way
 		this.fprev = 0;
 		this.fcurrent = 1;
+		this.fibCount = 0;
 	}
 	
 	
@@ -403,6 +405,9 @@ export class SandEgg extends Enemy {
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
+
+		this.waitTimer = SAND_EGG_WAIT;
+		this.waiting = true;
 	}
 	
 	
@@ -419,6 +424,14 @@ export class SandEgg extends Enemy {
 
 				this.fcurrent += this.fprev;
 				this.fprev = prev;
+
+				// TO make sure fcurrent does not get too big
+				if ((++ this.fibCount) >= FIBONACCI_MAX_ITER) {
+
+					this.fibCount = 0;
+					this.fcurrent = 1;
+					this.fprev = 0;
+				}
 
 				this.dir = 1 - 2 * (this.fcurrent % 2);
 
@@ -464,4 +477,90 @@ export class SandEgg extends Enemy {
 		if (!this.waiting)
 			this.dir *= -1;
 	}
+}
+
+
+const FLY_WAIT_TIME = 30;
+const FLY_MOVE_TIME = 60;
+
+
+export class Fly extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 5, 1, 1);
+		
+		this.friction.x = 0.015;
+		this.friction.y = 0.015;
+		
+		this.collisionBox = new Vector2(4, 4);
+        // this.hitbox = new Vector2(8, 8);
+
+		this.mass = 0.5;
+		
+		this.waitTimer = FLY_WAIT_TIME;
+		this.waiting = true;
+
+		this.moveDir = new Vector2(0, 0);
+
+		this.bounceX = 1.0;
+		this.bounceY = 1.0;
+	}
+	
+	
+	init(x, y) {
+
+		// ...
+	}
+	
+	
+	updateAI(ev) {
+
+		const MOVE_SPEED = 0.5;
+
+		if ((this.waitTimer -=  ev.step) <= 0.0) {
+
+			this.waitTimer += (this.waiting ? FLY_MOVE_TIME : FLY_WAIT_TIME);
+
+			if (this.waiting) {
+
+				this.speed.x = this.moveDir.x * MOVE_SPEED;
+				this.speed.y = this.moveDir.y * MOVE_SPEED;
+			}
+			else {
+
+				this.target.zeros();
+			}
+			this.waiting = !this.waiting;
+		}
+
+		// We need to call this here in the case of the player
+		// "bounces"
+		if (!this.waiting) {
+
+			this.target = this.speed.clone();
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		const FLAP_SPEED_NORMAL = 5;
+		const FLAP_SPEED_MOVE = 3;
+
+		this.spr.animate(this.spr.row, 0, 3,
+			this.waiting ? FLAP_SPEED_NORMAL : FLAP_SPEED_MOVE,
+			ev.step);
+	}
+
+
+	playerEvent(pl, ev) {
+
+		if (!this.waiting) return;
+
+		this.moveDir = (new Vector2(pl.pos.x - this.pos.x, pl.pos.y - this.pos.y))
+			.normalize(true);
+	}
+
 }

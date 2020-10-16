@@ -231,6 +231,7 @@ export class Enemy extends CollisionObject {
 			this.stopMovement();
 
 			this.health = this.maxHealth;
+			this.hurtTimer = 0;
 			
 			if (!cam.isMoving) {
 				

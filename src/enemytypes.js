@@ -13,7 +13,7 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly];
+    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -561,6 +561,110 @@ export class Fly extends Enemy {
 
 		this.moveDir = (new Vector2(pl.pos.x - this.pos.x, pl.pos.y - this.pos.y))
 			.normalize(true);
+	}
+
+}
+
+
+const BAT_ACTIVATION_TIME = 30;
+
+
+export class Bat extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 6, 2, 2);
+		
+		this.friction.x = 0.033;
+		this.friction.y = 0.033;
+		
+		this.collisionBox = new Vector2(6, 6);
+        // this.hitbox = new Vector2(8, 8);
+
+		this.mass = 0.5;
+
+		this.moveDir = new Vector2(0, 0);
+
+		this.active = false;
+		this.activationTime = 0;
+	}
+	
+	
+	init(x, y) {
+
+		this.pos.y -= 4;
+
+		this.active = false;
+		this.activationTime = 0;
+	}
+	
+	
+	updateAI(ev) {
+
+		const MOVE_SPEED = 0.33;
+
+		if (this.active) {
+
+			if (this.activationTime > 0) {
+
+				this.activationTime -= ev.step;
+			}
+			else {
+
+				this.target.x = this.moveDir.x * MOVE_SPEED;
+				this.target.y = this.moveDir.y * MOVE_SPEED;
+			}
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		const FLAP_SPEED = 6;
+
+		if (!this.active) {
+
+			this.spr.setFrame(0, this.spr.row);
+		}
+		else if (this.activationTime > 0) {
+
+			this.spr.setFrame(1, this.spr.row);
+		}
+		else {
+
+			this.spr.animate(this.spr.row, 1, 4,
+				FLAP_SPEED,
+				ev.step);
+		}
+
+		this.flip = this.activationTime > 0 ? Flip.Vertical : Flip.None;
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const DELTA = 48;
+		const DROP_SPEED = 1.0;
+
+		if (!this.active) {
+
+			this.active = this.hurtTimer > 0 ||
+				(pl.pos.y > this.pos.y &&
+				Math.abs(pl.pos.x - this.pos.x) < DELTA);
+			if (this.active) {
+
+				this.activationTime = BAT_ACTIVATION_TIME;
+				this.target.y = DROP_SPEED;
+			}
+		}
+		else {
+
+			this.moveDir = (
+					new Vector2(pl.pos.x - this.pos.x, 
+							pl.pos.y - this.pos.y))
+				.normalize(true);
+		}
 	}
 
 }

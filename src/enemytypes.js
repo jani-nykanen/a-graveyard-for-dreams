@@ -698,7 +698,7 @@ export class Fish extends Enemy {
 		this.target.x = BASE_SPEED;
 		this.speed.x = this.target.x;
 
-		this.waveTimer = 0.0;
+		this.waveTimer = (this.pos.x + this.pos.y) % (Math.PI*2);
 	}
 	
 	
@@ -709,19 +709,25 @@ export class Fish extends Enemy {
 
 		this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI * 2);
 
-		this.pos.y = this.startPos.y + Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+		this.pos.y = this.startPos.y + 
+			Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
 	}
 	
 	
 	animate(ev) {
 		
-		const SWIM_ANIM_SPEED = 12.0;
-		
+		const EPS = 0.5;
+
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+
+		let frame = 1;
+		let s = Math.sin(this.waveTimer);
+		if (s < -0.5)
+			frame = 0;
+		else if (s > 0.5)
+			frame = 2;
 		
-		this.spr.setFrame(
-			Math.sin(this.waveTimer) < 0 ? 0 : 1,
-			this.spr.row);
+		this.spr.setFrame(frame, this.spr.row);
 		
 	}
 	

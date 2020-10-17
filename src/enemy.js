@@ -45,8 +45,6 @@ export class Enemy extends CollisionObject {
         this.renderOffset = new Vector2(0, 0);
 		
 		this.deactivated = false;
-		
-		this.init(x, y);
 	}
 	
 	

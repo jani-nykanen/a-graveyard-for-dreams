@@ -59,6 +59,7 @@ export class ObjectManager {
                         }
                     }
                     this.enemies[index] = new (getEnemyType(tid-1).prototype.constructor) (x*16+8, y*16+8);
+                    this.enemies[index].init(x*16+8, y*16+8);
                 }
             }
         }

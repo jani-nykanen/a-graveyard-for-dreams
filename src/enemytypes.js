@@ -13,7 +13,7 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat, Fish];
+    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat, Fish, Star];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -114,8 +114,7 @@ export class Fungus extends Enemy {
 
 		this.mass = 0.5;
 		
-		this.jumpTimer = FUNGUS_JUMP_TIME_BASE + 
-			(((x / 16) | 0) % 2) * (FUNGUS_JUMP_TIME_BASE/2);
+		this.jumpTimer = 0;
 	}
 
 
@@ -124,6 +123,9 @@ export class Fungus extends Enemy {
 		const BASE_GRAVITY = 2.0;
 
 		this.target.y = BASE_GRAVITY;
+
+		this.jumpTimer = FUNGUS_JUMP_TIME_BASE - 
+			(((x / 16) | 0) % 2) * (FUNGUS_JUMP_TIME_BASE/2);
 	}
 
 
@@ -265,6 +267,9 @@ export class Caterpillar extends Enemy {
 }
 
 
+const BUNNY_JUMP_TIME_BASE = 60;
+
+
 export class Bunny extends Enemy {
 	
 	
@@ -282,8 +287,8 @@ export class Bunny extends Enemy {
 
 		this.mass = 0.5;
 		
-		this.jumpTimer = FUNGUS_JUMP_TIME_BASE + 
-            (((x / 16) | 0) % 2) * (FUNGUS_JUMP_TIME_BASE/2);
+		this.jumpTimer = BUNNY_JUMP_TIME_BASE + 
+            (((x / 16) | 0) % 2) * (BUNNY_JUMP_TIME_BASE/2);
 
         this.targetDir = 1 - 2 * (((x / 16) | 0) % 2);
 
@@ -310,7 +315,7 @@ export class Bunny extends Enemy {
 
 			if ((this.jumpTimer -= ev.step) <= 0) {
 
-				this.jumpTimer += FUNGUS_JUMP_TIME_BASE;
+				this.jumpTimer += BUNNY_JUMP_TIME_BASE;
                 this.speed.y = JUMP_HEIGHT;
                 
                 this.target.x = this.targetDir * FORWARD_SPEED;
@@ -738,5 +743,93 @@ export class Fish extends Enemy {
 		this.target.x *= -1;
 		
 		this.dir *= -1;
+	}
+}
+
+
+const STAR_WAIT_TIME = 60;
+
+
+export class Star extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 8, 1, 1);
+
+		this.center.y = 2;
+		this.collisionBox = new Vector2(4, 12);
+        // this.hitbox = new Vector2(8, 8);
+		this.renderOffset.y = 1;
+		
+		this.friction.y = 0.025;
+
+		this.mass = 0.5;
+		
+		this.waitTimer = 0;
+	}
+
+
+	init(x, y) {
+
+		const BASE_GRAVITY = 2.0;
+
+		this.target.y = BASE_GRAVITY;
+
+		this.waitTimer = STAR_WAIT_TIME - 
+			(((x / 16) | 0) % 2) * (STAR_WAIT_TIME/2);
+	}
+
+
+	jump(ev) {
+
+		const JUMP_HEIGHT = -1.0;
+
+		this.speed.y = JUMP_HEIGHT;
+                
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["jump2"], 0.50);
+	}
+
+
+	updateAI(ev) {
+		
+		const JUMP_ESP = this.target.y / 3;
+
+		if (this.canJump) {
+
+			if ((this.waitTimer -= ev.step) <= 0) {
+
+				this.jump(ev);
+			}
+		}
+		else if (this.waitTimer <= 0) {
+
+			if (this.speed.y >= JUMP_ESP) {
+
+				this.jump(ev);
+			}
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		const EPS = 0.25;
+
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+
+		let frame = 0;
+
+		if (Math.abs(this.speed.y) > EPS)
+			frame = this.speed.y < 0 ? 1 : 2;
+
+		this.spr.setFrame(frame, this.spr.row);
+	}
+
+
+	ceilingCollisionEvent(x, y, w, ev) {
+
+		this.waitTimer = STAR_WAIT_TIME;
 	}
 }

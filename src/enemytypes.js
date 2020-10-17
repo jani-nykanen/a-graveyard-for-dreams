@@ -13,7 +13,7 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat];
+    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat, Fish];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -667,4 +667,70 @@ export class Bat extends Enemy {
 		}
 	}
 
+}
+
+
+export class Fish extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 7, 2, 2);
+		
+		this.friction.x = 0.025;
+
+		this.collisionBox = new Vector2(8, 8);
+        this.hitbox = new Vector2(10, 8);
+
+		this.mass = 0.5;
+		
+		this.waveTimer = 0.0;
+	}
+	
+	
+	init(x, y) {
+		
+		const BASE_SPEED = 0.25;
+		
+		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		this.target.x = BASE_SPEED;
+		this.speed.x = this.target.x;
+
+		this.waveTimer = 0.0;
+	}
+	
+	
+	updateAI(ev) {
+		
+		const WAVE_SPEED = 0.1;
+		const AMPLITUDE = 2.0;
+
+		this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI * 2);
+
+		this.pos.y = this.startPos.y + Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+	}
+	
+	
+	animate(ev) {
+		
+		const SWIM_ANIM_SPEED = 12.0;
+		
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		this.spr.setFrame(
+			Math.sin(this.waveTimer) < 0 ? 0 : 1,
+			this.spr.row);
+		
+	}
+	
+	
+	wallCollisionEvent(x, y, h, dir, ev) {
+		
+		this.speed.x *= -1;
+		this.target.x *= -1;
+		
+		this.dir *= -1;
+	}
 }

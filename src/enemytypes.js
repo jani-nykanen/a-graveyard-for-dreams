@@ -24,7 +24,7 @@ export class Turtle extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 0, 2, 2);
+		super(x, y, 0, 3, 2);
 		
 		this.friction.x = 0.025;
 		
@@ -103,7 +103,7 @@ export class Fungus extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 1, 1, 1);
+		super(x, y, 1, 2, 1);
 
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 12);
@@ -175,7 +175,7 @@ export class Caterpillar extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 3, 1, 1);
+		super(x, y, 3, 2, 1);
 		
 		this.friction.x = 0.1;
 		
@@ -275,7 +275,7 @@ export class Bunny extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 2, 2, 2);
+		super(x, y, 2, 3, 2);
 
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 10);
@@ -378,7 +378,7 @@ export class SandEgg extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 4, 2, 2);
+		super(x, y, 4, 3, 2);
 		
 		this.friction.x = 0.05;
 		
@@ -494,7 +494,7 @@ export class Fly extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 5, 1, 1);
+		super(x, y, 5, 2, 1);
 		
 		this.friction.x = 0.015;
 		this.friction.y = 0.015;
@@ -579,7 +579,7 @@ export class Bat extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 6, 2, 2);
+		super(x, y, 6, 3, 2);
 		
 		this.friction.x = 0.033;
 		this.friction.y = 0.033;
@@ -680,7 +680,7 @@ export class Fish extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 7, 2, 2);
+		super(x, y, 7, 3, 2);
 		
 		this.friction.x = 0.025;
 
@@ -755,7 +755,7 @@ export class Star extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 8, 1, 1);
+		super(x, y, 8, 2, 1);
 
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 12);

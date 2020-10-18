@@ -991,7 +991,13 @@ export class Player extends CollisionObject {
 
     getAttackDamage() {
 
-        return this.specialAttack || this.downAttack ? 2 : 1;
+        let dmg = 2;
+        if (this.downAttack)
+            ++ dmg;
+        else if (this.specialAttack)
+            dmg += 2;
+
+        return dmg;
     }
 
 
@@ -1028,5 +1034,12 @@ export class Player extends CollisionObject {
             this.jumpTimer = BOUNCE_TIME;
             this.doubleJump = false;
         }
+    }
+
+
+    getBoomerangPower() {
+
+        // ...
+        return 1;
     }
 }

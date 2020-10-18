@@ -1,4 +1,6 @@
+import { nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
+import { FlyingText } from "./flyingtext.js";
 /**
  * The End of Journey
  * 
@@ -15,6 +17,7 @@ export class ObjectManager {
 
         this.player = null;
         this.enemies = new Array();
+        this.flyingText = new Array();
 
         this.progress = progress;
     }
@@ -82,7 +85,7 @@ export class ObjectManager {
             if (!cam.moving) {
 
                 e.update(ev);
-                e.playerCollision(this.player, ev);
+                e.playerCollision(this.player, this, ev);
                 
                 stage.objectCollision(e, ev);
             }
@@ -98,6 +101,11 @@ export class ObjectManager {
             }
         }
         this.player.cameraEvent(cam, ev);
+
+        for (let t of this.flyingText) {
+
+            t.update(ev);
+        }
     }
 
 
@@ -109,5 +117,21 @@ export class ObjectManager {
         }
 
         this.player.draw(c);
+    
+        for (let t of this.flyingText) {
+
+            t.draw(c);
+        }
+    }
+
+
+    spawnDamageText(dmg, x, y) {
+
+        const DEFAULT_SPEED = 1;
+        const MOVE_TIME = 16;
+        const WAIT_TIME = 30;
+
+        nextObject(this.flyingText, FlyingText)
+            .spawn(x, y, DEFAULT_SPEED, MOVE_TIME, WAIT_TIME, "-" + String(dmg));
     }
 }

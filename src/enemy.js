@@ -120,6 +120,10 @@ export class Enemy extends CollisionObject {
 			
 		objm.spawnDamageText(dmg, this.pos.x, 
 			this.pos.y + this.center.y - this.spr.height/2);
+
+		objm.spawnCollectibles(this.pos.x, 
+			this.pos.y + this.center.y - this.spr.height/2,
+			1, 2);
     }
 	
 	

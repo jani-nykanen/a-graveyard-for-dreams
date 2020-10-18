@@ -5,7 +5,6 @@
  */
 
 import { Application } from "./core/application.js";
-import { Game } from "./game.js";
 import { AudioIntro } from "./audiointro.js";
 
 

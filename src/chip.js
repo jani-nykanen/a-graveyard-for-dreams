@@ -29,6 +29,8 @@ export class Chip extends CollisionObject {
 
         this.collisionBox = new Vector2(4, 4);
         this.center = new Vector2(0, 7);
+
+        this.firstJump = true;
     }
 
 

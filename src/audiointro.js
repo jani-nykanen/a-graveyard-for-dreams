@@ -22,7 +22,7 @@ export class AudioIntro extends Scene {
                     "YES", (ev) => {
 
                         ev.audio.toggle(true);
-                        ev.audio.setGlobalSampleVolume(0.70);   
+                        ev.audio.setGlobalSampleVolume(0.60);   
 
                         ev.changeScene(Game);
                         

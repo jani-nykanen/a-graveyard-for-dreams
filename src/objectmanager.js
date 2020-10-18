@@ -1,3 +1,4 @@
+import { Collectible } from "./collectible.js";
 import { nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
@@ -18,6 +19,7 @@ export class ObjectManager {
         this.player = null;
         this.enemies = new Array();
         this.flyingText = new Array();
+        this.collectibles = new Array();
 
         this.progress = progress;
     }
@@ -106,6 +108,13 @@ export class ObjectManager {
 
             t.update(ev);
         }
+
+        for (let c of this.collectibles) {
+
+            c.cameraEvent(cam, ev);
+            c.update(ev);
+            stage.objectCollision(c, ev);
+        }
     }
 
 
@@ -114,6 +123,11 @@ export class ObjectManager {
         for (let e of this.enemies) {
 
             e.draw(c);
+        }
+
+        for (let o of this.collectibles) {
+
+            o.draw(c);
         }
 
         this.player.draw(c);
@@ -133,5 +147,13 @@ export class ObjectManager {
 
         nextObject(this.flyingText, FlyingText)
             .spawn(x, y, DEFAULT_SPEED, MOVE_TIME, WAIT_TIME, "-" + String(dmg));
+    }
+
+
+    spawnCollectibles(x, y, minAmount, maxAmount) {
+
+        // Test
+        nextObject(this.collectibles, Collectible)
+            .spawn(x, y, 0, -2, 0);
     }
 }

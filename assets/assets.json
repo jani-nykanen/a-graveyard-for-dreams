@@ -9,6 +9,7 @@
         {"name": "background",  "path": "background.png"},
         {"name": "chips",  "path": "chips.png"},
         {"name": "enemies",  "path": "enemies.png"},
+        {"name": "collectibles",  "path": "collectibles.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

@@ -21,13 +21,16 @@ export class Collectible extends CollisionObject {
 
         this.spr = new Sprite(16, 16);
 
-        this.friction = new Vector2(0.05, 0.05);
+        this.friction = new Vector2(0.01, 0.05);
 
         this.bounceX = 0.75;
         this.bounceY = 0.75;
 
         this.collisionBox = new Vector2(4, 8);
+        this.hitbox = new Vector2(8, 8);
         this.center.y = -1;
+
+        this.id = 0;
     }
 
 
@@ -45,6 +48,7 @@ export class Collectible extends CollisionObject {
 
         this.exist = true;
 
+        this.id = id;
         this.spr.setFrame(0, id);
     }
 
@@ -83,5 +87,23 @@ export class Collectible extends CollisionObject {
             this.wallCollision((cam.rpos.x+1) * cam.width, 
                 cam.rpos.y * cam.height, cam.height, 1, ev);    
 		}
+    }
+
+
+    playerCollision(pl, ev) {
+
+        if (!this.exist) return false;
+
+        if (pl.overlayObject(this)) {
+
+            pl.addCollectible(this.id);
+            this.exist = false;
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["coin"], 0.60);
+
+            return true;
+        }
+        return false;
     }
 }

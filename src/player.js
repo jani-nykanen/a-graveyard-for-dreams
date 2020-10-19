@@ -1042,4 +1042,17 @@ export class Player extends CollisionObject {
         // ...
         return 1;
     }
+
+
+    addCollectible(id) {
+
+        if (id == 0) {
+
+            this.progress.addCoins(1);
+        }
+        else {
+
+            this.progress.addHealth(2);
+        }
+    }
 }

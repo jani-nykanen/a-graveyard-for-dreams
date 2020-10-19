@@ -18,4 +18,16 @@ export class GameProgress {
 
         this.health = Math.max(0, this.health - amount);
     }
+
+
+    addCoins(count) {
+
+        this.coins += count;
+    }
+
+
+    addHealth(amount) {
+
+        this.health = Math.min(this.maxHealth, this.health + amount);
+    }
 }

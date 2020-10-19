@@ -1,5 +1,5 @@
 import { Collectible } from "./collectible.js";
-import { nextObject } from "./core/util.js";
+import { clamp, nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
 /**
@@ -113,6 +113,7 @@ export class ObjectManager {
 
             c.cameraEvent(cam, ev);
             c.update(ev);
+            c.playerCollision(this.player, ev);
             stage.objectCollision(c, ev);
         }
     }
@@ -150,10 +151,20 @@ export class ObjectManager {
     }
 
 
-    spawnCollectibles(x, y, minAmount, maxAmount) {
+    spawnCollectibles(x, y, srcPos, minAmount, maxAmount) {
 
-        // Test
+        const MAX_SPEED_X = 1.0;
+        const MAX_SPEED_Y = 2.0;
+        const MAX_SPEED_COMPARE = 16;
+        const BASE_SPEED_Y = -0.5;
+
+        let speedX = (x - srcPos.x) / MAX_SPEED_COMPARE * MAX_SPEED_X;
+        speedX = clamp(speedX, -MAX_SPEED_X, MAX_SPEED_X);
+
+        let speedY = (y - srcPos.y) / MAX_SPEED_COMPARE * MAX_SPEED_Y;
+        speedY = clamp(speedY, -MAX_SPEED_Y, MAX_SPEED_Y);
+
         nextObject(this.collectibles, Collectible)
-            .spawn(x, y, 0, -2, 0);
+            .spawn(x, y, speedX, BASE_SPEED_Y + speedY, 0);
     }
 }

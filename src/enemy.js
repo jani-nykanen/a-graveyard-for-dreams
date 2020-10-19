@@ -96,7 +96,7 @@ export class Enemy extends CollisionObject {
     }
     
 
-    hurt(knockback, dmg, objm, ev) {
+    hurt(knockback, dmg, objm, source, ev) {
 
         const HURT_TIME = 30;
 
@@ -111,7 +111,11 @@ export class Enemy extends CollisionObject {
 
             this.dying = true;
             this.flip = Flip.None;
-            this.spr.setFrame(0, 0);
+			this.spr.setFrame(0, 0);
+			
+			objm.spawnCollectibles(this.pos.x, 
+				this.pos.y + this.center.y -this.spr.height/2,
+				source.pos, 1, 2);
         }
 
         // Sound effect
@@ -120,10 +124,6 @@ export class Enemy extends CollisionObject {
 			
 		objm.spawnDamageText(dmg, this.pos.x, 
 			this.pos.y + this.center.y - this.spr.height/2);
-
-		objm.spawnCollectibles(this.pos.x, 
-			this.pos.y + this.center.y - this.spr.height/2,
-			1, 2);
     }
 	
 	
@@ -151,8 +151,8 @@ export class Enemy extends CollisionObject {
 
                 this.hurt(
                     pl.getAttackKnockback(), 
-                    pl.getAttackDamage(), objm,
-                    ev);
+					pl.getAttackDamage(), objm,
+					pl, ev);
 
                 this.hurtIndex = pl.attackId;
 				
@@ -171,7 +171,8 @@ export class Enemy extends CollisionObject {
             if (this.overlayObject(pl.boomerang)) {
 
 				this.hurt(pl.boomerang.getKnockback(this), 
-					pl.getBoomerangPower(), objm, ev);
+					pl.getBoomerangPower(), objm, 
+					pl.boomerang, ev);
 
                 pl.boomerang.forceReturn();
 

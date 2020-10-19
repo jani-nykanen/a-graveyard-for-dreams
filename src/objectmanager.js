@@ -89,17 +89,17 @@ export class ObjectManager {
                 e.update(ev);
                 e.playerCollision(this.player, this, ev);
                 
-                stage.objectCollision(e, ev);
+                stage.objectCollision(e, this, ev);
             }
         }
 
         if (!cam.moving) {
 
             this.player.update(ev);
-            stage.objectCollision(this.player, ev);
+            stage.objectCollision(this.player, this, ev);
             if (this.player.boomerang.exist) {
 
-                stage.objectCollision(this.player.boomerang, ev);
+                stage.objectCollision(this.player.boomerang, this, ev);
             }
         }
         this.player.cameraEvent(cam, ev);
@@ -114,7 +114,7 @@ export class ObjectManager {
             c.cameraEvent(cam, ev);
             c.update(ev);
             c.playerCollision(this.player, ev);
-            stage.objectCollision(c, ev);
+            stage.objectCollision(c, this, ev);
         }
     }
 
@@ -153,15 +153,15 @@ export class ObjectManager {
 
     spawnCollectibles(x, y, srcPos, minAmount, maxAmount) {
 
-        const MAX_SPEED_X = 1.0;
+        const MAX_SPEED_X = 0.75;
         const MAX_SPEED_Y = 2.0;
         const MAX_SPEED_COMPARE = 16;
-        const BASE_SPEED_Y = -0.5;
+        const BASE_SPEED_Y = -1.5;
 
         let speedX = (x - srcPos.x) / MAX_SPEED_COMPARE * MAX_SPEED_X;
         speedX = clamp(speedX, -MAX_SPEED_X, MAX_SPEED_X);
 
-        let speedY = (y - srcPos.y) / MAX_SPEED_COMPARE * MAX_SPEED_Y;
+        let speedY = Math.max(0, y - srcPos.y) / MAX_SPEED_COMPARE * MAX_SPEED_Y;
         speedY = clamp(speedY, -MAX_SPEED_Y, MAX_SPEED_Y);
 
         let healthProb = 0.25 * (1.0 - this.player.progress.getHealthRatio());

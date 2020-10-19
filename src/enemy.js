@@ -114,7 +114,7 @@ export class Enemy extends CollisionObject {
 			this.spr.setFrame(0, 0);
 			
 			objm.spawnCollectibles(this.pos.x, 
-				this.pos.y + this.center.y -this.spr.height/2,
+				this.pos.y + this.center.y,
 				source.pos, 1, 2);
         }
 

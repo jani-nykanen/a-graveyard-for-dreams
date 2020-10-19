@@ -31,12 +31,13 @@ export class Collectible extends CollisionObject {
         this.center.y = -1;
 
         this.id = 0;
+
+        this.touchWater = false;
+        this.firstWaterTouch = true;
     }
 
 
     spawn(x, y, sx, sy, id) {
-
-        const TARGET_GRAVITY = 2.0;
 
         this.pos = new Vector2(x, y);
 
@@ -44,18 +45,43 @@ export class Collectible extends CollisionObject {
         this.speed.y = sy;
 
         this.target.x = 0;
-        this.target.y = TARGET_GRAVITY;
 
         this.exist = true;
 
         this.id = id;
         this.spr.setFrame(0, id);
+
+        this.touchWater = false;
+        this.firstWaterTouch = true;
     }
 
     
     updateLogic(ev) {
 
         const ANIM_BASE_SPEED = 6;
+        const BASE_FRICTION_X = 0.01;
+        const BASE_FRICTION_Y = 0.05;
+        const BASE_GRAVITY = 2.0;
+        
+        this.friction.x = BASE_FRICTION_X;
+        this.friction.y = BASE_FRICTION_Y;
+        this.target.y = BASE_GRAVITY;
+
+        if (this.touchWater) {
+
+            if (this.firstWaterTouch) {
+
+                this.speed.x /= 2;
+                this.speed.y /= 2;
+                this.firstWaterTouch = false;
+            }
+
+            this.friction.x /= 2;
+            this.friction.y /= 2;
+            this.target.y /= 2;
+        }
+        
+        this.touchWater = false;
 
         this.spr.animate(this.spr.row, 0, 3, ANIM_BASE_SPEED, ev.step);
     }
@@ -101,6 +127,18 @@ export class Collectible extends CollisionObject {
 
             // Sound effect
             ev.audio.playSample(ev.assets.samples[["coin", "heal"][this.id]], 0.60);
+
+            return true;
+        }
+        return false;
+    }
+
+
+    waterCollision(x, y, w, h, ev) {
+
+        if (this.overlay(x, y, w, h)) {
+
+            this.touchWater = true;
 
             return true;
         }

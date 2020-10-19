@@ -236,7 +236,7 @@ export class Stage {
             c.checkIfInCamera(cam);
             c.update(ev);
 
-            this.objectCollision(c, ev);
+            this.objectCollision(c, null, ev);
         }
 
         for (let b of this.fallingBarrels) {
@@ -355,13 +355,14 @@ export class Stage {
     }
 
 
-    checkSpecialTileCollision(o, tid, baseId, x, y, layer, ev) {
+    checkSpecialTileCollision(o, tid, baseId, x, y, layer, objm, ev) {
 
         const SPIKE_COLLISION_X = [2, 0, 2, 8];
         const SPIKE_COLLISION_Y = [8, 2, 0, 2];
         const SPIKE_COLLISION_WIDTH = [12, 8, 12, 8];
         const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
         const SPIKE_DAMAGE = 2;
+        const BARREL_SPEED = 1;
         
         const BREAK_X_MARGIN = 2;
         const CHIP_COUNT = 6;
@@ -410,12 +411,17 @@ export class Stage {
                         CHIP_COUNT, Math.random() * Math.PI,
                         tid-20, ev);
 
-                    if (tid == 20 &&
-                       this.tmap.getLoopedTile(layer, x, y-1) == baseId+1) {
+                    if (tid == 20) {
+                       
+                        if (this.tmap.getLoopedTile(layer, x, y-1) == baseId+1) {
 
-                        this.tmap.setTile(layer, x, y-1, 0);
-                        this.spawnFallingBarrel(x, y-1, 0.5, baseId, layer);
+                            this.tmap.setTile(layer, x, y-1, 0);
+                            this.spawnFallingBarrel(x, y-1, BARREL_SPEED, baseId, layer);
+                        }
+
+                        objm.spawnCollectibles(x*16+8, y*16+8, o.pos, 1, 1);
                     }
+                    
 
                     return;
                 }
@@ -468,7 +474,7 @@ export class Stage {
     }
 
 
-    objectCollision(o, ev) {
+    objectCollision(o, objm, ev) {
 
         const MARGIN = 2;
 
@@ -501,7 +507,7 @@ export class Stage {
                             this.checkBaseTileCollision(o, colId-1, x, y, ev);
                         else
                             this.checkSpecialTileCollision(o, colId-1, tid-1, 
-                                x, y, layer, ev);
+                                x, y, layer, objm, ev);
                     }
                 }
             }

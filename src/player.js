@@ -13,6 +13,8 @@ import { Boomerang } from "./boomerang.js";
 import { overlay } from "./core/util.js";
 
 const ATTACK_TIME = 20;
+// TODO: Make sure the number below is sufficient
+const ATTACK_HIT_TIME = 5;
 const SPC_RELEASE_TIME = 10;
 
 
@@ -959,9 +961,7 @@ export class Player extends CollisionObject {
 
     breakCollision(x, y, w, h, ev) {
 
-        if ((this.attackTimer > 0 && this.swordAttack) ||
-             ((this.speed.y > 0 && this.downAttack) 
-               || this.downAttackWaitTimer > 0) ) {
+        if (this.isSwordActive() || this.downAttackWaitTimer > 0) {
 
             if(overlay(this.swordHitPos, null, 
                     this.swordHitSize,
@@ -977,8 +977,9 @@ export class Player extends CollisionObject {
 
     isSwordActive() {
 
-        return this.downAttack || 
-            (this.swordAttack && this.attackTimer > 0);
+        return (this.downAttack && this.speed.y >= 0) || 
+            (this.swordAttack &&
+             this.attackTimer > (this.specialAttack ? 0 : ATTACK_TIME-ATTACK_HIT_TIME));
     }
 
 

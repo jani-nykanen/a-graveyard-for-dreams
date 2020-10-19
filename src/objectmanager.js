@@ -164,7 +164,16 @@ export class ObjectManager {
         let speedY = (y - srcPos.y) / MAX_SPEED_COMPARE * MAX_SPEED_Y;
         speedY = clamp(speedY, -MAX_SPEED_Y, MAX_SPEED_Y);
 
+        let healthProb = 0.25 * (1.0 - this.player.progress.getHealthRatio());
+
+        let id = Math.random() < healthProb ? 1 : 0;
+        if (id != 0) {
+
+            minAmount = 1;
+            maxAmount = 1;
+        }
+
         nextObject(this.collectibles, Collectible)
-            .spawn(x, y, speedX, BASE_SPEED_Y + speedY, 0);
+            .spawn(x, y, speedX, BASE_SPEED_Y + speedY, id);
     }
 }

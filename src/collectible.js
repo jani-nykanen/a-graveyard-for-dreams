@@ -100,7 +100,7 @@ export class Collectible extends CollisionObject {
             this.exist = false;
 
             // Sound effect
-            ev.audio.playSample(ev.assets.samples["coin"], 0.60);
+            ev.audio.playSample(ev.assets.samples[["coin", "heal"][this.id]], 0.60);
 
             return true;
         }

@@ -116,7 +116,7 @@ export class Collectible extends CollisionObject {
     }
 
 
-    playerCollision(pl, ev) {
+    playerCollision(pl, objm, ev) {
 
         if (!this.exist) return false;
 
@@ -127,6 +127,9 @@ export class Collectible extends CollisionObject {
 
             // Sound effect
             ev.audio.playSample(ev.assets.samples[["coin", "heal"][this.id]], 0.60);
+
+            objm.spawnItemText(1, this.id, pl.pos.x, 
+                pl.pos.y + pl.center.y - pl.spr.height/2);
 
             return true;
         }

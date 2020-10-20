@@ -58,7 +58,7 @@ export class FlyingText {
         if (!this.exist) return;
 
         c.drawText(c.bitmaps["spcfont"], this.text,
-            this.pos.x | 0, (this.pos.y - 4) | 0,
-            -4, 0, true);
+            this.pos.x | 0, (this.pos.y - 5) | 0,
+            -3, 0, true);
     }
 }

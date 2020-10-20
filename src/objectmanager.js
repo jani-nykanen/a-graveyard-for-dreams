@@ -1,13 +1,14 @@
-import { Collectible } from "./collectible.js";
-import { clamp, nextObject } from "./core/util.js";
-import { getEnemyType } from "./enemytypes.js";
-import { FlyingText } from "./flyingtext.js";
+
 /**
  * The End of Journey
  * 
  * (c) 2020 Jani Nykänen
  */
 
+import { Collectible } from "./collectible.js";
+import { clamp, nextObject } from "./core/util.js";
+import { getEnemyType } from "./enemytypes.js";
+import { FlyingText } from "./flyingtext.js";
 import { Player } from "./player.js";
 
 
@@ -113,7 +114,7 @@ export class ObjectManager {
 
             c.cameraEvent(cam, ev);
             c.update(ev);
-            c.playerCollision(this.player, ev);
+            c.playerCollision(this.player, this, ev);
             stage.objectCollision(c, this, ev);
         }
     }
@@ -148,6 +149,22 @@ export class ObjectManager {
 
         nextObject(this.flyingText, FlyingText)
             .spawn(x, y, DEFAULT_SPEED, MOVE_TIME, WAIT_TIME, "-" + String(dmg));
+    }
+
+
+    // TODO: Merge with the method above
+    spawnItemText(count, type, x, y) {
+
+        const DEFAULT_SPEED = 1;
+        const MOVE_TIME = 16;
+        const WAIT_TIME = 30;
+
+        let str = "+" +  
+            String.fromCharCode("A".charCodeAt(0)-1 + clamp(count, 0, 9)) +
+            String.fromCharCode("!".charCodeAt(0) + type);
+
+        nextObject(this.flyingText, FlyingText)
+            .spawn(x, y, DEFAULT_SPEED, MOVE_TIME, WAIT_TIME, str);
     }
 
 

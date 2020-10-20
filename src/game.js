@@ -40,8 +40,11 @@ export class Game extends Scene {
 
     drawHUD(c) {
 
+        const SIDE_OFFSET = 2;
+
         let bmp = c.bitmaps["font"];
 
+        // Life
         let x;
         for (let i = 0; i < this.progress.maxHealth; ++ i) {
 
@@ -51,16 +54,25 @@ export class Game extends Scene {
             if (i % 2 == 0) {
 
                 c.drawBitmapRegion(bmp, 40, 0, 8, 8,
-                    1 + x, 1);
+                    1 + x + SIDE_OFFSET, 2);
             }
 
             // Red
             if (this.progress.health > i) {
 
                 c.drawBitmapRegion(bmp, 32 + (i % 2)*4, 0, 4, 8,
-                    1 + x + (i % 2) * 4, 1);
+                    1 + x + SIDE_OFFSET + (i % 2) * 4, 2);
             }
         }
+
+        // Money
+        let str = String.fromCharCode(6) + 
+            String.fromCharCode(2) + 
+            String(this.progress.coins);
+
+        x = str.length * 8 + SIDE_OFFSET;
+
+        c.drawText(c.bitmaps["font"], str, c.width - x, 2, 0, 0, false);
     }
 
 

@@ -257,4 +257,44 @@ export class Enemy extends CollisionObject {
                 cam.rpos.y * cam.height, cam.height, 1, ev);    
 		}
 	}
+
+
+	isActive() {
+
+		return this.exist && !this.dying && this.inCamera;
+	}
+
+	
+	enemyCollision(e) {
+
+		if (!e.isActive() || !this.isActive())
+			return false;
+
+		let r1 = Math.hypot(this.hitbox.x/2, this.hitbox.y/2);
+		let r2 = Math.hypot(e.hitbox.x/2, e.hitbox.y/2);
+		
+		let dir = new Vector2(
+			this.pos.x + this.center.x - e.pos.x - e.center.x,
+			this.pos.y + this.center.y - e.pos.y - e.center.y);
+
+		let dist = dir.length();
+		dir.normalize();
+
+		let r;
+		if (dist < r1 + r2) {
+
+			r = r1 + r2 - dist;
+
+			this.pos.x += dir.x * r/2;
+			this.pos.y += dir.y * r/2;
+			
+			e.pos.x -= dir.x * r/2;
+			e.pos.y -= dir.y * r/2;
+
+			// TODO: MOdify speed
+
+			return true;
+		}
+		return false;
+	}
 }

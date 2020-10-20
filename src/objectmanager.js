@@ -92,6 +92,17 @@ export class ObjectManager {
                 
                 stage.objectCollision(e, this, ev);
             }
+
+            if (e.isActive()) {
+                
+                for (let e2 of this.enemies) {
+
+                    if (e2 != e) {
+
+                        e.enemyCollision(e2);
+                    }
+                }
+            }
         }
 
         if (!cam.moving) {

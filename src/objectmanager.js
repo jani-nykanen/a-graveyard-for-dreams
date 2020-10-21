@@ -5,6 +5,7 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { Bullet } from "./bullet.js";
 import { Collectible } from "./collectible.js";
 import { clamp, nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
@@ -21,6 +22,7 @@ export class ObjectManager {
         this.enemies = new Array();
         this.flyingText = new Array();
         this.collectibles = new Array();
+        this.bullets = new Array();
 
         this.progress = progress;
     }
@@ -66,6 +68,9 @@ export class ObjectManager {
                     }
                     this.enemies[index] = new (getEnemyType(tid-1).prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
+                    this.enemies[index].setBulletCallback(
+                        (x, y, sx, sy, row) => this.spawnBullet(x, y, sx, sy, row)
+                    );
                 }
             }
         }
@@ -121,6 +126,15 @@ export class ObjectManager {
             t.update(ev);
         }
 
+        for (let b of this.bullets) {
+
+            b.checkIfInCamera(cam);
+            b.update(ev);
+            stage.objectCollision(b, this, ev);
+
+            b.playerCollision(this.player, ev);
+        }
+
         for (let c of this.collectibles) {
 
             c.cameraEvent(cam, ev);
@@ -144,6 +158,11 @@ export class ObjectManager {
         }
 
         this.player.draw(c);
+
+        for (let b of this.bullets) {
+
+            b.draw(c);
+        }
     
         for (let t of this.flyingText) {
 
@@ -201,7 +220,15 @@ export class ObjectManager {
             maxAmount = 1;
         }
 
+        // TODO: Implement min-max amounts
         nextObject(this.collectibles, Collectible)
             .spawn(x, y, speedX, BASE_SPEED_Y + speedY, id);
+    }
+
+
+    spawnBullet(x, y, sx, sy, row) {
+
+        nextObject(this.bullets, Bullet)
+            .spawn(x, y, sx, sy, row);
     }
 }

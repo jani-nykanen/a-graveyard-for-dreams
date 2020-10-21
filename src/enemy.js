@@ -45,6 +45,8 @@ export class Enemy extends CollisionObject {
         this.renderOffset = new Vector2(0, 0);
 		
 		this.deactivated = false;
+		
+		this.bulletCb = (x, y, sx, sy, row) => {};
 	}
 	
 	
@@ -53,6 +55,12 @@ export class Enemy extends CollisionObject {
 	animate(ev) {}
 	playerEvent(pl, ev) {}
 	
+
+	setBulletCallback(cb) {
+
+		this.bulletCb = cb;
+	}
+
 	
 	die(ev) {
 		

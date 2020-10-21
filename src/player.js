@@ -920,38 +920,44 @@ export class Player extends CollisionObject {
     }
 
 
-    hurtCollision(x, y, w, h, dmg, ev) {
+    hurt(dmg, ev) {
 
         const HURT_TIME = 60;
         const KNOCKBACK_TIME = 30;
         const KNOCKBACK_SPEED = 2.0;
 
+        this.flip = this.dir > 0 ? Flip.None : Flip.Horizontal;
+
+        this.hurtTimer = HURT_TIME;
+        this.knockBackTimer = KNOCKBACK_TIME;
+
+        this.target.x = 0.0;
+        this.speed.x = KNOCKBACK_SPEED * (-this.dir);
+
+        // TODO: A method for disabling actions?
+        this.climbing = false;
+        this.attackTimer = 0;
+        this.downAttack = false;
+        this.touchWall = false;
+        this.charging = false;
+        this.flapping = false;
+        // this.jumpReleased = false;
+
+        this.progress.reduceHealth(dmg);
+
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["hurt"], 0.50);
+    }
+
+
+    hurtCollision(x, y, w, h, dmg, ev) {
+        
         if (this.hurtTimer > 0) return;
 
         if (this.overlay(x, y, w, h)) {
 
             this.dir = this.pos.x < x+w/2 ? 1 : -1;
-            this.flip = this.dir > 0 ? Flip.None : Flip.Horizontal;
-
-            this.hurtTimer = HURT_TIME;
-            this.knockBackTimer = KNOCKBACK_TIME;
-
-            this.target.x = 0.0;
-            this.speed.x = KNOCKBACK_SPEED * (-this.dir);
-
-            // TODO: A method for disabling actions?
-            this.climbing = false;
-            this.attackTimer = 0;
-            this.downAttack = false;
-            this.touchWall = false;
-            this.charging = false;
-            this.flapping = false;
-            // this.jumpReleased = false;
-
-            this.progress.reduceHealth(dmg);
-
-            // Sound effect
-            ev.audio.playSample(ev.assets.samples["hurt"], 0.50);
+            this.hurt(dmg, ev);
 
             return true;
         }

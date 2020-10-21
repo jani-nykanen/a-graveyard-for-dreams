@@ -924,7 +924,7 @@ export class Snowman extends Enemy {
 
 		this.shooting = false;
 		this.shootTimer = SNOWMAN_SHOOT_TIME - 
-			(((x / 16) | 0) % 2) * (SNOWMAN_SHOOT_TIME/2);;
+			(((x / 16) | 0) % 2) * (SNOWMAN_SHOOT_TIME/2);
 	}
 
 
@@ -938,6 +938,8 @@ export class Snowman extends Enemy {
 
 	updateAI(ev) {
 		
+		const BULLET_SPEED = 2.0;
+
 		if (!this.shooting) {
 
 			if ((this.shootTimer -= ev.step) <= 0) {
@@ -946,6 +948,9 @@ export class Snowman extends Enemy {
 				this.shooting = true;
 
 				this.shootTimer = SNOWMAN_SHOOT_TIME;
+
+				this.bulletCb(this.pos.x + this.dir*4, this.pos.y, 
+					this.dir*BULLET_SPEED, 0, 0);
 
 				// Sound effect
                 ev.audio.playSample(ev.assets.samples["snowball"], 0.50);

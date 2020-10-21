@@ -265,6 +265,9 @@ export class Enemy extends CollisionObject {
 	}
 
 	
+	enemyCollisionEvent(e) {}
+
+
 	enemyCollision(e) {
 
 		if (!e.isActive() || !this.isActive())
@@ -287,11 +290,15 @@ export class Enemy extends CollisionObject {
 
 			this.pos.x += dir.x * r/2;
 			this.pos.y += dir.y * r/2;
-			
+
+			this.enemyCollisionEvent(e);
+
 			e.pos.x -= dir.x * r/2;
 			e.pos.y -= dir.y * r/2;
 
-			// TODO: MOdify speed
+			e.enemyCollisionEvent(this);
+
+			// Possible TODO: Alter speed?
 
 			return true;
 		}

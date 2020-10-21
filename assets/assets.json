@@ -40,6 +40,7 @@
         {"name": "jump2",  "path": "jump2.wav"},
         {"name": "coin",  "path": "coin.wav"},
         {"name": "heal",  "path": "heal.wav"},
+        {"name": "snowball",  "path": "snowball.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

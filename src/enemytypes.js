@@ -13,7 +13,7 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat, Fish, Star];
+    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat, Fish, Star, Snowman];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -92,6 +92,20 @@ export class Turtle extends Enemy {
 		
 		this.dir *= -1;
 	}
+
+
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.target.x *= -1;
+			this.speed.x *= -1;
+
+			this.dir *= -1;
+		}
+	}
+
 }
 
 
@@ -257,6 +271,17 @@ export class Caterpillar extends Enemy {
 	}
 
 
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.dir *= -1;
+			this.speed.x *= -1;
+		}
+	}
+
+
 	playerEvent(pl, ev) {
 
 		const MARGIN = 16;
@@ -364,7 +389,18 @@ export class Bunny extends Enemy {
     wallCollisionEvent(x, y, h, dir, ev) {
 
 		this.dir = -dir;
-    }
+	}
+	
+
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.speed.x *= -1;
+			this.dir *= -1;
+		}
+	}
 
 }
 
@@ -482,11 +518,23 @@ export class SandEgg extends Enemy {
 		if (!this.waiting)
 			this.dir *= -1;
 	}
+
+
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.dir *= -1;
+			this.speed.x *= -1;
+		}
+	}
 }
 
 
 const FLY_WAIT_TIME = 30;
 const FLY_MOVE_TIME = 60;
+const FLY_MOVE_SPEED = 0.5;
 
 
 export class Fly extends Enemy {
@@ -522,16 +570,14 @@ export class Fly extends Enemy {
 	
 	updateAI(ev) {
 
-		const MOVE_SPEED = 0.5;
-
 		if ((this.waitTimer -=  ev.step) <= 0.0) {
 
 			this.waitTimer += (this.waiting ? FLY_MOVE_TIME : FLY_WAIT_TIME);
 
 			if (this.waiting) {
 
-				this.speed.x = this.moveDir.x * MOVE_SPEED;
-				this.speed.y = this.moveDir.y * MOVE_SPEED;
+				this.speed.x = this.moveDir.x * FLY_MOVE_SPEED;
+				this.speed.y = this.moveDir.y * FLY_MOVE_SPEED;
 			}
 			else {
 
@@ -566,6 +612,18 @@ export class Fly extends Enemy {
 
 		this.moveDir = (new Vector2(pl.pos.x - this.pos.x, pl.pos.y - this.pos.y))
 			.normalize(true);
+	}
+
+
+	enemyCollisionEvent(e) {
+
+		if (this.waiting) return;
+
+		let dir = 
+			new Vector2(this.pos.x - e.pos.x, this.pos.y - e.pos.y)
+			.normalize();
+
+		this.speed.x = dir.x * FLY_MOVE_SPEED;
 	}
 
 }
@@ -744,6 +802,18 @@ export class Fish extends Enemy {
 		
 		this.dir *= -1;
 	}
+
+
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.dir *= -1;
+			this.speed.x *= -1;
+			this.target.x *= -1;
+		}
+	}
 }
 
 
@@ -832,4 +902,83 @@ export class Star extends Enemy {
 
 		this.waitTimer = STAR_WAIT_TIME;
 	}
+}
+
+
+const SNOWMAN_SHOOT_TIME = 60;
+
+
+export class Snowman extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 9, 3, 1);
+
+		this.center.y = 2;
+		this.collisionBox = new Vector2(4, 12);
+        // this.hitbox = new Vector2(8, 8);
+		this.renderOffset.y = 1;
+
+		this.mass = 0.5;
+
+		this.shooting = false;
+		this.shootTimer = SNOWMAN_SHOOT_TIME - 
+			(((x / 16) | 0) % 2) * (SNOWMAN_SHOOT_TIME/2);;
+	}
+
+
+	init(x, y) {
+
+		const BASE_GRAVITY = 2.0;
+
+		this.target.y = BASE_GRAVITY;
+	}
+
+
+	updateAI(ev) {
+		
+		if (!this.shooting) {
+
+			if ((this.shootTimer -= ev.step) <= 0) {
+
+				this.spr.setFrame(1, this.spr.row);
+				this.shooting = true;
+
+				this.shootTimer = SNOWMAN_SHOOT_TIME;
+
+				// Sound effect
+                ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+			}
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+
+		if (!this.shooting) {
+
+			this.spr.setFrame(0, this.spr.row);
+		}
+		else {
+
+			this.spr.animate(this.spr.row, 1, 3, 
+				this.spr.frame == 1 ? 6 : 30,
+				ev.step);
+			if (this.spr.frame == 3) {
+
+				this.spr.setFrame(0, this.spr.row);
+				this.shooting = false;
+			}
+		}
+	}
+
+
+	playerEvent(pl, ev) {
+
+		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
+	}
+
 }

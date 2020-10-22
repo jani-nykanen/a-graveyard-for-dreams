@@ -41,7 +41,7 @@ export class Game extends Scene {
         ev.tr.activate(false, TransitionType.CircleOutside, 
             1.0/30.0, null, new RGB(0, 0, 0));
         this.objects.centerTransition(ev.tr);
-        this.objects.cameraCheck(this.cam);
+        this.objects.initialCheck(this.cam);
     }
 
 
@@ -51,7 +51,7 @@ export class Game extends Scene {
         this.cam.reset();
         this.objects.positionCamera(this.cam);
         this.objects.centerTransition(ev.tr);
-        this.objects.cameraCheck(this.cam);
+        this.objects.initialCheck(this.cam);
         this.progress.reset();
 
         // Test

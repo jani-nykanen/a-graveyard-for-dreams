@@ -29,6 +29,7 @@ export class Player extends CollisionObject {
         this.currentSavepoint = null;
 
         this.spr = new Sprite(16, 16);
+        this.spr.setFrame(4, 4);
         this.swordSpr = new Sprite(16, 16);
         this.flip = Flip.None;
 

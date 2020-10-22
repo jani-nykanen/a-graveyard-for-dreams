@@ -65,11 +65,15 @@ export class Savepoint {
             pl.checkpoint = this.pos.clone();
             pl.currentSavepoint = this;
 
-            // Sound effect
-            ev.audio.playSample(ev.assets.samples["savepoint"], 0.60);
+            if (ev != null) {
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["savepoint"], 0.60);
+            }
 
             return true;
         }   
         return false;     
     }
+
 }

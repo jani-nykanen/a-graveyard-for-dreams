@@ -280,11 +280,16 @@ export class ObjectManager {
 
 
     // This must be called when the scene is (re)created
-    cameraCheck(cam) {
+    initialCheck(cam) {
 
         for (let e of this.enemies) {
 
             e.checkIfInCamera(cam);
+        }
+
+        for (let s of this.savepoints) {
+
+            s.playerCollision(this.player, null);
         }
     }
 }

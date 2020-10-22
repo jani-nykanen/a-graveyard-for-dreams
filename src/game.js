@@ -10,6 +10,8 @@ import { ObjectManager } from "./objectmanager.js";
 import { GameProgress } from "./progress.js";
 import { Camera } from "./camera.js";
 import { State } from "./core/input.js";
+import { TransitionType } from "./core/transition.js";
+import { RGB } from "./core/vector.js";
 
 
 export class Game extends Scene {
@@ -35,6 +37,11 @@ export class Game extends Scene {
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
+
+        ev.tr.activate(false, TransitionType.CircleOutside, 
+            1.0/30.0, null, new RGB(0, 0, 0));
+        this.objects.centerTransition(ev.tr);
+        this.objects.cameraCheck(this.cam);
     }
 
 
@@ -43,6 +50,8 @@ export class Game extends Scene {
         this.objects.reset(this.stage);
         this.cam.reset();
         this.objects.positionCamera(this.cam);
+        this.objects.centerTransition(ev.tr);
+        this.objects.cameraCheck(this.cam);
         this.progress.reset();
 
         // Test
@@ -90,6 +99,8 @@ export class Game extends Scene {
 
     refresh(ev) {
 
+        if (ev.tr.active) return;
+
         // TEMP
         if (ev.input.actions["start"].state == State.Pressed) {
 
@@ -111,7 +122,12 @@ export class Game extends Scene {
         this.stage.update(this.cam, ev);
         if (!this.objects.update(this.cam, this.stage, ev)) {
 
-            this.reset(ev);
+            ev.tr.activate(true, TransitionType.CircleOutside, 
+                1.0/30.0, 
+                (ev) => this.reset(ev), 
+                new RGB(0, 0, 0));
+            this.objects.centerTransition(ev.tr);
+
             return;
         }
         this.cam.update(ev);

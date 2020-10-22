@@ -95,7 +95,7 @@ export class ObjectManager {
 
     reset(stage) {
 
-        let savepointPos = this.player.currentSavepoint.pos.clone();
+        let checkpoint = this.player.checkpoint.clone();
 
         this.enemies = new Array();
         this.flyingText = new Array();
@@ -104,7 +104,7 @@ export class ObjectManager {
         this.savepoints = new Array();
 
         stage.parseObjects(this);
-        this.player.respawnToSavepoint(savepointPos);
+        this.player.respawnToCheckpoint(checkpoint);
     }
 
 
@@ -267,5 +267,24 @@ export class ObjectManager {
 
         nextObject(this.bullets, Bullet)
             .spawn(x, y, sx, sy, row);
+    }
+
+    
+    centerTransition(tr) {
+
+        tr.setCenter(
+            (this.player.pos.x | 0) % 160,
+            (this.player.pos.y | 0) % 144
+        );
+    }
+
+
+    // This must be called when the scene is (re)created
+    cameraCheck(cam) {
+
+        for (let e of this.enemies) {
+
+            e.checkIfInCamera(cam);
+        }
     }
 }

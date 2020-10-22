@@ -4,6 +4,8 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { clamp } from "./util.js";
+
 
 export class Vector2 {
 
@@ -57,5 +59,23 @@ export class Vector2 {
 	static dot(u, v) {
 
 		return u.x*v.x + u.y*v.y;
+	}
+}
+
+
+export class RGB {
+
+
+	constructor(r, g, b) {
+
+		this.r = clamp(r, 0, 255);
+		this.g = clamp(g, 0, 255);
+		this.b = clamp(b, 0, 255);
+	}
+
+
+	clone() {
+
+		return new RGB(this.r, this.g, this.b);
 	}
 }

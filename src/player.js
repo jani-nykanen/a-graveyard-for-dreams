@@ -88,7 +88,7 @@ export class Player extends CollisionObject {
     }
 
 
-    respawnToSavepoint(p) {
+    respawnToCheckpoint(p) {
 
         this.checkpoint = p.clone();
         this.pos = this.checkpoint.clone();

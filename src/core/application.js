@@ -10,6 +10,7 @@ import { InputManager } from "./input.js";
 import { Scene } from "./scene.js";
 import { AssetPack } from "./assets.js";
 import { AudioPlayer } from "./audioplayer.js";
+import { Transition } from "./transition.js";
 
 
 export class Application {
@@ -24,12 +25,14 @@ export class Application {
         this.assets = new AssetPack(this.audio);
         this.canvas = new Canvas(canvasWidth, canvasHeight, 
             this.assets.bitmaps);
+        this.tr = new Transition();
 
         this.ev = {
 
             step: frameSkip + 1,
             assets: this.assets,
             audio: this.audio,
+            tr: this.tr,
             input: new InputManager()
                 .addAction("left", "ArrowLeft", 14, null)
                 .addAction("up", "ArrowUp", 12, null)
@@ -100,6 +103,8 @@ export class Application {
 
         while ((refreshCount --) > 0) {
 
+            this.tr.update(this.ev);
+
             if (firstFrame)
                 this.ev.input.preUpdate();
 
@@ -109,7 +114,7 @@ export class Application {
             // TODO: We could call this each frame as well,
             // (see how "update" works) I think? Check this
             if (firstFrame) {
-
+                
                 this.ev.input.postUpdate();
                 firstFrame = false;
             }
@@ -117,8 +122,11 @@ export class Application {
             this.timeSum -= FRAME_WAIT;
         } 
 
-        if (this.assets.hasLoaded())
+        if (this.assets.hasLoaded()) {
+
             this.activeScene.redraw(this.canvas);
+            this.tr.draw(this.canvas);
+        }
         else
             this.drawLoadingScreen(this.canvas);
 

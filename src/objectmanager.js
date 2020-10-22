@@ -1,6 +1,6 @@
 
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
@@ -11,6 +11,7 @@ import { clamp, nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
 import { Player } from "./player.js";
+import { Savepoint } from "./savepoint.js";
 
 
 export class ObjectManager {
@@ -23,6 +24,7 @@ export class ObjectManager {
         this.flyingText = new Array();
         this.collectibles = new Array();
         this.bullets = new Array();
+        this.savepoints = new Array();
 
         this.progress = progress;
     }
@@ -30,7 +32,7 @@ export class ObjectManager {
 
     parseObjectLayer(data, w, h) {
 
-        const MAX_ENEMY_INDEX = 15;
+        const MAX_ENEMY_INDEX = 31;
 
         let index = 0;
         let tid = 0;
@@ -48,6 +50,12 @@ export class ObjectManager {
                 case 0:
 
                     this.player = new Player(x*16+8, y*16+8, this.progress );
+                    break;
+
+                // Savepoint
+                case 32:
+
+                    this.savepoints.push(new Savepoint(x*16+8, y*16+8));
                     break;
 
                 default:
@@ -82,6 +90,21 @@ export class ObjectManager {
         cam.setPosition(
             (this.player.pos.x / 160) | 0, 
             (this.player.pos.y / 144) | 0);
+    }
+
+
+    reset(stage) {
+
+        let savepointPos = this.player.currentSavepoint.pos.clone();
+
+        this.enemies = new Array();
+        this.flyingText = new Array();
+        this.collectibles = new Array();
+        this.bullets = new Array();
+        this.savepoints = new Array();
+
+        stage.parseObjects(this);
+        this.player.respawnToSavepoint(savepointPos);
     }
 
 
@@ -126,6 +149,13 @@ export class ObjectManager {
             t.update(ev);
         }
 
+        for (let s of this.savepoints) {
+
+            s.checkIfInCamera(cam);
+            s.update(ev);
+            s.playerCollision(this.player, ev);
+        }
+
         for (let b of this.bullets) {
 
             b.checkIfInCamera(cam);
@@ -142,10 +172,17 @@ export class ObjectManager {
             c.playerCollision(this.player, this, ev);
             stage.objectCollision(c, this, ev);
         }
+
+        return this.player.exist;
     }
 
 
     draw(c) {
+
+        for (let s of this.savepoints) {
+
+            s.draw(c);
+        }
 
         for (let e of this.enemies) {
 

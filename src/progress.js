@@ -1,3 +1,8 @@
+/**
+ * A Graveyard for Fools
+ * 
+ * (c) 2020 Jani Nykänen
+ */
 
 
 export class GameProgress {
@@ -11,6 +16,12 @@ export class GameProgress {
         this.gems = 0;
         this.coins = 0;
         this.smallKeys = 0;
+    }
+
+
+    reset() {
+
+        this.health = this.maxHealth;
     }
 
 

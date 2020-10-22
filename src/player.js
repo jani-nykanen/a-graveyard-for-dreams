@@ -1,5 +1,5 @@
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
@@ -24,6 +24,9 @@ export class Player extends CollisionObject {
     constructor(x, y, progress) {
 
         super(x, y);
+
+        this.checkpoint = new Vector2(x, y);
+        this.currentSavepoint = null;
 
         this.spr = new Sprite(16, 16);
         this.swordSpr = new Sprite(16, 16);
@@ -80,6 +83,15 @@ export class Player extends CollisionObject {
         this.jumpReleased = false;
 
         this.inCamera = true;
+
+        this.deathTimer = 0;
+    }
+
+
+    respawnToSavepoint(p) {
+
+        this.checkpoint = p.clone();
+        this.pos = this.checkpoint.clone();
     }
 
 
@@ -654,12 +666,30 @@ export class Player extends CollisionObject {
             if (this.knockBackTimer > 0) {
 
                 this.knockBackTimer -= ev.step;
+                if (this.progress.health <= 0 &&
+                    this.knockBackTimer <= 0) {
+
+                    this.kill(ev);
+                }
             }
             else {
 
                 this.hurtTimer -= ev.step;
             }
         }
+    }
+
+
+    kill(ev) {
+
+        this.dying = true;
+        this.spr.setFrame(0, 7);
+        this.stopMovement();
+
+        ev.audio.stopMusic();
+
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["die"], 0.50);
     }
 
 
@@ -687,9 +717,49 @@ export class Player extends CollisionObject {
         this.canJump = false;
         this.touchWall = false;
     }
+
+
+    die(ev) {
+
+        const MAX_DEATH_TIME = 120;
+        const FLICKER_SPEED = 3;
+
+        this.spr.animate(7, 0, 3, FLICKER_SPEED, ev.step);
+
+        return (this.deathTimer += ev.step) >= MAX_DEATH_TIME;
+    }
     
 
+    drawDeath(c) {
+
+        // Let's draw some balls!
+
+        const BALL_SPEED = 1.0;
+        const BALL_COUNT = 8;
+
+        let r = this.deathTimer * BALL_SPEED;
+        let x, y;
+
+        let angle = 0;
+        for (let i = 0; i < BALL_COUNT; ++ i) {
+
+            angle = Math.PI*2 / BALL_COUNT * i;
+
+            x = this.pos.x + this.center.x + Math.cos(angle) * r;
+            y = this.pos.y + this.center.y + Math.sin(angle) * r;
+
+            this.spr.draw(c, c.bitmaps["figure"], x-8, y-8, Flip.None);
+        }
+    }
+
+
     draw(c) {
+
+        if (this.dying) {
+
+            this.drawDeath(c);
+            return;
+        }
 
         if (this.hurtTimer > 0 &&
             Math.floor(this.hurtTimer /2) % 2 != 0)

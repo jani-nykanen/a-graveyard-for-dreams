@@ -1,5 +1,5 @@
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
@@ -72,6 +72,9 @@ export class Bullet extends CollisionObject {
 
         this.dying = true;
         this.stopMovement();
+
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["hit2"], 0.50);
     }
 
 

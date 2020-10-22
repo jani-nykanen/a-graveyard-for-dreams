@@ -1,5 +1,5 @@
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
@@ -80,6 +80,16 @@ export class AudioPlayer {
             return;
 
         this.musicTrack.resume(this.ctx);
+    }
+
+
+    stopMusic() {
+
+        if (!this.enabled || this.musicTrack == null)
+            return;
+
+        this.musicTrack.stop(this.ctx);
+        this.musicTrack = null;
     }
 
 }

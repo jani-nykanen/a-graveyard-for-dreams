@@ -1,5 +1,5 @@
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
@@ -53,6 +53,8 @@ export class AudioSample {
 
 
     stop() {
+
+        if (this.activeBuffer == null) return;
 
         this.activeBuffer.disconnect();
         this.activeBuffer.stop(0);

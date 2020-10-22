@@ -1,6 +1,6 @@
 import { Chip } from "./chip.js";
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */

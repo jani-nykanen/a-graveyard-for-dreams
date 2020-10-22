@@ -11,6 +11,7 @@
         {"name": "enemies",  "path": "enemies.png"},
         {"name": "collectibles",  "path": "collectibles.png"},
         {"name": "bullets",  "path": "bullets.png"},
+        {"name": "savepoint",  "path": "savepoint.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 
@@ -38,10 +39,13 @@
         {"name": "next",  "path": "next.wav"},
         {"name": "kill",  "path": "kill.wav"},
         {"name": "hit",  "path": "hit.wav"},
+        {"name": "hit2",  "path": "hit2.wav"},
         {"name": "jump2",  "path": "jump2.wav"},
         {"name": "coin",  "path": "coin.wav"},
         {"name": "heal",  "path": "heal.wav"},
         {"name": "snowball",  "path": "snowball.wav"},
+        {"name": "savepoint",  "path": "savepoint.wav"},
+        {"name": "die",  "path": "die.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

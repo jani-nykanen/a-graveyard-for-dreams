@@ -1,5 +1,5 @@
 /**
- * The End of Journey
+ * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
@@ -913,7 +913,7 @@ export class Snowman extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 9, 3, 1);
+		super(x, y, 9, 3, 2);
 
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 12);

@@ -106,6 +106,8 @@ export class Bullet extends CollisionObject {
             pl.dir = pl.pos.x < this.pos.x ? 1 : -1;
             pl.hurt(this.dmg, ev);
 
+            this.kill(ev);
+
             return true;
         }
         return false;

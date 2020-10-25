@@ -13,7 +13,12 @@ import { Enemy } from "./enemy.js";
 
 export function getEnemyType(index) {
 
-    const TYPES = [Turtle, Fungus, Bunny, Caterpillar, SandEgg, Fly, Bat, Fish, Star, Snowman];
+	const TYPES = [
+		Turtle, Fungus, Bunny, 
+		Caterpillar, SandEgg, Fly, 
+		Bat, Fish, Star, 
+		Snowman, Apple, Rock
+	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
@@ -733,12 +738,11 @@ export class Bat extends Enemy {
 }
 
 
-export class Fish extends Enemy {
-	
-	
-	constructor(x, y) {
+class WaveEnemy extends Enemy {
+
+	constructor(x, y, row, health, dmg, amplitude, waveSpeed, baseSpeed) {
 		
-		super(x, y, 7, 3, 2);
+		super(x, y, row, health, dmg);
 		
 		this.friction.x = 0.025;
 
@@ -748,53 +752,35 @@ export class Fish extends Enemy {
 		this.mass = 0.5;
 		
 		this.waveTimer = 0.0;
+
+		this.amplitude = amplitude;
+		this.waveSpeed = waveSpeed;
+
+		this.baseSpeed = baseSpeed;
 	}
-	
-	
+
+
 	init(x, y) {
-		
-		const BASE_SPEED = 0.25;
 		
 		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
-		this.target.x = BASE_SPEED;
+		this.target.x = this.baseSpeed;
 		this.speed.x = this.target.x;
 
 		this.waveTimer = (this.pos.x + this.pos.y) % (Math.PI*2);
 	}
 	
-	
+
 	updateAI(ev) {
 		
-		const WAVE_SPEED = 0.1;
-		const AMPLITUDE = 2.0;
-
-		this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI * 2);
+		this.waveTimer = (this.waveTimer + this.waveSpeed*ev.step) % (Math.PI * 2);
 
 		this.pos.y = this.startPos.y + 
-			Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+			Math.round(Math.sin(this.waveTimer) * this.amplitude);
 	}
-	
-	
-	animate(ev) {
-		
-		const EPS = 0.5;
 
-		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 
-		let frame = 1;
-		let s = Math.sin(this.waveTimer);
-		if (s < -0.5)
-			frame = 0;
-		else if (s > 0.5)
-			frame = 2;
-		
-		this.spr.setFrame(frame, this.spr.row);
-		
-	}
-	
-	
 	wallCollisionEvent(x, y, h, dir, ev) {
 		
 		this.speed.x *= -1;
@@ -813,6 +799,31 @@ export class Fish extends Enemy {
 			this.speed.x *= -1;
 			this.target.x *= -1;
 		}
+	}
+}
+
+
+export class Fish extends WaveEnemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 7, 3, 2, 2.0, 0.1, 0.25);
+	}
+	
+	animate(ev) {
+		
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+
+		let frame = 1;
+		let s = Math.sin(this.waveTimer);
+		if (s < -0.5)
+			frame = 0;
+		else if (s > 0.5)
+			frame = 2;
+		
+		this.spr.setFrame(frame, this.spr.row);
+		
 	}
 }
 
@@ -986,4 +997,143 @@ export class Snowman extends Enemy {
 		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
 	}
 
+}
+
+
+export class Apple extends WaveEnemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 10, 3, 2, 4.0, 0.10, 0.33);
+	}
+	
+	animate(ev) {
+		
+		const ANIM_SPEED = 4;
+
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+
+		this.spr.animate(this.spr.row, 0, 3, ANIM_SPEED, ev.step);
+	}
+}
+
+
+export class Rock extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 11, 6, 3);
+		
+		this.friction.x = 0.025;
+		
+		this.oldCanJump = true;
+		
+		this.center.y = 2;
+		this.collisionBox = new Vector2(4, 12);
+        // this.hitbox = new Vector2(8, 8);
+        this.renderOffset.y = 1;
+
+		this.mass = 0.33;
+
+		this.jumpUp = false;
+		this.playerAbove = false;
+		this.plDif = 0.0;
+		this.couldJump = false;
+	}
+	
+	
+	init(x, y) {
+		
+		const BASE_GRAVITY = 4.0;
+		
+		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		this.target.y = BASE_GRAVITY;
+	}
+	
+
+	jump(height, ev) {
+
+		if (!this.couldJump) return;
+
+        this.speed.y = height;
+                
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["jump2"], 0.50);
+	}
+
+	
+	updateAI(ev) {
+
+		const BASE_SPEED = 0.33;
+
+		this.target.x = BASE_SPEED * this.dir;
+
+		if (!this.canJump && this.couldJump &&
+			this.speed.x / this.dir > 0 &&
+			this.playerAbove) {
+
+			this.jump(-2.5, ev);
+		}
+		this.couldJump = this.canJump;
+
+		if (this.canJump && this.jumpUp) {
+
+			this.jump(-clamp(this.plDif / 16, 1.75, 2.75), ev);
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		const WALK_ANIM_SPEED = 8.0;
+		const EPS = 0.5;
+		
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		let frame = 5;
+
+		if (this.canJump) {
+
+			this.spr.animate(this.spr.row, 0, 3, WALK_ANIM_SPEED, ev.step);
+		}
+		else {
+
+			if (this.speed.y < -EPS) 
+				frame = 4;
+			else if (this.speed.y > EPS)
+				frame = 6;
+
+			this.spr.setFrame(frame, this.spr.row);
+		}
+	}
+	
+	
+	wallCollisionEvent(x, y, h, dir, ev) {
+		
+		const JUMP_HEIGHT = -2.75;
+
+		if (this.dir == dir)
+			this.jump(JUMP_HEIGHT, ev);
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const DELTA_MIN = 24;
+		const DELTA_MAX = 48;
+
+		this.playerAbove = pl.pos.y < this.pos.y;
+
+		this.jumpUp = 
+			this.pos.y - pl.pos.y < DELTA_MAX &&
+			this.pos.y - pl.pos.y > DELTA_MIN &&
+			pl.canJump;
+
+		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
+		this.plDif = Math.abs(pl.pos.y - this.pos.y);
+	}
 }

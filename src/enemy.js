@@ -204,7 +204,7 @@ export class Enemy extends CollisionObject {
         let py = this.pos.y + this.renderOffset.y - this.spr.height/2;
 
         this.spr.draw(c, c.bitmaps["enemies"], 
-            px | 0, py | 0, this.flip);
+            Math.round(px), Math.round(py), this.flip);
 	}
 	
 	

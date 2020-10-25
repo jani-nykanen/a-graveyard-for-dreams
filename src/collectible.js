@@ -83,7 +83,11 @@ export class Collectible extends CollisionObject {
         
         this.touchWater = false;
 
-        this.spr.animate(this.spr.row, 0, 3, ANIM_BASE_SPEED, ev.step);
+        let start = this.speed.x >= 0 ? 0 : 3;
+        let end = this.speed.x >= 0 ? 3 : 0;
+
+        this.spr.animate(this.spr.row, start, end, 
+            ANIM_BASE_SPEED, ev.step);
     }
 
 

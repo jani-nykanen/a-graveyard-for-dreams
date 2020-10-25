@@ -428,7 +428,7 @@ export class Player extends CollisionObject {
         if (this.knockBackTimer > 0) return;
 
         this.target.x = BASE_SPEED * ev.input.stick.x;
-        if (this.touchWall)
+        if (this.touchWall && !this.swimming)
             this.target.y *= WALL_RIDE_REDUCE_GRAVITY;
 
         this.friction = new Vector2(BASE_FRICTION_X, BASE_FRICTION_Y);

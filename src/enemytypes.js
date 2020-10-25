@@ -17,7 +17,8 @@ export function getEnemyType(index) {
 		Turtle, Fungus, Bunny, 
 		Caterpillar, SandEgg, Fly, 
 		Bat, Fish, Star, 
-		Snowman, Apple, Rock
+		Snowman, Apple, Rock,
+		Plant
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -916,15 +917,15 @@ export class Star extends Enemy {
 }
 
 
-const SNOWMAN_SHOOT_TIME = 60;
+const SIMPLE_SHOOTER_SHOOT_TIME = 60;
 
 
-export class Snowman extends Enemy {
+export class SimpleShooter extends Enemy {
 	
 	
-	constructor(x, y) {
+	constructor(x, y, row, health, dmg) {
 		
-		super(x, y, 9, 3, 2);
+		super(x, y, row, health, dmg);
 
 		this.center.y = 2;
 		this.collisionBox = new Vector2(4, 12);
@@ -934,8 +935,10 @@ export class Snowman extends Enemy {
 		this.mass = 0.5;
 
 		this.shooting = false;
-		this.shootTimer = SNOWMAN_SHOOT_TIME - 
-			(((x / 16) | 0) % 2) * (SNOWMAN_SHOOT_TIME/2);
+		this.shootTimer = SIMPLE_SHOOTER_SHOOT_TIME - 
+			(((x / 16) | 0) % 2) * (SIMPLE_SHOOTER_SHOOT_TIME/2);
+
+		this.returnAnim = false;
 	}
 
 
@@ -947,10 +950,11 @@ export class Snowman extends Enemy {
 	}
 
 
+	shootEvent(ev) {}
+
+
 	updateAI(ev) {
 		
-		const BULLET_SPEED = 2.0;
-
 		if (!this.shooting) {
 
 			if ((this.shootTimer -= ev.step) <= 0) {
@@ -958,13 +962,9 @@ export class Snowman extends Enemy {
 				this.spr.setFrame(1, this.spr.row);
 				this.shooting = true;
 
-				this.shootTimer = SNOWMAN_SHOOT_TIME;
+				this.shootTimer = SIMPLE_SHOOTER_SHOOT_TIME;
 
-				this.bulletCb(this.pos.x + this.dir*4, this.pos.y, 
-					this.dir*BULLET_SPEED, 0, 0);
-
-				// Sound effect
-                ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+				this.shootEvent(ev);
 			}
 		}
 	}
@@ -976,7 +976,15 @@ export class Snowman extends Enemy {
 
 		if (!this.shooting) {
 
-			this.spr.setFrame(0, this.spr.row);
+			if (this.spr.frame != 0) {
+
+				this.spr.animate(this.spr.row, 1, 0, 6, ev.step);
+			}
+			else {
+
+				// Unnecessary step?
+				this.spr.setFrame(0, this.spr.row);
+			}
 		}
 		else {
 
@@ -984,8 +992,9 @@ export class Snowman extends Enemy {
 				this.spr.frame == 1 ? 6 : 30,
 				ev.step);
 			if (this.spr.frame == 3) {
-
-				this.spr.setFrame(0, this.spr.row);
+				
+				this.spr.setFrame(this.returnAnim ? 1 : 0, 
+						this.spr.row);
 				this.shooting = false;
 			}
 		}
@@ -997,6 +1006,28 @@ export class Snowman extends Enemy {
 		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
 	}
 
+}
+
+
+export class Snowman extends SimpleShooter {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 9, 3, 2);
+	}
+
+
+	shootEvent(ev) {
+
+		const BULLET_SPEED = 2.0;
+
+		this.bulletCb(this.pos.x + this.dir*4, this.pos.y, 
+			this.dir*BULLET_SPEED, 0, 0, false);
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+	}
 }
 
 
@@ -1135,5 +1166,37 @@ export class Rock extends Enemy {
 
 		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
 		this.plDif = Math.abs(pl.pos.y - this.pos.y);
+	}
+}
+
+
+export class Plant extends SimpleShooter {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 12, 3, 2);
+
+		this.returnAnim = true;
+		
+		this.plDist = 0;
+	}
+
+
+	shootEvent(ev) {
+
+		this.bulletCb(this.pos.x + this.dir*2, this.pos.y-4, 
+			this.plDist / 80, 
+			-2.0, 1, true);
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+	}
+
+
+	playerEvent(pl, ev) {
+
+		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
+		this.plDist = pl.pos.x - this.pos.x;
 	}
 }

@@ -46,7 +46,7 @@ export class Enemy extends CollisionObject {
 		
 		this.deactivated = false;
 		
-		this.bulletCb = (x, y, sx, sy, row) => {};
+		this.bulletCb = (x, y, sx, sy, row, takeGravity) => {};
 	}
 	
 	

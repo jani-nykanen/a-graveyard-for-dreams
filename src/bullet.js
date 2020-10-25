@@ -25,22 +25,32 @@ export class Bullet extends CollisionObject {
         // TODO: Obtain this from the row
         this.hitbox = new Vector2(6, 6);
 
+        this.friction = new Vector2(0.05, 0.05);
+
         this.dmg = 1;
     }
 
 
-    spawn(x, y, sx, sy, row) {
+    spawn(x, y, sx, sy, row, takeGravity) {
+
+        const BASE_GRAVITY = 2.0;
 
         this.pos = new Vector2(x, y);
+        
         this.speed = new Vector2(sx, sy);
         this.target = this.speed.clone();
+        if (takeGravity) {
+
+            this.target.y = BASE_GRAVITY;
+        }
 
         // TODO: Get this from row
         this.dmg = 1;
 
-        this.spr.setFrame(0, row+1);
+        this.spr.setFrame(0, row);
 
         this.exist = true;
+        
     }
 
 
@@ -48,8 +58,9 @@ export class Bullet extends CollisionObject {
 
         const DEATH_SPEED = 4;
 
-        this.spr.animate(0, 0, 4, DEATH_SPEED, ev.step);
-        return this.spr.frame == 4;
+        this.spr.animate(this.spr.row, 1, 5, 
+            DEATH_SPEED, ev.step);
+        return this.spr.frame == 5;
     }
 
 
@@ -78,13 +89,13 @@ export class Bullet extends CollisionObject {
     }
 
 
-    floorCollisionEvent(x, y, w, h, ev) {
+    floorCollisionEvent(x, y, w, ev) {
 
         this.kill(ev);
     }
 
 
-    ceilingCollisionEvent(x, y, w, h, ev) {
+    ceilingCollisionEvent(x, y, h, ev) {
 
         this.kill(ev);
     }

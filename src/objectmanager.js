@@ -77,7 +77,7 @@ export class ObjectManager {
                     this.enemies[index] = new (getEnemyType(tid-1).prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
                     this.enemies[index].setBulletCallback(
-                        (x, y, sx, sy, row) => this.spawnBullet(x, y, sx, sy, row)
+                        (x, y, sx, sy, row, takeGravity) => this.spawnBullet(x, y, sx, sy, row, takeGravity)
                     );
                 }
             }
@@ -263,10 +263,10 @@ export class ObjectManager {
     }
 
 
-    spawnBullet(x, y, sx, sy, row) {
+    spawnBullet(x, y, sx, sy, row, takeGravity) {
 
         nextObject(this.bullets, Bullet)
-            .spawn(x, y, sx, sy, row);
+            .spawn(x, y, sx, sy, row, takeGravity);
     }
 
     

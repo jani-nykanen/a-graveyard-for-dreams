@@ -103,6 +103,7 @@ export class Application {
 
         while ((refreshCount --) > 0) {
 
+            this.canvas.update(this.ev);
             this.tr.update(this.ev);
 
             if (firstFrame)

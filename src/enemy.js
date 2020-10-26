@@ -47,6 +47,8 @@ export class Enemy extends CollisionObject {
 		this.deactivated = false;
 		
 		this.bulletCb = (x, y, sx, sy, row, takeGravity) => {};
+
+		this.isStatic = false;
 	}
 	
 	
@@ -108,8 +110,9 @@ export class Enemy extends CollisionObject {
 
         const HURT_TIME = 30;
 
-        this.health -= dmg;
-		this.speed.x = this.mass * knockback;
+		this.health -= dmg;
+		if (!this.isStatic)
+			this.speed.x = this.mass * knockback;
 					
 		this.hurtTimer = HURT_TIME + (this.hurtTimer % 2);
         
@@ -191,14 +194,19 @@ export class Enemy extends CollisionObject {
 		return false;
 	}
 	
-	
+
+	preDraw(c) {}
+
+
 	draw(c) {
 		
 		if (this.deactivated ||
 			!this.exist || !this.inCamera ||
 			(this.hurtTimer > 0 && 
 			Math.floor(this.hurtTimer/2) % 2 == 0)) 
-            return;
+			return;
+			
+		this.preDraw(c);
 		
 		let px = this.pos.x + this.renderOffset.x - this.spr.width/2;
         let py = this.pos.y + this.renderOffset.y - this.spr.height/2;
@@ -296,13 +304,19 @@ export class Enemy extends CollisionObject {
 
 			r = r1 + r2 - dist;
 
-			this.pos.x += dir.x * r/2;
-			this.pos.y += dir.y * r/2;
+			if (!this.isStatic) {
+
+				this.pos.x += dir.x * r/2;
+				this.pos.y += dir.y * r/2;
+			}
 
 			this.enemyCollisionEvent(e);
 
-			e.pos.x -= dir.x * r/2;
-			e.pos.y -= dir.y * r/2;
+			if (!e.isStatic) {
+
+				e.pos.x -= dir.x * r/2;
+				e.pos.y -= dir.y * r/2;
+			}
 
 			e.enemyCollisionEvent(this);
 

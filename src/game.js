@@ -47,6 +47,7 @@ export class Game extends Scene {
 
     reset(ev) {
 
+        this.stage.reset();
         this.objects.reset(this.stage);
         this.cam.reset();
         this.objects.positionCamera(this.cam);
@@ -110,8 +111,8 @@ export class Game extends Scene {
             else
                 ev.audio.resumeMusic();
 
-            // And sound effect!
-            // Later
+            // Sound effect
+			ev.audio.playSample(ev.assets.samples["pause"], 0.60);
         }
 
         if (this.paused) {
@@ -147,6 +148,9 @@ export class Game extends Scene {
         this.stage.drawBackground(c, this.cam);
 
         this.cam.use(c);
+        if (!this.paused)
+            c.applyShake();
+
         this.stage.draw(c, this.cam);
         this.objects.draw(c);
 

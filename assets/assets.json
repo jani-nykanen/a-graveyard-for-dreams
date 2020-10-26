@@ -46,6 +46,8 @@
         {"name": "snowball",  "path": "snowball.wav"},
         {"name": "savepoint",  "path": "savepoint.wav"},
         {"name": "die",  "path": "die.wav"},
+        {"name": "quake",  "path": "quake.wav"},
+        {"name": "pause",  "path": "pause.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

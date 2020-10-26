@@ -10,7 +10,16 @@ import { negMod } from "./util.js";
 export class Tilemap {
     
 
-    constructor(s) {
+    constructor() {
+
+        this.width = 0;
+        this.height = 0;
+        this.layers = new Array();
+        this.properties = {};
+    }
+
+
+    parse(s) {
 
         let doc = (new DOMParser()).parseFromString(s, "text/xml");
 
@@ -64,8 +73,9 @@ export class Tilemap {
                     this.properties[ p.getAttribute("name")] = p.getAttribute("value");
                 }
             }
-        }
-        
+        }   
+
+        return this;
     }
 
 
@@ -96,5 +106,23 @@ export class Tilemap {
     cloneLayer(layer) {
 
         return Array.from(this.layers[layer]); 
+    }
+
+
+    shallowCopy() {
+
+        let copy = new Tilemap();
+
+        for (let l of this.layers) {
+
+            copy.layers.push(Array.from(l));
+        }
+
+        copy.width = this.width;
+        copy.height = this.height;
+
+        copy.properties = this.properties;
+
+        return copy;
     }
 }

@@ -18,7 +18,7 @@ export function getEnemyType(index) {
 		Caterpillar, SandEgg, Fly, 
 		Bat, Fish, Star, 
 		Snowman, Apple, Rock,
-		Plant
+		Plant, Block
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -1199,4 +1199,154 @@ export class Plant extends SimpleShooter {
 		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
 		this.plDist = pl.pos.x - this.pos.x;
 	}
+}
+
+
+export class Block extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 13, 6, 3);
+
+		this.friction.y = 0.1;
+		
+		this.collisionBox = new Vector2(16, 14);
+		this.renderOffset.y = 2;
+		this.hitbox = new Vector2(12, 12);
+		
+		this.center.y = 2;
+
+		this.mass = 0.5;
+
+		this.falling = false;
+		this.returning = false;
+		this.thwompTimer = 0;
+
+		this.shakeStarted = true;
+
+		this.isStatic = true;
+
+		this.startPos.y -= 2;
+		this.pos.y -= 1;
+	}
+	
+	
+	init(x, y) {
+
+		this.pos.y -= 1;
+
+		this.falling = false;
+		this.returning = false;
+		this.thwompTimer = 0;
+
+		this.shakeStarted = true;
+	}
+	
+	
+	updateAI(ev) {
+
+		const RETURN_SPEED = -0.5;
+
+		if (this.thwompTimer > 0) {
+
+			if ((this.thwompTimer -= ev.step) <= 0) {
+
+				this.returning = true;
+			}
+		}
+
+		if (this.returning) {
+
+			this.target.y = RETURN_SPEED;
+			this.speed.y = RETURN_SPEED;
+		
+			if (this.pos.y < this.startPos.y) {
+
+				this.pos.y = this.startPos.y;
+				this.returning = false;
+
+				this.stopMovement();
+			}
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		let frame = 0;
+
+		if (this.falling)
+			frame = 1;
+		else if (this.thwompTimer > 0)
+			frame = 2;
+		else if (this.returning)
+			frame = 3;
+
+		this.spr.setFrame(frame, this.spr.row);
+	}
+
+
+	isReady() {
+
+		return this.thwompTimer <= 0 && 
+			!this.falling && 
+			!this.returning;
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const FALL_GRAVITY = 6.0;
+		const DELTA = 24;
+		
+		if (this.isReady() &&
+			pl.pos.y > this.pos.y &&	
+			Math.abs(pl.pos.x - this.pos.x) < DELTA) {
+
+			this.falling = true;
+			this.target.y = FALL_GRAVITY;
+		}
+	}
+
+
+	floorCollisionEvent(x, y, w, ev) {
+
+		const THWOMP_TIME = 60;
+
+		if (this.falling) {
+
+			this.thwompTimer = THWOMP_TIME;
+			this.falling = false;
+
+			this.shakeStarted = false;
+
+			// Sound effect
+			ev.audio.playSample(ev.assets.samples["quake"], 0.40);
+		}
+	}
+
+
+	ceilingCollisionEvent(x, y, w, ev) {
+
+		if (this.returning) {
+
+			this.pos.y = this.startPos.y;
+			this.stopMovement();
+
+			this.returning = false;
+		}
+	}
+
+
+	preDraw(c) {
+
+		if (!this.shakeStarted) {
+
+			c.shake(this.thwompTimer, 3, 3);
+
+			this.shakeStarted = true;
+		}
+	}
+
 }

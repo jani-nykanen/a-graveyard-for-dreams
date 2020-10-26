@@ -99,8 +99,11 @@ export class Stage {
 
     constructor(assets) {
 
-        this.tmap = assets.tilemaps["base"];
-        this.colMap = assets.tilemaps["collisions"];
+        this.baseMap = assets.tilemaps["base"];
+        this.baseColMap = assets.tilemaps["collisions"];
+
+        this.tmap = this.baseMap.shallowCopy();
+        this.colMap = this.baseColMap.shallowCopy();
 
         this.width =  this.tmap.width;
         this.height =  this.tmap.height;
@@ -110,6 +113,23 @@ export class Stage {
 
         this.chips = new Array();
         this.fallingBarrels = new Array();
+    }
+
+
+    reset() {
+
+        this.tmap = this.baseMap.shallowCopy();
+        this.colMap = this.baseColMap.shallowCopy();
+
+        for (let c of this.chips) {
+
+            c.exist = false;
+        }
+
+        for (let b of this.fallingBarrels) {
+
+            b.exist = false;
+        }
     }
 
 

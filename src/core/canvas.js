@@ -37,6 +37,9 @@ export class Canvas {
         this.translation = new Vector2(0, 0);
 
         this.bitmaps = bitmaps == null ? {} : bitmaps;
+
+        this.shakeTimer = 0;
+        this.shakeAmount = new Vector2(0, 0);
     }
 
 
@@ -304,5 +307,40 @@ export class Canvas {
     setGlobalAlpha(a) {
 
         this.ctx.globalAlpha = a == undefined ? 1.0 : clamp(a, 0, 1);
+    }
+
+
+    update(ev) {
+
+        if (this.shakeTimer > 0) {
+
+            this.shakeTimer -= ev.step;
+        }
+    }
+
+
+    applyShake() {
+
+        if (this.shakeTimer <= 0) return;
+
+        this.move(
+            Math.round(Math.random() * this.shakeAmount.x * 2) - 
+                (this.shakeAmount.x | 0), 
+            Math.round(Math.random() * this.shakeAmount.y * 2) - 
+                (this.shakeAmount.y | 0)
+        );
+    }
+
+
+    shake(time, amountx, amounty) {
+
+        this.shakeTimer = time;
+        this.shakeAmount = new Vector2(amountx, amounty);
+    }
+
+
+    haltShaking() {
+
+        this.shakeTimer = 0;
     }
 }

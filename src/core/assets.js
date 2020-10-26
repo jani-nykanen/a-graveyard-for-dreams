@@ -121,7 +121,7 @@ export class AssetPack {
         
         this.loadTextfile(path, "xml", (str) => {
 
-            this.tilemaps[name] = new Tilemap(str);
+            this.tilemaps[name] = (new Tilemap()).parse(str);
             ++ this.loaded;
         });
     }

@@ -58,6 +58,8 @@ export class Enemy extends CollisionObject {
 	updateAI(ev) {}
 	animate(ev) {}
 	playerEvent(pl, ev) {}
+	playerTouchEvent(ev) {}
+	deathEvent(ev) {}
 	
 
 	setBulletCallback(cb) {
@@ -106,7 +108,20 @@ export class Enemy extends CollisionObject {
 		
 		this.canJump = false;
     }
-    
+	
+
+	kill(ev) {
+
+		this.deathEvent(ev);
+
+		this.hurtTimer = 0;
+
+		this.health = 0;
+		this.dying = true;
+        this.flip = Flip.None;
+		this.spr.setFrame(0, 0);
+	}
+
 
     hurt(knockback, dmg, objm, source, ev) {
 
@@ -120,11 +135,8 @@ export class Enemy extends CollisionObject {
         
         if (this.health <= 0) {
 
-            this.hurtTimer = 0;
-
-            this.dying = true;
-            this.flip = Flip.None;
-			this.spr.setFrame(0, 0);
+			this.deathEvent(ev);
+            this.kill(ev);
 			
 			objm.spawnCollectibles(this.pos.x, 
 				this.pos.y + this.center.y,
@@ -148,11 +160,14 @@ export class Enemy extends CollisionObject {
 	
         this.playerEvent(pl, ev);
 
-		pl.hurtCollision(
+		if (pl.hurtCollision(
 			this.pos.x + this.center.x - this.hitbox.x/2,
 			this.pos.y + this.center.y - this.hitbox.y/2,
 			this.hitbox.x, this.hitbox.y,
-			this.damage, ev);
+			this.damage, ev)) {
+
+			this.playerTouchEvent(ev);
+		}
 		
         if (pl.isSwordActive() && 
             pl.attackId > this.hurtIndex) {

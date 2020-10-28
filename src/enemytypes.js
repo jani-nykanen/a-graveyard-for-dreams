@@ -19,7 +19,7 @@ export function getEnemyType(index) {
 		Bat, Fish, Star, 
 		Snowman, Apple, Rock,
 		Plant, Block, ManEater,
-		Spook, Imp
+		Spook, Imp, Bomb
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -1667,3 +1667,91 @@ export class Imp extends Enemy {
 	}
 }
 
+
+export class Bomb extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 17, 1, 3);
+		
+		this.friction.x = 0.025;
+
+		this.center.y = 2;
+		this.collisionBox = new Vector2(4, 12);
+        // this.hitbox = new Vector2(8, 8);
+        this.renderOffset.y = 1;
+
+		this.mass = 0.33;
+	}
+	
+	
+	init(x, y) {
+		
+		const BASE_GRAVITY = 4.0;
+		
+		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		this.target.y = BASE_GRAVITY;
+	}
+
+	
+	updateAI(ev) {
+
+		const BASE_SPEED = 1.0;
+
+		this.target.x = BASE_SPEED * this.dir;
+	}
+	
+	
+	animate(ev) {
+		
+		const WALK_ANIM_SPEED = 6.0;
+
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+
+		if (this.canJump) {
+
+			this.spr.animate(this.spr.row, 0, 3, WALK_ANIM_SPEED, ev.step);
+		}
+		else {
+
+			this.spr.setFrame(4, this.spr.row);
+		}
+	}
+	
+
+	playerEvent(pl, ev) {
+
+		this.dir = pl.pos.x > this.pos.x ? 1 : -1;
+	}
+
+
+	playerTouchEvent(ev) {
+
+		// Sound effect
+        ev.audio.playSample(
+			ev.assets.samples["kill"], 0.60);
+
+		this.kill(ev);
+	}
+
+	
+	deathEvent(ev) {
+
+		const BULLET_SPEED = 2.0;
+
+		let angle = 0;
+
+		for (let i = 0; i < 4; ++ i) {
+
+			angle = Math.PI/4 + i * Math.PI/2;
+
+			this.bulletCb(this.pos.x, this.pos.y + this.center.y,
+					Math.cos(angle) * BULLET_SPEED,
+					Math.sin(angle) * BULLET_SPEED,
+					3, false, 2);
+		}
+	}
+}

@@ -31,7 +31,7 @@ export class Bullet extends CollisionObject {
     }
 
 
-    spawn(x, y, sx, sy, row, takeGravity) {
+    spawn(x, y, sx, sy, row, takeGravity, dmg) {
 
         const BASE_GRAVITY = 2.0;
 
@@ -45,7 +45,7 @@ export class Bullet extends CollisionObject {
         }
 
         // TODO: Get this from row
-        this.dmg = 1;
+        this.dmg = dmg == null ? 1 : dmg;
 
         this.spr.setFrame(0, row);
 
@@ -58,9 +58,17 @@ export class Bullet extends CollisionObject {
 
         const DEATH_SPEED = 4;
 
-        this.spr.animate(this.spr.row, 1, 5, 
+        this.spr.animate(this.spr.row, 4, 8, 
             DEATH_SPEED, ev.step);
-        return this.spr.frame == 5;
+        return this.spr.frame == 8;
+    }
+
+
+    updateLogic(ev) {
+
+        const ANIM_SPEED = 4;
+
+        this.spr.animate(this.spr.row, 0, 3, ANIM_SPEED, ev.step);
     }
 
 

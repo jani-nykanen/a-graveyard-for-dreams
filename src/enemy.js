@@ -46,9 +46,11 @@ export class Enemy extends CollisionObject {
 		
 		this.deactivated = false;
 		
-		this.bulletCb = (x, y, sx, sy, row, takeGravity) => {};
+		this.bulletCb = (x, y, sx, sy, row, takeGravity, dmg) => {};
 
 		this.isStatic = false;
+
+		this.takeExtraCollisions = false;
 	}
 	
 	
@@ -264,13 +266,20 @@ export class Enemy extends CollisionObject {
 		
 		// Collisions with the left and right sides of the
 		// camera
+		let x, y;
 		if (!cam.isMoving && this.inCamera) {
 			
-            this.wallCollision(cam.rpos.x * cam.width, 
-                cam.rpos.y * cam.height, cam.height, -1, ev);
-            
-            this.wallCollision((cam.rpos.x+1) * cam.width, 
-                cam.rpos.y * cam.height, cam.height, 1, ev);    
+			x = cam.rpos.x * cam.width;
+			y = cam.rpos.y * cam.height;
+
+            this.wallCollision(x, y, cam.height, -1, ev);
+            this.wallCollision(x + cam.width, y, cam.height, 1, ev);    
+				
+			if (this.takeExtraCollisions) {
+
+				this.floorCollision(x, y + cam.height, cam.width, ev);
+				this.ceilingCollision(x, y, cam.width, ev);
+			}
 		}
 	}
 

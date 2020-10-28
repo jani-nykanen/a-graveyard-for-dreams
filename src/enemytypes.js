@@ -19,7 +19,7 @@ export function getEnemyType(index) {
 		Bat, Fish, Star, 
 		Snowman, Apple, Rock,
 		Plant, Block, ManEater,
-		Spook
+		Spook, Imp
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -1024,7 +1024,7 @@ export class Snowman extends SimpleShooter {
 		const BULLET_SPEED = 2.0;
 
 		this.bulletCb(this.pos.x + this.dir*4, this.pos.y, 
-			this.dir*BULLET_SPEED, 0, 0, false);
+			this.dir*BULLET_SPEED, 0, 0, false, 1);
 
 		// Sound effect
 		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
@@ -1188,7 +1188,7 @@ export class Plant extends SimpleShooter {
 
 		this.bulletCb(this.pos.x + this.dir*2, this.pos.y-4, 
 			this.plDist / 80, 
-			-2.0, 1, true);
+			-2.0, 1, true, 1);
 
 		// Sound effect
 		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
@@ -1510,3 +1510,160 @@ export class Spook extends Enemy {
 		
 	}
 }
+
+
+const BAT_SHOOT_TIME = 120;
+
+
+export class Imp extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 16, 3, 2);
+
+		this.friction.y = 0.05;
+		
+		this.collisionBox = new Vector2(6, 6);
+        // this.hitbox = new Vector2(8, 8);
+
+		this.mass = 0.5;
+
+		this.moveDir = 0;
+
+		this.waveTimer = 0;
+
+		this.takeExtraCollisions = true;
+		this.bounceY = -1;
+
+		this.shootTimer = 0;
+		this.waitTimer = 0;
+		this.horizontalWaveTimer = 0;
+
+		this.shootDir = new Vector2(0, 0);
+	}
+	
+	
+	init(x, y) {
+
+		this.waveTimer = 0;
+		this.waitTimer = 0;
+
+		this.moveDir = (((y / 16) | 0)  % 2) == 0 ? 1 : -1;
+		this.waveTimer = 0.0;
+		this.horizontalWaveTimer = 0.0;
+
+		this.shootTimer = BAT_SHOOT_TIME - 
+			(((x / 16) | 0) % 2) * (BAT_SHOOT_TIME/2);
+	}
+
+
+	shoot(ev) {
+
+		const SHOT_SPEED = 1.0;
+		const WAIT_TIME = 30;
+
+		let px = this.pos.x + (this.flip == Flip.None ? -1 : 1) * 4;
+
+		this.bulletCb(
+			px, this.pos.y + 2, 
+			this.shootDir.x * SHOT_SPEED,
+			this.shootDir.y * SHOT_SPEED, 
+			2, false, 2);
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+
+		this.waitTimer = WAIT_TIME;
+		this.stopMovement();
+	}
+	
+	
+	updateAI(ev) {
+
+		const MOVE_SPEED = 0.5;
+		const WAVE_SPEED = 0.1;
+		const AMPLITUDE = 1.0;
+		const SHIFT = 0.2;
+
+		const H_WAVE_SPEED = 0.05;
+		const H_AMPLITUDE = 4.0;
+
+	
+		this.pos.x = this.startPos.x + 
+			Math.round(Math.sin(this.horizontalWaveTimer) * H_AMPLITUDE);
+
+		if (this.waitTimer > 0) {
+
+			this.waitTimer -= ev.step;
+			return;
+		}
+
+		this.horizontalWaveTimer =
+			(this.horizontalWaveTimer + H_WAVE_SPEED*ev.step) %
+			(Math.PI * 2);
+		this.waveTimer = (this.waveTimer + WAVE_SPEED * ev.step) % (Math.PI*2);
+
+		let s = (Math.sin(this.waveTimer) + SHIFT) * AMPLITUDE;
+		this.target.y = this.moveDir * s * MOVE_SPEED;
+
+		if ((this.shootTimer -= ev.step) <= 0) {
+
+			this.shoot(ev);
+			this.shootTimer += BAT_SHOOT_TIME;
+		}
+		
+	}
+	
+	
+	animate(ev) {
+		
+		const EPS = 0.25;
+
+		if (this.waitTimer > 0) {
+
+			this.spr.setFrame(3, this.spr.row);
+			return;
+		}
+
+		let frame = 1;
+		if (this.speed.y < -EPS)
+			frame = 0;
+		else if (this.speed.y > EPS)
+			frame = 2;
+
+		this.spr.setFrame(frame, this.spr.row);
+
+		this.flip = this.target.x > 0 ? Flip.Horizontal : Flip.None;
+	}
+
+
+	floorCollisionEvent(x, y, w, ev) {
+
+		this.moveDir = -1;
+
+		this.target.y *= -1;
+		this.waveTimer = 0.0;
+	}
+
+
+	ceilingCollisionEvent(x, y, w, ev) {
+
+		this.moveDir = 1;
+
+		this.target.y *= -1;
+		this.waveTimer = 0.0;
+	}
+
+
+	playerEvent(pl, ev) {
+
+		this.flip = pl.pos.x < this.pos.x ? Flip.None : Flip.Horizontal;
+
+		this.shootDir = (new Vector2(
+				pl.pos.x - this.pos.x, 
+				pl.pos.y - this.pos.y))
+				.normalize();
+	}
+}
+

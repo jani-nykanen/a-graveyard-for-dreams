@@ -49,6 +49,8 @@ export class Enemy extends CollisionObject {
 		this.bulletCb = (x, y, sx, sy, row, takeGravity, dmg) => {};
 
 		this.isStatic = false;
+		this.invincible = false;
+		this.harmless = false;
 
 		this.takeExtraCollisions = false;
 	}
@@ -160,14 +162,16 @@ export class Enemy extends CollisionObject {
 	
         this.playerEvent(pl, ev);
 
-		if (pl.hurtCollision(
-			this.pos.x + this.center.x - this.hitbox.x/2,
-			this.pos.y + this.center.y - this.hitbox.y/2,
-			this.hitbox.x, this.hitbox.y,
-			this.damage, ev)) {
+		if (!this.harmless && pl.hurtCollision(
+				this.pos.x + this.center.x - this.hitbox.x/2,
+				this.pos.y + this.center.y - this.hitbox.y/2,
+				this.hitbox.x, this.hitbox.y,
+				this.damage, ev)) {
 
 			this.playerTouchEvent(ev);
 		}
+
+		if (this.invincible) return false;
 		
         if (pl.isSwordActive() && 
             pl.attackId > this.hurtIndex) {
@@ -204,7 +208,9 @@ export class Enemy extends CollisionObject {
 
                 pl.boomerang.forceReturn();
 
-                this.rangedHurtIndex = pl.boomerang.hitId;
+				this.rangedHurtIndex = pl.boomerang.hitId;
+				
+				return true;
             }
         }
 		

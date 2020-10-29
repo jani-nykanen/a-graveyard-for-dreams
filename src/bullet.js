@@ -50,6 +50,9 @@ export class Bullet extends CollisionObject {
         this.spr.setFrame(0, row);
 
         this.exist = true;
+
+        // Lazy way
+        this.disableCollisions = [2, 3].includes(row);
         
     }
 

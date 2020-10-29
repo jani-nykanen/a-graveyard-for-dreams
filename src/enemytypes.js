@@ -19,11 +19,15 @@ export function getEnemyType(index) {
 		Bat, Fish, Star, 
 		Snowman, Apple, Rock,
 		Plant, Block, ManEater,
-		Spook, Imp, Bomb
+		Spook, Imp, Bomb,
+		SlimeDrop, Undying,
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
 }
+
+
+const TURTLE_BASE_SPEED = 0.20;
 
 
 export class Turtle extends Enemy {
@@ -48,13 +52,12 @@ export class Turtle extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_SPEED = 0.25;
 		const BASE_GRAVITY = 2.0;
 		
 		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
-		this.target.x = BASE_SPEED;
+		this.target.x = TURTLE_BASE_SPEED;
 		this.speed.x = this.target.x;
 		this.target.y = BASE_GRAVITY;
 	}
@@ -62,6 +65,8 @@ export class Turtle extends Enemy {
 	
 	updateAI(ev) {
 		
+		this.target.x = TURTLE_BASE_SPEED * this.dir;
+
         // If going to move off the ledge, change direction
         // (unless hurt, then fall, to make it look like the
         // player attack sent you flying!)
@@ -767,14 +772,14 @@ class WaveEnemy extends Enemy {
 		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
-		this.target.x = this.baseSpeed;
-		this.speed.x = this.target.x;
-
 		this.waveTimer = (this.pos.x + this.pos.y) % (Math.PI*2);
 	}
 	
 
 	updateAI(ev) {
+
+		this.target.x = this.baseSpeed * this.dir;
+		this.speed.x = this.target.x;
 		
 		this.waveTimer = (this.waveTimer + this.waveSpeed*ev.step) % (Math.PI * 2);
 
@@ -1353,6 +1358,9 @@ export class Block extends Enemy {
 }
 
 
+const MAN_EATER_BASE_SPEED = 0.5;
+
+
 export class ManEater extends Enemy {
 	
 	
@@ -1380,11 +1388,10 @@ export class ManEater extends Enemy {
 	init(x, y) {
 
 		const BASE_GRAVITY = 4.0;
-		const BASE_SPEED = 0.5;
 
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 
-		this.target.x = this.dir * BASE_SPEED;
+		this.target.x = this.dir * MAN_EATER_BASE_SPEED;
 		this.speed.x = this.target.x;
 
 		this.target.y = BASE_GRAVITY;
@@ -1392,8 +1399,9 @@ export class ManEater extends Enemy {
 
 
 	updateAI(ev) {
-		
-        // ...
+
+
+        this.target.x = MAN_EATER_BASE_SPEED * this.dir;
 	}
 	
 	
@@ -1753,5 +1761,219 @@ export class Bomb extends Enemy {
 					Math.sin(angle) * BULLET_SPEED,
 					3, false, 2);
 		}
+	}
+}
+
+
+const SLIME_DROP_WAIT = 60;
+
+
+export class SlimeDrop extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 18, 1, 1);
+
+		this.friction.y = 0.1;
+		
+		this.collisionBox = new Vector2(8, 10);
+
+		this.renderOffset.y = 2;
+		this.center.y = 2;
+
+		this.mass = 0.5;
+
+		this.isStatic = true;
+		this.invincible = true;
+
+		this.startPos.y -= 4;
+		this.pos.y -= 4;
+
+		this.phase = 0;
+		this.timer = 0;
+	}
+	
+	
+	init(x, y) {
+
+		this.phase = 0;
+		this.timer = SLIME_DROP_WAIT -
+			(((x / 16) | 0) % 2) * SLIME_DROP_WAIT / 2.0;
+
+		this.spr.setFrame(8, this.spr.row);
+	}
+	
+	
+	updateAI(ev) {
+
+		const GRAVITY = 2.0;
+
+		this.invincible = this.phase != 2;
+		this.harmless = this.invincible;
+		
+		this.target.y = 0;
+		if (this.phase == 0) {
+
+			if ((this.timer -= ev.step) <= 0) {
+
+				this.phase = 1;
+				this.spr.setFrame(0, this.spr.row);
+			}
+		}
+		else if (this.phase == 2) {
+
+			this.target.y = GRAVITY;
+		}
+	}
+	
+	
+	animate(ev) {
+
+		const DROP_ANIM_SPEED = 10;
+		const DISAPPEAR_SPEED = 6;
+		
+		if (this.phase == 0) {
+
+			this.spr.setFrame(8, this.spr.row);
+		}	
+		else if (this.phase == 1) {
+
+			this.spr.animate(this.spr.row, 0, 4, 
+				DROP_ANIM_SPEED, ev.step);
+			if (this.spr.frame == 4) {
+
+				this.phase = 2;
+			}
+			
+		}
+		else if (this.phase == 3) {
+
+			this.spr.animate(this.spr.row, 5, 8, 
+				DISAPPEAR_SPEED, ev.step);
+			if (this.spr.frame == 8) {
+
+				this.phase = 0;
+				this.pos = this.startPos.clone();
+
+				this.timer = SLIME_DROP_WAIT;
+			}
+		}
+	}
+
+
+	floorCollisionEvent(x, y, w, ev) {
+
+		if (this.phase != 2) return;
+
+		this.phase = 3;
+		this.stopMovement();
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["blob"], 0.70);
+	}
+
+
+}
+
+
+export class Undying extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 19, 6, 3);
+		
+		this.friction.x = 0.1;
+		
+		this.oldCanJump = true;
+		
+		this.center.y = 2;
+		this.collisionBox = new Vector2(8, 12);
+        // this.hitbox = new Vector2(8, 8);
+        this.renderOffset.y = 1;
+
+		this.mass = 0.5;
+		
+		this.canFall = false;
+	}
+	
+	
+	init(x, y) {
+		
+		const BASE_GRAVITY = 4.0;
+		
+		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		this.target.y = BASE_GRAVITY;
+	}
+	
+	
+	updateAI(ev) {
+        
+        const BASE_SPEED = 0.5;
+
+        this.target.x = this.dir * BASE_SPEED;
+        
+        
+        // If going to move off the ledge, change direction
+        // (unless hurt, then fall, to make it look like the
+        // player attack sent you flying!)
+        
+		if (!this.canFall &&
+			this.oldCanJump && !this.canJump &&
+            this.hurtTimer <= 0) {
+			
+			this.dir *= -1;
+			this.speed.x *= -1;
+			this.target.x *= -1;
+			
+			this.pos.x += this.speed.x * ev.step;
+        }
+        this.oldCanJump = this.canJump;
+	}
+	
+	
+	animate(ev) {
+		
+        const ANIM_SPEED = 6.0;
+		
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		if (this.canJump) {
+			
+            this.spr.animate(this.spr.row, 0, 3, ANIM_SPEED, ev.step);
+        }
+        else {
+
+            this.spr.setFrame(4, this.spr.row);
+        }
+	}
+	
+	
+	wallCollisionEvent(x, y, h, dir, ev) {
+
+		this.dir = -dir;
+	}
+
+
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.dir *= -1;
+			this.speed.x *= -1;
+		}
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const MARGIN = 16;
+
+		this.canFall = pl.pos.y > this.pos.y+MARGIN &&
+			(this.pos.x - pl.pos.x) * this.dir < 0;
 	}
 }

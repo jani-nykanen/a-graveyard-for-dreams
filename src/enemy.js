@@ -162,7 +162,8 @@ export class Enemy extends CollisionObject {
 	
         this.playerEvent(pl, ev);
 
-		if (!this.harmless && pl.hurtCollision(
+		if (this.hurtTimer <= 0 &&
+			!this.harmless && pl.hurtCollision(
 				this.pos.x + this.center.x - this.hitbox.x/2,
 				this.pos.y + this.center.y - this.hitbox.y/2,
 				this.hitbox.x, this.hitbox.y,

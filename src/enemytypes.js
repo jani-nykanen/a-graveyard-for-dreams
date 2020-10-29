@@ -27,7 +27,7 @@ export function getEnemyType(index) {
 }
 
 
-const TURTLE_BASE_SPEED = 0.20;
+const TURTLE_BASE_SPEED = 0.15;
 
 
 export class Turtle extends Enemy {
@@ -296,7 +296,7 @@ export class Caterpillar extends Enemy {
 
 	playerEvent(pl, ev) {
 
-		const MARGIN = 16;
+		const MARGIN = 8;
 
 		this.canFall = pl.pos.y > this.pos.y+MARGIN &&
 			(this.pos.x - pl.pos.x) * this.dir < 0;
@@ -437,7 +437,7 @@ export class SandEgg extends Enemy {
         // this.hitbox = new Vector2(8, 8);
         this.renderOffset.y = 1;
 
-		this.mass = 0.5;
+		this.mass = 0.75;
 		
 		this.waitTimer = SAND_EGG_WAIT;
 		this.waiting = true;
@@ -562,7 +562,7 @@ export class Fly extends Enemy {
 		this.collisionBox = new Vector2(4, 4);
         // this.hitbox = new Vector2(8, 8);
 
-		this.mass = 0.5;
+		this.mass = 0.33;
 		
 		this.waitTimer = FLY_WAIT_TIME;
 		this.waiting = true;
@@ -747,6 +747,7 @@ export class Bat extends Enemy {
 
 class WaveEnemy extends Enemy {
 
+
 	constructor(x, y, row, health, dmg, amplitude, waveSpeed, baseSpeed) {
 		
 		super(x, y, row, health, dmg);
@@ -779,7 +780,6 @@ class WaveEnemy extends Enemy {
 	updateAI(ev) {
 
 		this.target.x = this.baseSpeed * this.dir;
-		this.speed.x = this.target.x;
 		
 		this.waveTimer = (this.waveTimer + this.waveSpeed*ev.step) % (Math.PI * 2);
 
@@ -815,7 +815,7 @@ export class Fish extends WaveEnemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 7, 3, 2, 2.0, 0.1, 0.25);
+		super(x, y, 7, 3, 2, 2.0, 0.1, 0.125);
 	}
 	
 	animate(ev) {
@@ -1043,7 +1043,11 @@ export class Apple extends WaveEnemy {
 	constructor(x, y) {
 		
 		super(x, y, 10, 3, 2, 4.0, 0.10, 0.33);
+
+		this.friction.x = 0.025;
+		this.mass = 0.5;
 	}
+	
 	
 	animate(ev) {
 		
@@ -1873,8 +1877,11 @@ export class SlimeDrop extends Enemy {
 		ev.audio.playSample(ev.assets.samples["blob"], 0.70);
 	}
 
-
 }
+
+
+const UNDYING_SHOOT_WAIT = 60;
+const UNDYING_SHOOT_TIME = 30;
 
 
 export class Undying extends Enemy {
@@ -1884,7 +1891,7 @@ export class Undying extends Enemy {
 		
 		super(x, y, 19, 6, 3);
 		
-		this.friction.x = 0.1;
+		this.friction.x = 0.05;
 		
 		this.oldCanJump = true;
 		
@@ -1893,20 +1900,43 @@ export class Undying extends Enemy {
         // this.hitbox = new Vector2(8, 8);
         this.renderOffset.y = 1;
 
-		this.mass = 0.5;
+		this.mass = 0.75;
 		
 		this.canFall = false;
+
+		this.shootTimer = 0;
+		this.shootActive = false;
 	}
 	
 	
 	init(x, y) {
 		
 		const BASE_GRAVITY = 4.0;
+
+		this.shootActive = false;
+		this.shootTimer = UNDYING_SHOOT_WAIT -
+			(((x / 16) | 0) % 2) * UNDYING_SHOOT_WAIT;
 		
 		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
+	}
+
+
+	shoot(ev) {
+
+		const SHOT_SPEED = 2.0;
+
+		let px = this.pos.x + this.dir * 8;
+
+		this.bulletCb(
+			px, this.pos.y + 2, 
+			this.dir * SHOT_SPEED, 0, 
+			4, false, 2);
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
 	}
 	
 	
@@ -1915,11 +1945,6 @@ export class Undying extends Enemy {
         const BASE_SPEED = 0.5;
 
         this.target.x = this.dir * BASE_SPEED;
-        
-        
-        // If going to move off the ledge, change direction
-        // (unless hurt, then fall, to make it look like the
-        // player attack sent you flying!)
         
 		if (!this.canFall &&
 			this.oldCanJump && !this.canJump &&
@@ -1931,23 +1956,38 @@ export class Undying extends Enemy {
 			
 			this.pos.x += this.speed.x * ev.step;
         }
-        this.oldCanJump = this.canJump;
+		this.oldCanJump = this.canJump;
+		
+		if ((this.shootTimer -= ev.step) <= 0) {
+
+			this.shootActive = !this.shootActive;
+			this.shootTimer += (this.shootActive ? 
+				UNDYING_SHOOT_TIME : UNDYING_SHOOT_WAIT);
+
+			if (this.shootActive) {
+
+				this.shoot(ev);
+			}
+		}
+		
 	}
 	
 	
 	animate(ev) {
 		
-        const ANIM_SPEED = 6.0;
+        const ANIM_SPEED = 8.0;
 		
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
+		let start = this.shootActive ? 5 : 0;
+
 		if (this.canJump) {
 			
-            this.spr.animate(this.spr.row, 0, 3, ANIM_SPEED, ev.step);
+            this.spr.animate(this.spr.row, start, start+3, ANIM_SPEED, ev.step);
         }
         else {
 
-            this.spr.setFrame(4, this.spr.row);
+            this.spr.setFrame(start+4, this.spr.row);
         }
 	}
 	
@@ -1971,7 +2011,7 @@ export class Undying extends Enemy {
 
 	playerEvent(pl, ev) {
 
-		const MARGIN = 16;
+		const MARGIN = 8;
 
 		this.canFall = pl.pos.y > this.pos.y+MARGIN &&
 			(this.pos.x - pl.pos.x) * this.dir < 0;

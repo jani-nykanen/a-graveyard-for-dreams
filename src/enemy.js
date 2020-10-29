@@ -53,6 +53,7 @@ export class Enemy extends CollisionObject {
 		this.harmless = false;
 
 		this.takeExtraCollisions = false;
+		this.ignoreEnemyCollisions = false;
 	}
 	
 	
@@ -317,7 +318,8 @@ export class Enemy extends CollisionObject {
 
 	enemyCollision(e) {
 
-		if (!e.isActive() || !this.isActive())
+		if (!e.isActive() || !this.isActive() || 
+			e.ignoreEnemyCollisions || this.ignoreEnemyCollisions)
 			return false;
 
 		let r1 = Math.hypot(this.hitbox.x/2, this.hitbox.y/2);

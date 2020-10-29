@@ -20,7 +20,7 @@ export function getEnemyType(index) {
 		Snowman, Apple, Rock,
 		Plant, Block, ManEater,
 		Spook, Imp, Bomb,
-		SlimeDrop, Undying,
+		SlimeDrop, Undying, Crystal,
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -633,7 +633,7 @@ export class Fly extends Enemy {
 
 		let dir = 
 			new Vector2(this.pos.x - e.pos.x, this.pos.y - e.pos.y)
-			.normalize();
+			.normalize(true);
 
 		this.speed.x = dir.x * FLY_MOVE_SPEED;
 	}
@@ -1471,14 +1471,14 @@ export class Spook extends Enemy {
 		this.moveDir = new Vector2(0, 0);
 
 		this.waveTimer = 0;
-
-		this.disableCollisions = true;
 	}
 	
 	
 	init(x, y) {
 
 		this.waveTimer = 0;
+
+		this.disableCollisions = true;
 	}
 	
 	
@@ -1675,7 +1675,7 @@ export class Imp extends Enemy {
 		this.shootDir = (new Vector2(
 				pl.pos.x - this.pos.x, 
 				pl.pos.y - this.pos.y))
-				.normalize();
+				.normalize(true);
 	}
 }
 
@@ -1796,6 +1796,8 @@ export class SlimeDrop extends Enemy {
 
 		this.phase = 0;
 		this.timer = 0;
+
+		this.ignoreEnemyCollisions = true;
 	}
 	
 	
@@ -2015,5 +2017,133 @@ export class Undying extends Enemy {
 
 		this.canFall = pl.pos.y > this.pos.y+MARGIN &&
 			(this.pos.x - pl.pos.x) * this.dir < 0;
+	}
+}
+
+
+const CRYSTAL_SHOOT_TIME = 120;
+
+
+export class Crystal extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 20, 6, 3);
+		
+		this.friction.x = 0.025;
+		this.friction.y = 0.025;
+		
+		this.collisionBox = new Vector2(6, 6);
+        // this.hitbox = new Vector2(8, 8);
+
+		this.mass = 0.66;
+
+		this.angleDif = 0.0;
+		this.moveDir = new Vector2(0, 0);
+		this.shootDir = new Vector2(0, 0);
+
+		this.shootTimer = 0;
+		this.waitTimer = 0;
+
+		this.oldFrame = 0;
+	}
+
+	
+	init(x, y) {
+
+		this.angleDif = (this.pos.y) % (Math.PI * 2);
+
+		this.disableCollisions = true;
+
+		this.shootTimer = CRYSTAL_SHOOT_TIME -
+			(((x / 16) | 0) % 2) * CRYSTAL_SHOOT_TIME;
+	}
+	
+
+	shoot(ev) {
+
+		const WAIT_TIME = 30;
+		const SHOT_SPEED = 1.5;
+
+		this.bulletCb(
+			this.pos.x, this.pos.y, 
+			this.shootDir.x * SHOT_SPEED,
+			this.shootDir.y * SHOT_SPEED, 
+			3, false, 2);
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+
+		this.waitTimer = WAIT_TIME;
+
+		this.oldFrame = this.spr.frame;
+		this.spr.setFrame(this.spr.frame + 5, this.spr.row);
+
+		this.stopMovement();
+	}
+	
+	
+	updateAI(ev) {
+
+		const MOVE_SPEED = 0.75;
+		const ANGLE_DIF_SPEED = 0.025;
+
+		if (this.waitTimer > 0) {
+
+			this.waitTimer -= ev.step;
+			return;
+		}
+
+		this.target.x = this.moveDir.x * MOVE_SPEED;
+		this.target.y = this.moveDir.y * MOVE_SPEED;
+
+		this.angleDif = (this.angleDif + ANGLE_DIF_SPEED * ev.step) % 
+			(Math.PI * 2);
+
+		if ( (this.shootTimer -= ev.step) <= 0) {
+
+			this.shoot(ev);
+			this.shootTimer += CRYSTAL_SHOOT_TIME;
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		const ANIM_SPEED = 5;
+
+		if (this.waitTimer > 0) {
+
+			this.spr.setFrame(
+				this.oldFrame + 5*(Math.floor(this.waitTimer/4) % 2), 
+				this.spr.row);
+
+			return;
+		} 
+
+		this.spr.animate(this.spr.row, 0, 4, ANIM_SPEED, ev.step);
+
+		this.flip = this.target.x > 0 ? Flip.Horizontal : Flip.None;
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const ORBIT_RADIUS = 32.0;
+
+		let px = pl.pos.x + Math.cos(this.angleDif) * ORBIT_RADIUS;
+		let py = pl.pos.y + Math.sin(this.angleDif) * ORBIT_RADIUS;
+
+		this.moveDir = (new Vector2(
+				px - this.pos.x, 
+				py - this.pos.y))
+			.normalize(true);
+
+		this.shootDir = (new Vector2(
+				pl.pos.x - this.pos.x, 
+				pl.pos.y - this.pos.y))
+			.normalize(true);
+		
 	}
 }

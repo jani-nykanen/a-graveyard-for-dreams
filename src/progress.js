@@ -10,7 +10,7 @@ export class GameProgress {
 
     constructor() {
 
-        this.maxHealth = 6;
+        this.maxHealth = 10;
         this.health = this.maxHealth;
 
         this.gems = 0;

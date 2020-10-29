@@ -27,7 +27,7 @@ export function getEnemyType(index) {
 }
 
 
-const TURTLE_BASE_SPEED = 0.15;
+const TURTLE_BASE_SPEED = 0.25;
 
 
 export class Turtle extends Enemy {
@@ -54,7 +54,7 @@ export class Turtle extends Enemy {
 		
 		const BASE_GRAVITY = 2.0;
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.x = TURTLE_BASE_SPEED;
@@ -222,7 +222,7 @@ export class Caterpillar extends Enemy {
 		
 		const BASE_GRAVITY = 2.0;
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
@@ -454,7 +454,7 @@ export class SandEgg extends Enemy {
 		
 		const BASE_GRAVITY = 3.0;
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
@@ -770,7 +770,7 @@ class WaveEnemy extends Enemy {
 
 	init(x, y) {
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.waveTimer = (this.pos.x + this.pos.y) % (Math.PI*2);
@@ -1089,7 +1089,7 @@ export class Rock extends Enemy {
 		
 		const BASE_GRAVITY = 4.0;
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
@@ -1702,7 +1702,7 @@ export class Bomb extends Enemy {
 		
 		const BASE_GRAVITY = 4.0;
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
@@ -1917,9 +1917,9 @@ export class Undying extends Enemy {
 
 		this.shootActive = false;
 		this.shootTimer = UNDYING_SHOOT_WAIT -
-			(((x / 16) | 0) % 2) * UNDYING_SHOOT_WAIT;
+			(((x / 16) | 0) % 2) * UNDYING_SHOOT_WAIT / 2;
 		
-		this.dir = 2 - 1 * (((x / 16) | 0) % 2);
+		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.y = BASE_GRAVITY;
@@ -2057,7 +2057,7 @@ export class Crystal extends Enemy {
 		this.disableCollisions = true;
 
 		this.shootTimer = CRYSTAL_SHOOT_TIME -
-			(((x / 16) | 0) % 2) * CRYSTAL_SHOOT_TIME;
+			(((x / 16) | 0) % 2) * CRYSTAL_SHOOT_TIME / 2;
 	}
 	
 
@@ -2116,7 +2116,7 @@ export class Crystal extends Enemy {
 		if (this.waitTimer > 0) {
 
 			this.spr.setFrame(
-				this.oldFrame + 5*(Math.floor(this.waitTimer/4) % 2), 
+				this.oldFrame + 5*(Math.floor(this.waitTimer/8) % 2), 
 				this.spr.row);
 
 			return;

@@ -20,6 +20,8 @@ export class InteractableObject {
 
         this.inCamera = true;
         this.flip = Flip.None;
+
+        this.disabled = false;
     }
 
 
@@ -36,18 +38,25 @@ export class InteractableObject {
 
     playerCollision(pl, ev) {
 
+        if (this.disabled || !this.inCamera || pl.dying) 
+            return false;
+
         this.playerEvent(pl, ev);
 
-        if (!this.inCamera || pl.dying) 
+        if (ev == null) 
             return false;
 
         if (pl.overlay(this.pos.x-8, this.pos.y-8, 16, 16)) {
 
+
             this.playerCollisionEvent(pl, ev);
 
-            if (pl.canJump && ev.input.upPress()) {
+            if (pl.canJump) {
 
-                this.triggerEvent(pl, ev);
+                pl.showInteractionArrow();
+
+                if (ev.input.upPress())
+                    this.triggerEvent(pl, ev);
             }
             return true;
         }   

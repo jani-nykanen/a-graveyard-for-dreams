@@ -86,6 +86,9 @@ export class Player extends CollisionObject {
         this.inCamera = true;
 
         this.deathTimer = 0;
+
+        this.showArrow = false;
+        this.showArrowTimer = 0.0;
     }
 
 
@@ -609,6 +612,13 @@ export class Player extends CollisionObject {
         const SWIMMING_MOD_Y = 0.5;
         const SLIDE_SPEED = 2.0;
         const CHARGE_MAX = 20; // Could be anything, really
+        const SHOW_ARROW_SPEED = 1.0 / 30.0;
+
+        if (this.showArrow) {
+
+            this.showArrowTimer += SHOW_ARROW_SPEED * ev.step;
+            this.showArrowTimer %= 1.0;
+        }
 
         if (this.jumpTimer > 0) {
 
@@ -717,6 +727,7 @@ export class Player extends CollisionObject {
 
         this.canJump = false;
         this.touchWall = false;
+        this.showArrow = false;
     }
 
 
@@ -759,6 +770,8 @@ export class Player extends CollisionObject {
         if (this.dying) {
 
             this.drawDeath(c);
+            this.boomerang.draw(c);
+
             return;
         }
 
@@ -795,17 +808,12 @@ export class Player extends CollisionObject {
 
         this.boomerang.draw(c);
 
-/*
-        c.setColor(255, 0, 0);
-        if (this.attackTimer > 0 && this.swordAttack) {
+        if (this.showArrow) {
 
-            c.fillRect(
-                this.swordHitPos.x-this.swordHitSize.x/2,
-                this.swordHitPos.y-this.swordHitSize.y/2,
-                this.swordHitSize.x, this.swordHitSize.y);
-            
+            this.spr.drawFrame(c, c.bitmaps["figure"],
+                3 + Math.floor(this.showArrowTimer/0.5),
+                7, px, py - 16, Flip.None);
         }
-*/
     }
 
 
@@ -1132,5 +1140,12 @@ export class Player extends CollisionObject {
 
             this.progress.addHealth(2);
         }
+    }
+
+
+    showInteractionArrow() {
+
+        this.showArrow = true;
+        // this.showArrowTimer = 0.0;
     }
 }

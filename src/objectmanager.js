@@ -6,6 +6,7 @@
  */
 
 import { Bullet } from "./bullet.js";
+import { Chest } from "./chest.js";
 import { Collectible } from "./collectible.js";
 import { clamp, nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
@@ -24,7 +25,7 @@ export class ObjectManager {
         this.flyingText = new Array();
         this.collectibles = new Array();
         this.bullets = new Array();
-        this.savepoints = new Array();
+        this.interactableObjects = new Array();
 
         this.progress = progress;
     }
@@ -55,7 +56,13 @@ export class ObjectManager {
                 // Savepoint
                 case 32:
 
-                    this.savepoints.push(new Savepoint(x*16+8, y*16+8));
+                    this.interactableObjects.push(new Savepoint(x*16+8, y*16+8));
+                    break;
+
+                // Chest
+                case 33:
+
+                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, -1));
                     break;
 
                 default:
@@ -101,7 +108,7 @@ export class ObjectManager {
         this.flyingText = new Array();
         this.collectibles = new Array();
         this.bullets = new Array();
-        this.savepoints = new Array();
+        this.interactableObjects = new Array();
 
         stage.parseObjects(this);
         this.player.respawnToCheckpoint(checkpoint);
@@ -149,11 +156,11 @@ export class ObjectManager {
             t.update(ev);
         }
 
-        for (let s of this.savepoints) {
+        for (let o of this.interactableObjects) {
 
-            s.checkIfInCamera(cam);
-            s.update(ev);
-            s.playerCollision(this.player, ev);
+            o.checkIfInCamera(cam);
+            o.update(ev);
+            o.playerCollision(this.player, ev);
         }
 
         for (let b of this.bullets) {
@@ -179,9 +186,9 @@ export class ObjectManager {
 
     draw(c) {
 
-        for (let s of this.savepoints) {
+        for (let o of this.interactableObjects) {
 
-            s.draw(c);
+            o.draw(c);
         }
 
         for (let e of this.enemies) {
@@ -287,9 +294,9 @@ export class ObjectManager {
             e.checkIfInCamera(cam);
         }
 
-        for (let s of this.savepoints) {
+        for (let o of this.interactableObjects) {
 
-            s.playerCollision(this.player, null);
+            o.playerCollision(this.player, null);
         }
     }
 }

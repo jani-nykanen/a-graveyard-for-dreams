@@ -12,6 +12,7 @@
         {"name": "collectibles",  "path": "collectibles.png"},
         {"name": "bullets",  "path": "bullets.png"},
         {"name": "savepoint",  "path": "savepoint.png"},
+        {"name": "chest",  "path": "chest.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

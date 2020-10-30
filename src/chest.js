@@ -32,7 +32,6 @@ export class Chest extends InteractableObject {
         if (!this.inCamera || this.opened) return;
 
         const ANIM_SPEED = 8;
-        const OPEN_SPEED = 6;
 
         let row = this.isHealth ? 2 : 0;
 
@@ -40,20 +39,6 @@ export class Chest extends InteractableObject {
 
             this.spr.animate(row, 
                 0, 3, ANIM_SPEED, ev.step);
-        }
-        else {
-            
-            if (this.spr.frame < 3) {
-
-                this.spr.animate(row + 1, 
-                    0, 3, OPEN_SPEED, ev.step);
-
-                if (this.spr.frame == 3) {
-
-                    this.opened = true;
-                    this.opening = false;
-                }
-            }
         }
     }
 
@@ -70,12 +55,36 @@ export class Chest extends InteractableObject {
     
     triggerEvent(message, pl, ev) {
 
+        const OFFSET = 8;
+
         if (this.opening) return;
+
+        pl.setCrouchPose(this.pos.x, this.pos.y, 
+            pl.pos.x < this.pos.x ? -1 : 1, OFFSET);
 
         this.opening = true;
         this.disabled = true;
 
         this.spr.setFrame(0, this.isHealth ? 3 : 1);
+
+        message.addMessage("It's empty.")
+            .addStartCondition((ev) => {
+
+                const OPEN_SPEED = 6;
+
+                let row = this.isHealth ? 2 : 0;
+
+                this.spr.animate(row + 1, 
+                    0, 3, OPEN_SPEED, ev.step);
+    
+                if (this.spr.frame == 3) {
+    
+                    this.opened = true;
+                    this.opening = false;
+                }
+                return this.spr.frame >= 3;
+            })
+            .activate((ev) => {});
     }
 
 

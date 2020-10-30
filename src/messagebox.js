@@ -46,6 +46,9 @@ export class MessageBox {
 
         this.accept = false;
         this.acceptCb = (ev) => {};
+        
+        this.ready = false;
+        this.startEvent = (ev) => true;
     }
 
 
@@ -84,6 +87,14 @@ export class MessageBox {
     }
 
 
+    addStartCondition(cb) {
+
+        this.startEvent = cb;
+
+        return this;
+    }
+
+
 
     activate(acceptCb) {
 
@@ -94,6 +105,8 @@ export class MessageBox {
 
         this.accept = false;
         this.acceptCb = acceptCb;
+        
+        this.ready = false;
     }
 
 
@@ -106,6 +119,13 @@ export class MessageBox {
 
         let action = ev.input.anyPressed();
         let c;
+
+        if (!this.ready) {
+
+            this.ready = this.startEvent(ev);
+            if (!this.ready)
+                return;
+        }
 
         if (this.charPos < this.queue[0].length) {
 
@@ -145,7 +165,12 @@ export class MessageBox {
 
                 if (this.queue.length == 0) {
 
-                    this.active = false;
+                    this.deactivate();
+                }
+
+                if (this.acceptCb != null) {
+
+                    this.acceptCb(ev);
                 }
             }
 
@@ -163,7 +188,8 @@ export class MessageBox {
         const TEXT_OFF_Y = 2;
         const SYMBOL_AMPLITUDE = 1.0;
 
-        if (!this.active) return;
+        if (!this.active || !this.ready) 
+            return;
 
         let w = this.sizes[0].x + CORNER_OFF*2;
         let h = this.sizes[0].y + CORNER_OFF*2;
@@ -191,7 +217,7 @@ export class MessageBox {
                 c.bitmaps["font"], 
                 24, 0, 8, 8,
                 tx + w - 8, 
-                ty + h - 2 + y, false);
+                ty + h - 4 + y, false);
         }
     }
 
@@ -199,6 +225,8 @@ export class MessageBox {
     deactivate() {
 
         this.active = false;
+
+        this.startEvent = (ev) => true;
 
         this.queue.length = 0;
         this.sizes.length = 0;

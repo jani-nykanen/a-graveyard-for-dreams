@@ -53,15 +53,13 @@ export class Savepoint extends InteractableObject {
         if (ev != null) {
 
             // Sound effect
-            ev.audio.playSample(ev.assets.samples["savepoint"], 0.60);
+            ev.audio.playSample(ev.assets.samples["savepoint"], 0.50);
         }
    
     }
 
     
     triggerEvent(message, pl, ev) {
-
-        console.log("Not implemented yet.");
 
         message.addMessage(
             "Haha lol.\nNot implemented\nyet."

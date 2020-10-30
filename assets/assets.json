@@ -50,6 +50,7 @@
         {"name": "quake",  "path": "quake.wav"},
         {"name": "pause",  "path": "pause.wav"},
         {"name": "blob",  "path": "blob.wav"},
+        {"name": "activate",  "path": "activate.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

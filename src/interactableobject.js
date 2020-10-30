@@ -54,8 +54,14 @@ export class InteractableObject {
 
                 pl.showInteractionArrow();
 
-                if (ev.input.upPress())
+                if (ev.input.upPress()) {
+
+                    // Sound effect
+                    ev.audio.playSample(ev.assets.samples["activate"], 0.50);
+
+                    pl.disableArrow();
                     this.triggerEvent(message, pl, ev);
+                }
             }
             return true;
         }   

@@ -1149,4 +1149,22 @@ export class Player extends CollisionObject {
         this.showArrow = true;
         // this.showArrowTimer = 0.0;
     }
+
+
+    disableArrow() {
+
+        this.showArrow = false;
+    }
+
+
+    setCrouchPose(x, y, dir, offset) {
+
+        this.pos.x = x + dir * offset;
+        this.pos.y = y;
+
+        this.dir = dir;
+        this.flip = dir > 0 ? Flip.Horizontal : Flip.None;
+
+        this.spr.setFrame(4, 6);
+    }
 }

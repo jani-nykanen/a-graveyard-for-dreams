@@ -115,7 +115,7 @@ export class ObjectManager {
     }
 
 
-    update(cam, stage, ev) {
+    update(cam, stage, message, ev) {
 
         for (let e of this.enemies) {
 
@@ -160,7 +160,7 @@ export class ObjectManager {
 
             o.checkIfInCamera(cam);
             o.update(ev);
-            o.playerCollision(this.player, ev);
+            o.playerCollision(message, this.player, ev);
         }
 
         for (let b of this.bullets) {
@@ -296,7 +296,7 @@ export class ObjectManager {
 
         for (let o of this.interactableObjects) {
 
-            o.playerCollision(this.player, null);
+            o.playerCollision(null, this.player, null);
         }
     }
 }

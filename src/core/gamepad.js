@@ -32,6 +32,7 @@ export class GamePadListener {
             this.updateGamepad(this.pad);
         });
 
+        this.anyPressed = false;
     }
 
 
@@ -78,6 +79,7 @@ export class GamePadListener {
                 if (this.buttons[i] == State.Up ||
                     this.buttons[i] == State.Released) {
                     
+                    this.anyPressed = true;
                     this.buttons[i] = State.Pressed;
                 }
                 else {
@@ -151,7 +153,7 @@ export class GamePadListener {
 
     update() {
 
-        // this.anyPressed = false;
+        this.anyPressed = false;
 
         this.stick.x = 0.0;
         this.stick.y = 0.0;

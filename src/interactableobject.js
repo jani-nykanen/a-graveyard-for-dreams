@@ -36,7 +36,7 @@ export class InteractableObject {
     playerEvent(pl, ev) {}
 
 
-    playerCollision(pl, ev) {
+    playerCollision(message, pl, ev) {
 
         if (this.disabled || !this.inCamera || pl.dying) 
             return false;
@@ -48,7 +48,6 @@ export class InteractableObject {
 
         if (pl.overlay(this.pos.x-8, this.pos.y-8, 16, 16)) {
 
-
             this.playerCollisionEvent(pl, ev);
 
             if (pl.canJump) {
@@ -56,7 +55,7 @@ export class InteractableObject {
                 pl.showInteractionArrow();
 
                 if (ev.input.upPress())
-                    this.triggerEvent(pl, ev);
+                    this.triggerEvent(message, pl, ev);
             }
             return true;
         }   

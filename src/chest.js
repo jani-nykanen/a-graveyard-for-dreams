@@ -68,7 +68,7 @@ export class Chest extends InteractableObject {
     }
 
     
-    triggerEvent(pl, ev) {
+    triggerEvent(message, pl, ev) {
 
         if (this.opening) return;
 

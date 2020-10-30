@@ -12,6 +12,7 @@ import { Camera } from "./camera.js";
 import { State } from "./core/input.js";
 import { TransitionType } from "./core/transition.js";
 import { RGB } from "./core/vector.js";
+import { MessageBox } from "./messagebox.js";
 
 
 export class Game extends Scene {
@@ -29,6 +30,7 @@ export class Game extends Scene {
 
         this.progress = new GameProgress();
 
+        this.message = new MessageBox();
         this.objects = new ObjectManager(this.progress);
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
@@ -102,6 +104,12 @@ export class Game extends Scene {
 
         if (ev.tr.active) return;
 
+        if (this.message.active) {
+
+            this.message.update(ev);
+            return; 
+        }
+
         // TEMP
         if (ev.input.actions["start"].state == State.Pressed) {
 
@@ -121,7 +129,7 @@ export class Game extends Scene {
         }
 
         this.stage.update(this.cam, ev);
-        if (!this.objects.update(this.cam, this.stage, ev)) {
+        if (!this.objects.update(this.cam, this.stage, this.message, ev)) {
 
             ev.tr.activate(true, TransitionType.CircleOutside, 
                 1.0/30.0, 
@@ -164,6 +172,12 @@ export class Game extends Scene {
 
             c.drawText(c.bitmaps["font"], "PAUSED",
                 c.width/2, c.height/2-4, 0, 0, true);
+        }
+
+        if (this.message.active) {
+
+            c.moveTo(0, 0);
+            this.message.draw(c, true);
         }
     }
 }

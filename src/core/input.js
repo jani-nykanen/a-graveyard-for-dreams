@@ -63,6 +63,8 @@ export class InputManager {
 
             window.focus();
         });
+
+        this.anyKeyPressed = false;
     }
 
     
@@ -81,6 +83,8 @@ export class InputManager {
 
     
     keyPressed(key) {
+
+        this.anyKeyPressed = true;
 
         if (this.keyStates[key] != State.Down) 
             this.keyStates[key] = State.Pressed;
@@ -183,6 +187,8 @@ export class InputManager {
     postUpdate() {
 
         this.updateStateArray(this.keyStates);
+
+        this.anyKeyPressed = false;
     }
 
 
@@ -218,6 +224,12 @@ export class InputManager {
         return this.stick.x > 0 && 
             this.oldStick.x <= SPECIAL_EPS &&
             this.stickDelta.x > SPECIAL_EPS;
+    }
+
+
+    anyPressed() {
+
+        return this.anyKeyPressed || this.gamepad.anyPressed;
     }
 
 }

@@ -736,7 +736,7 @@ export class Player extends CollisionObject {
         const MAX_DEATH_TIME = 120;
         const FLICKER_SPEED = 3;
 
-        this.spr.animate(7, 0, 3, FLICKER_SPEED, ev.step);
+        this.spr.animate(7, 0, 2, FLICKER_SPEED, ev.step);
 
         return (this.deathTimer += ev.step) >= MAX_DEATH_TIME;
     }
@@ -767,11 +767,12 @@ export class Player extends CollisionObject {
 
     draw(c) {
 
+        if (!this.exist) return;
+
         if (this.dying) {
 
             this.drawDeath(c);
             this.boomerang.draw(c);
-
             return;
         }
 

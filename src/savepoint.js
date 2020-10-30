@@ -59,9 +59,14 @@ export class Savepoint extends InteractableObject {
     }
 
     
-    triggerEvent(pl, ev) {
+    triggerEvent(message, pl, ev) {
 
         console.log("Not implemented yet.");
+
+        message.addMessage(
+            "Haha lol.\nNot implemented\nyet."
+            ).activate((ev) => {});
+
     }
 
 

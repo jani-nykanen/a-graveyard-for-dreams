@@ -5,20 +5,16 @@
  */
 
 import { Flip } from "./core/canvas.js";
-import { Sprite } from "./core/sprite.js";
-import { Vector2 } from "./core/vector.js";
+import { InteractableObject } from "./interactableobject.js";
 
 
-export class Savepoint {
+export class Savepoint extends InteractableObject {
 
 
     constructor(x, y) {
 
-        this.pos = new Vector2(x, y);
+        super(x, y);
 
-        this.spr = new Sprite(16, 16);
-
-        this.inCamera = true;
         this.active = false;
     }
 
@@ -46,34 +42,32 @@ export class Savepoint {
     }
 
 
-    checkIfInCamera(cam) {
+    playerCollisionEvent(pl, ev) {
 
-        this.inCamera = cam.isObjectInside(this);
+        if (this.active) return;
+
+        this.active = true;
+        pl.checkpoint = this.pos.clone();
+        pl.currentSavepoint = this;
+
+        if (ev != null) {
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["savepoint"], 0.60);
+        }
+   
+    }
+
+    
+    triggerEvent(pl, ev) {
+
+        console.log("Not implemented yet.");
     }
 
 
-    playerCollision(pl, ev) {
+    playerEvent(pl, ev) {
 
         this.active = pl.currentSavepoint == this;
-
-        if (this.active || !this.inCamera || pl.dying) 
-            return false;
-
-        if (pl.overlay(this.pos.x-8, this.pos.y-8, 16, 16)) {
-
-            this.active = true;
-            pl.checkpoint = this.pos.clone();
-            pl.currentSavepoint = this;
-
-            if (ev != null) {
-
-                // Sound effect
-                ev.audio.playSample(ev.assets.samples["savepoint"], 0.60);
-            }
-
-            return true;
-        }   
-        return false;     
     }
 
 }

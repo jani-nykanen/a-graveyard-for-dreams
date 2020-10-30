@@ -366,11 +366,11 @@ export class Stage {
 
         if ((colValue & WALL_RIGHT) == WALL_RIGHT) {
 
-            o.wallCollision((x+1)*16, y*16, 16, -1, ev);
+            o.wallCollision((x+1)*16, y*16, 16, -1, ev, false);
         }
         if ((colValue & WALL_LEFT) == WALL_LEFT) {
 
-            o.wallCollision(x*16, y*16, 16, 1, ev);
+            o.wallCollision(x*16, y*16, 16, 1, ev, false);
         }
     }
 

@@ -295,13 +295,13 @@ export class Enemy extends CollisionObject {
 			x = cam.rpos.x * cam.width;
 			y = cam.rpos.y * cam.height;
 
-            this.wallCollision(x, y, cam.height, -1, ev);
-            this.wallCollision(x + cam.width, y, cam.height, 1, ev);    
+            this.wallCollision(x, y, cam.height, -1, ev, true);
+            this.wallCollision(x + cam.width, y, cam.height, 1, ev, true);    
 				
 			if (this.takeExtraCollisions) {
 
-				this.floorCollision(x, y + cam.height, cam.width, ev);
-				this.ceilingCollision(x, y, cam.width, ev);
+				this.floorCollision(x, y + cam.height, cam.width, ev, true);
+				this.ceilingCollision(x, y, cam.width, ev, true);
 			}
 		}
 	}

@@ -2047,6 +2047,8 @@ export class Crystal extends Enemy {
 		this.waitTimer = 0;
 
 		this.oldFrame = 0;
+
+		this.takeExtraCollisions = true;
 	}
 
 	

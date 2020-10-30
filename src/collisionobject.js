@@ -30,7 +30,7 @@ export class CollisionObject extends GameObject {
     ceilingCollisionEvent(x, y, w, ev) {}
 
 
-    floorCollision(x, y, w, ev) {
+    floorCollision(x, y, w, ev, force) {
 
         const H_MARGIN = 1;
 
@@ -38,7 +38,7 @@ export class CollisionObject extends GameObject {
         const BOTTOM_MARGIN = 2;
         
         if (!this.inCamera ||
-            this.disableCollisions ||
+            (!force && this.disableCollisions) ||
             !this.exist || this.dying || this.speed.y < 0) 
             return false;
 
@@ -68,7 +68,7 @@ export class CollisionObject extends GameObject {
     }
 
 
-    ceilingCollision(x, y, w, ev) {
+    ceilingCollision(x, y, w, ev, force) {
 
         const H_MARGIN = 1;
 
@@ -76,7 +76,7 @@ export class CollisionObject extends GameObject {
         const BOTTOM_MARGIN = 1;
         
         if (!this.inCamera ||
-            this.disableCollisions ||
+            (!force && this.disableCollisions) ||
             !this.exist || this.dying || this.speed.y > 0) 
             return false;
 
@@ -106,7 +106,7 @@ export class CollisionObject extends GameObject {
     }
 
 
-    wallCollision(x, y, h, dir, ev) {
+    wallCollision(x, y, h, dir, ev, force) {
 
         const V_MARGIN = 1;
 
@@ -114,7 +114,7 @@ export class CollisionObject extends GameObject {
         const FAR_MARGIN = 2;
         
         if (!this.inCamera ||
-            this.disableCollisions ||
+            (!force && this.disableCollisions) ||
             !this.exist || this.dying || 
             this.speed.x*dir < 0) 
             return false;

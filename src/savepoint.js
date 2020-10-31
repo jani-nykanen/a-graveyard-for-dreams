@@ -60,10 +60,7 @@ export class Savepoint extends InteractableObject {
 
     
     triggerEvent(message, pl, ev) {
-
-        // TODO: Store messages to a JSON document 
-        const QUESTION = "Save your\nprogress?";
-
+        
         message.addMessage(
             "Save your\nprogress? This\nwill override\nthe old save.",
             ).activate((ev) => {

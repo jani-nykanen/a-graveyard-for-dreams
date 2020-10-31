@@ -59,10 +59,17 @@ export class ObjectManager {
                     this.interactableObjects.push(new Savepoint(x*16+8, y*16+8));
                     break;
 
-                // Chest
+                // Health chest
                 case 33:
 
                     this.interactableObjects.push(new Chest(x*16+8, y*16+8, -1));
+                    break;
+                
+                // Item chest
+                case 34:
+
+                    // TODO: Get item ID somewhere
+                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, 0));
                     break;
 
                 default:

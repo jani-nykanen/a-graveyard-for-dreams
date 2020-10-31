@@ -71,7 +71,9 @@ export class Chest extends InteractableObject {
 
         ev.audio.pauseMusic();
 
-        message.addMessage("You obtain a\nheart container!")
+        message.addMessage(
+                this.isHealth ? "You obtain a\nheart container!" : 
+                    "You obtain a\ndummy item!")
             .addStartCondition((ev) => {
 
                 const ITEM_WAIT = 60;

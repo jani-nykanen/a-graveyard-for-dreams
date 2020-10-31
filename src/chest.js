@@ -23,7 +23,9 @@ export class Chest extends InteractableObject {
 
         this.flip = Flip.None;
 
-        this.spr.setFrame(0, this.isHealth ? 2 : 0);
+        this.spr.setFrame(
+            (((x / 16) | 0) + ((y / 16) | 0)) % 4, 
+            this.isHealth ? 2 : 0);
 
         this.itemWaitTime = 0;
     }

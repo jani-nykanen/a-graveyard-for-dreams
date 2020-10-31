@@ -129,6 +129,8 @@ export class MessageBox {
         this.ready = false;
         this.confirm = confirm;
         this.finished = false;
+
+        this.confirmationMenu.activate(1);
     }
 
 

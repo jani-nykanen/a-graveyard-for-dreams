@@ -11,6 +11,7 @@ import { Collectible } from "./collectible.js";
 import { clamp, nextObject } from "./core/util.js";
 import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
+import { NPC } from "./npc.js";
 import { Player } from "./player.js";
 import { Savepoint } from "./savepoint.js";
 
@@ -70,6 +71,13 @@ export class ObjectManager {
 
                     // TODO: Get item ID somewhere
                     this.interactableObjects.push(new Chest(x*16+8, y*16+8, 0));
+                    break;
+
+                // NPC
+                case 35:
+
+                    // TODO: Get NPC ID somewhere
+                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, 0));
                     break;
 
                 default:

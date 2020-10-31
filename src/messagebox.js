@@ -6,6 +6,7 @@
 
 
 import { Vector2 } from "./core/vector.js";
+import { Menu, MenuButton } from "./menu.js";
 
 
 export function drawBoxWithOutlines(c, x, y, w, h) {
@@ -49,6 +50,25 @@ export class MessageBox {
         
         this.ready = false;
         this.startEvent = (ev) => true;
+
+        this.confirmationMenu = new Menu(
+            12, true,
+            [
+                new MenuButton("Yes", (ev) => {
+
+                    this.deactivate();
+                    this.acceptCb(ev);
+                    
+                }, false),
+                new MenuButton("No", (ev) => {
+
+                    this.deactivate();
+                    
+                }, true)
+            ]
+        );
+        this.confirm = false;
+        this.finished = false;
     }
 
 
@@ -96,7 +116,7 @@ export class MessageBox {
 
 
 
-    activate(acceptCb) {
+    activate(acceptCb, confirm) {
 
         this.active = true;
         this.charTimer = 0;
@@ -107,6 +127,8 @@ export class MessageBox {
         this.acceptCb = acceptCb;
         
         this.ready = false;
+        this.confirm = confirm;
+        this.finished = false;
     }
 
 
@@ -126,6 +148,9 @@ export class MessageBox {
             if (!this.ready)
                 return;
         }
+
+        this.finished = this.charPos == this.queue[0].length &&
+            this.queue.length == 1;
 
         if (this.charPos < this.queue[0].length) {
 
@@ -153,30 +178,37 @@ export class MessageBox {
         }
         else {
 
-            if (action) {
+            if (this.queue.length == 1 && this.confirm) {
 
-                this.queue.shift();
-                this.sizes.shift();
-
-                this.charPos = 0;
-                this.charTimer = 0;
-
-                ev.audio.playSample(ev.assets.samples["next"], 0.60);
-
-                if (this.queue.length == 0) {
-
-                    this.deactivate();
-                }
-
-                if (this.acceptCb != null) {
-
-                    this.acceptCb(ev);
-                }
+                this.confirmationMenu.update(ev);
             }
+            else { 
+                
+                if (action) {
 
-            this.endSymbolWave = 
-                (this.endSymbolWave + FLOAT_SPEED*ev.step) % 
-                (Math.PI*2);
+                    this.queue.shift();
+                    this.sizes.shift();
+
+                    this.charPos = 0;
+                    this.charTimer = 0;
+
+                    ev.audio.playSample(ev.assets.samples["next"], 0.60);
+
+                    if (this.queue.length == 0) {
+
+                        this.deactivate();
+                    }
+
+                    if (this.acceptCb != null) {
+
+                        this.acceptCb(ev);
+                    }
+                }
+
+                this.endSymbolWave = 
+                    (this.endSymbolWave + FLOAT_SPEED*ev.step) % 
+                    (Math.PI*2);
+            }
         }
     }
 
@@ -201,16 +233,27 @@ export class MessageBox {
 
             drawBoxWithOutlines(c, tx, ty, w, h);
         }
-
-        // Draw current message
         c.drawText(c.bitmaps.font, 
             this.queue[0].substr(0, this.charPos),
             tx + CORNER_OFF, ty + CORNER_OFF,
             TEXT_OFF_X, TEXT_OFF_Y, false);
 
-        // Draw finish symbol
-        let  y;
-        if (this.charPos == this.queue[0].length) {
+        let x, y, cw, ch;
+
+        // "Yes"/"No"
+        if (this.finished && this.confirm) {
+
+            x = tx + w - 20;
+            y = ty + h + 14;
+
+            cw = 32;
+            ch = 24;
+
+            drawBoxWithOutlines(c, x - cw/2, y - ch/2 -2, cw, ch);
+            this.confirmationMenu.draw(c, x, y);
+        }
+        // "Ready" symbol
+        else if (this.charPos == this.queue[0].length) {
 
             y = Math.round(Math.sin(this.endSymbolWave) * SYMBOL_AMPLITUDE) | 0;
             c.drawBitmapRegion(
@@ -219,6 +262,7 @@ export class MessageBox {
                 tx + w - 8, 
                 ty + h - 4 + y, false);
         }
+
     }
 
 

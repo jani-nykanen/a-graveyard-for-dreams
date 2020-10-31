@@ -11,10 +11,12 @@ import { State } from "./core/input.js";
 
 export class MenuButton {
 
-    constructor(text, cb) {
+    constructor(text, cb, deny) {
 
         this.text = text;
         this.cb = cb;
+
+        this.deny = deny;
     }
 }
 
@@ -86,7 +88,7 @@ export class Menu {
 
                 b.cb(ev);
             }
-            ev.audio.playSample(ev.assets.samples["accept"], 0.60);
+            ev.audio.playSample(ev.assets.samples[b.deny ? "deny" : "accept"], 0.60);
         }
     }
 

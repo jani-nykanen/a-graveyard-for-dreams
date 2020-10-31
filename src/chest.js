@@ -112,7 +112,7 @@ export class Chest extends InteractableObject {
 
                     pl.progress.addMaxHealth(1);
                 }
-            });
+            }, false);
     }
 
 

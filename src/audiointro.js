@@ -26,15 +26,13 @@ export class AudioIntro extends Scene {
 
                         ev.changeScene(Game);
                         
-                    }
-                ),
+                    }, false),
                 new MenuButton(
                     "NO", (ev) => {
 
                         ev.audio.toggle(false);
                         ev.changeScene(Game);
-                    }
-                )
+                    }, true)
             ]);
     }
 

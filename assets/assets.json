@@ -13,6 +13,7 @@
         {"name": "bullets",  "path": "bullets.png"},
         {"name": "savepoint",  "path": "savepoint.png"},
         {"name": "chest",  "path": "chest.png"},
+        {"name": "items",  "path": "items.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 
@@ -51,6 +52,7 @@
         {"name": "pause",  "path": "pause.wav"},
         {"name": "blob",  "path": "blob.wav"},
         {"name": "activate",  "path": "activate.wav"},
+        {"name": "treasure",  "path": "treasure.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ]

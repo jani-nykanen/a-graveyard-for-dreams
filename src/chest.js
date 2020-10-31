@@ -24,6 +24,8 @@ export class Chest extends InteractableObject {
         this.flip = Flip.None;
 
         this.spr.setFrame(0, this.isHealth ? 2 : 0);
+
+        this.itemWaitTime = 0;
     }
 
 
@@ -67,24 +69,50 @@ export class Chest extends InteractableObject {
 
         this.spr.setFrame(0, this.isHealth ? 3 : 1);
 
-        message.addMessage("It's empty.")
+        ev.audio.pauseMusic();
+
+        message.addMessage("You obtain a\nheart container!")
             .addStartCondition((ev) => {
 
+                const ITEM_WAIT = 60;
                 const OPEN_SPEED = 6;
+                const OPEN_WAIT = 30;
+
+                if (this.itemWaitTime > 0) {
+
+                    return (this.itemWaitTime -= ev.step) <= 0;
+                }
 
                 let row = this.isHealth ? 2 : 0;
 
                 this.spr.animate(row + 1, 
-                    0, 3, OPEN_SPEED, ev.step);
+                    0, 4, this.spr.frame == 3 ? OPEN_WAIT : OPEN_SPEED, 
+                    ev.step);
     
-                if (this.spr.frame == 3) {
+                if (this.spr.frame == 4) {
     
                     this.opened = true;
                     this.opening = false;
+
+                    this.itemWaitTime = ITEM_WAIT;
+
+                    this.spr.setFrame(3, row+1);
+
+                    pl.setObtainItemPose(this.itemId);
+
+                    // Sound effect
+                    ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
                 }
-                return this.spr.frame >= 3;
+                return false;
             })
-            .activate((ev) => {});
+            .activate((ev) => {
+                ev.audio.resumeMusic();
+
+                if (this.itemId < 0) {
+
+                    pl.progress.addMaxHealth(1);
+                }
+            });
     }
 
 

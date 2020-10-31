@@ -89,6 +89,8 @@ export class Player extends CollisionObject {
 
         this.showArrow = false;
         this.showArrowTimer = 0.0;
+
+        this.obtainedItem = -1;
     }
 
 
@@ -728,6 +730,7 @@ export class Player extends CollisionObject {
         this.canJump = false;
         this.touchWall = false;
         this.showArrow = false;
+        this.obtainedItem = -1;
     }
 
 
@@ -814,6 +817,13 @@ export class Player extends CollisionObject {
             this.spr.drawFrame(c, c.bitmaps["figure"],
                 3 + Math.floor(this.showArrowTimer/0.5),
                 7, px, py - 16, Flip.None);
+        }
+
+        if (this.obtainedItem >= 0) {
+
+            c.drawBitmapRegion(c.bitmaps["items"],
+                this.obtainedItem*16, 0, 16, 16,
+                px, py-16, Flip.None);
         }
     }
 
@@ -1166,5 +1176,13 @@ export class Player extends CollisionObject {
         this.flip = dir > 0 ? Flip.Horizontal : Flip.None;
 
         this.spr.setFrame(4, 6);
+    }
+
+
+    setObtainItemPose(itemId) {
+
+        this.spr.setFrame(0, 8);
+
+        this.obtainedItem = Math.max(itemId+1, 0);
     }
 }

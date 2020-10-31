@@ -43,6 +43,13 @@ export class GameProgress {
     }
 
 
+    addMaxHealth(amount) {
+
+        this.health += amount * 2;
+        this.maxHealth += amount * 2;
+    }
+
+
     getHealthRatio() {
 
         return this.health / this.maxHealth;

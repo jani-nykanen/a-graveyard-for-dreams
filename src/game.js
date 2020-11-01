@@ -31,7 +31,7 @@ export class Game extends Scene {
 
         this.progress = new GameProgress();
 
-        this.message = new MessageBox();
+        this.message = new MessageBox(ev);
         this.objects = new ObjectManager(this.progress);
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
@@ -40,7 +40,7 @@ export class Game extends Scene {
 
                 this.objects.killPlayer(ev);
             }, 
-            ev => {}, ev);
+            ev => {ev.audio.resumeMusic();}, ev);
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);

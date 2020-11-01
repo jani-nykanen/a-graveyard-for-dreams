@@ -16,7 +16,7 @@ export class PauseMenu {
 
         let loc = ev.assets.localization["en"];
 
-        this.message = new MessageBox();
+        this.message = new MessageBox(ev);
         this.menu = new Menu(12, true,
         [
 
@@ -27,17 +27,17 @@ export class PauseMenu {
 
             new MenuButton(loc["respawn"], (ev) => {
 
-                this.showRespawnMessage();
+                this.showRespawnMessage(ev);
             }, false),
 
             new MenuButton(loc["quit"], (ev) => {
 
-                quitCB(ev);
-                this.deactivate(ev);
+                this.showQuitMessage(ev);
             }, false),
         ]);
 
         this.resetCB = resetCB;
+        this.quitCB = quitCB;
 
         this.active = false;
     }
@@ -59,12 +59,29 @@ export class PauseMenu {
     }
 
 
-    showRespawnMessage() {
+    showRespawnMessage(ev) {
 
-        this.message.addMessage("Respawn in the\nlatest check-\npoint?")
+        let loc = ev.assets.localization["en"];
+
+        this.message.addMessage(loc["respawnText"])
             .activate((ev) => {
 
                 this.resetCB(ev);
+
+                this.menu.deactivate();
+                this.active = false;
+            }, true);
+    }
+
+
+    showQuitMessage(ev) {
+
+        let loc = ev.assets.localization["en"];
+
+        this.message.addMessage(loc["quitText"])
+            .activate((ev) => {
+
+                this.quitCB(ev);
 
                 this.menu.deactivate();
                 this.active = false;

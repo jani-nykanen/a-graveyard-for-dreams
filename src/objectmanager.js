@@ -318,6 +318,9 @@ export class ObjectManager {
 
     killPlayer(ev) {
 
+        if (this.player.dying || !this.player.exist)
+            return;
+
         this.player.kill(ev);
     }
 }

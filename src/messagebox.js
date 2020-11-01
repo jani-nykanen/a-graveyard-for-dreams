@@ -13,7 +13,9 @@ import { drawBoxWithOutlines } from "./misc.js";
 export class MessageBox {
 
 
-    constructor() {
+    constructor(ev) {
+
+        let loc = ev.assets.localization["en"]; 
 
         this.queue = new Array();
         this.sizes = new Array();
@@ -34,13 +36,13 @@ export class MessageBox {
         this.confirmationMenu = new Menu(
             12, true,
             [
-                new MenuButton("Yes", (ev) => {
+                new MenuButton(loc["yes"], (ev) => {
 
                     this.deactivate();
                     this.acceptCb(ev);
                     
                 }, false),
-                new MenuButton("No", (ev) => {
+                new MenuButton(loc["no"], (ev) => {
 
                     this.deactivate();
                     

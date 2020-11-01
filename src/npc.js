@@ -45,10 +45,15 @@ export class NPC extends InteractableObject {
     
     triggerEvent(message, pl, ev) {
 
-        message.addMessage(
-            "I am an NPC.\nIt means that\nI cannot hurt\nyou and you\ncannot hurt me.")
-            .addMessage("It sucks, I\nknow. I would\nkill you if\nI could.")
-            .activate((ev) => {}, false);
+        let loc = ev.assets.localization["en"];
+
+        let msg = loc["npc" + String(this.messageId)];
+
+        for (let m of msg) {
+
+            message.addMessage(m);
+        }
+        message.activate((ev) => {}, false);
     }
 
 

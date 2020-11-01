@@ -101,13 +101,16 @@ export class Menu {
         let ty = dy - this.height/2;
 
         // Draw buttons
-        let str;
+        let str = "";
+        let font = "";
         for (let i = 0; i < this.buttons.length; ++ i) {
+
+            font = this.cpos == i ? "fontYellow" : "font";
 
             str = this.cpos == i ? "@" : " ";
             str += this.buttons[i].text;
 
-            c.drawText(c.bitmaps["font"], str,
+            c.drawText(c.bitmaps[font], str,
                 tx, ty + i*this.offset,
                 0, 0, 
                 false);

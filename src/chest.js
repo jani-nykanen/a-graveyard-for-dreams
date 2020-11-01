@@ -63,6 +63,8 @@ export class Chest extends InteractableObject {
 
         if (this.opening) return;
 
+        let loc = ev.assets.localization["en"];
+
         pl.setCrouchPose(this.pos.x, this.pos.y, 
             pl.pos.x < this.pos.x ? -1 : 1, OFFSET);
 
@@ -73,10 +75,16 @@ export class Chest extends InteractableObject {
 
         ev.audio.pauseMusic();
 
-        message.addMessage(
-                this.isHealth ? "You obtain a\nheart container!" : 
-                    "You obtain a\ndummy item!")
-            .addStartCondition((ev) => {
+        let itemIdStr = this.isHealth ? "Heart" : String(this.itemId);
+
+        // Add obtain text and description to the message queue
+        message.addMessage(loc["obtain"] + " " + loc["itemName" +  itemIdStr]);
+        for (let m of loc["itemDesc" + itemIdStr]) {
+
+            message.addMessage(m);
+        }
+
+        message.addStartCondition((ev) => {
 
                 const ITEM_WAIT = 60;
                 const OPEN_SPEED = 6;

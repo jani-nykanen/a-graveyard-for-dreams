@@ -4,5 +4,17 @@
 
     "resume": "Resume",
     "respawn": "Respawn",
-    "quit": "Quit"
+    "quit": "Quit",
+
+    "respawnText": "Respawn in the\nlatest check-\npoint?",
+    "quitText": "Return to the\nmain menu?\nYou will lose\nyour progress!",
+
+    "obtain": "You obtain",
+    "itemNameHeart": "a\nHEART CONTAINER!",
+    "itemDescHeart": ["It increases\nyour health\nby one."],
+
+    "npc0": ["I am the\ndefault NPC.", "Hopefully you\nwon't find me\nin the final\nversion."],
+
+    "itemName0": "a\nDUMMY ITEM!",
+    "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."]
 }

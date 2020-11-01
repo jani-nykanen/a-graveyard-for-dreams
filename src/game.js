@@ -40,7 +40,7 @@ export class Game extends Scene {
 
                 this.objects.killPlayer(ev);
             }, 
-            ev => {});
+            ev => {}, ev);
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
@@ -174,15 +174,6 @@ export class Game extends Scene {
 
         c.moveTo();
         this.drawHUD(c);
-
-        if (this.paused) {
-
-            c.setColor(0, 0, 0, 0.67);
-            c.fillRect(0, 0, c.width, c.height);
-
-            c.drawText(c.bitmaps["font"], "PAUSED",
-                c.width/2, c.height/2-4, 0, 0, true);
-        }
 
         if (this.message.active) {
 

@@ -17,7 +17,8 @@ export class AssetPack {
         this.tilemaps = {};
         this.samples = {};
         this.music = {};
-
+        this.localization = {};
+        
         this.total = 0;
         this.loaded = 0;
 
@@ -98,6 +99,15 @@ export class AssetPack {
                 data["samplePath"] +  data["samples"][k]["path"]
             );
         }
+
+        // Localization
+        for (let k in data["localization"]) {
+
+            this.loadLocalization(
+                data["localization"][k]["name"],
+                data["localizationPath"] +  data["localization"][k]["path"]
+            );
+        }
     }
 
 
@@ -146,6 +156,18 @@ export class AssetPack {
             });
         }
         xobj.send(null);
+    }
+
+
+    loadLocalization(name, path) {
+
+        ++ this.total;
+        
+        this.loadTextfile(path, "xml", (str) => {
+
+            this.localization[name] = JSON.parse(str);
+            ++ this.loaded;
+        });
     }
 
 

@@ -12,23 +12,25 @@ import { drawBoxWithOutlines } from "./misc.js";
 export class PauseMenu {
 
 
-    constructor(resetCB, quitCB) {
+    constructor(resetCB, quitCB, ev) {
+
+        let loc = ev.assets.localization["en"];
 
         this.message = new MessageBox();
         this.menu = new Menu(12, true,
         [
 
-            new MenuButton("Resume", (ev) => {
+            new MenuButton(loc["resume"], (ev) => {
 
                 this.deactivate(ev);
             }, false),
 
-            new MenuButton("Respawn", (ev) => {
+            new MenuButton(loc["respawn"], (ev) => {
 
                 this.showRespawnMessage();
             }, false),
 
-            new MenuButton("Quit", (ev) => {
+            new MenuButton(loc["quit"], (ev) => {
 
                 quitCB(ev);
                 this.deactivate(ev);

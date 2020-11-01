@@ -314,4 +314,10 @@ export class ObjectManager {
             o.playerCollision(null, this.player, null);
         }
     }
+
+
+    killPlayer(ev) {
+
+        this.player.kill(ev);
+    }
 }

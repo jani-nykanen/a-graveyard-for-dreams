@@ -54,7 +54,7 @@ export class Menu {
     }
 
 
-    disable() {
+    deactivate() {
 
         this.active = false;
     }

@@ -13,6 +13,7 @@ import { State } from "./core/input.js";
 import { TransitionType } from "./core/transition.js";
 import { RGB } from "./core/vector.js";
 import { MessageBox } from "./messagebox.js";
+import { PauseMenu } from "./pausemenu.js";
 
 
 export class Game extends Scene {
@@ -35,7 +36,11 @@ export class Game extends Scene {
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
         
-        this.paused = false;
+        this.pauseMenu = new PauseMenu(ev => {
+
+                this.objects.killPlayer(ev);
+            }, 
+            ev => {});
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
@@ -59,6 +64,16 @@ export class Game extends Scene {
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
+    }
+
+
+    resetTransition(ev) {
+
+        ev.tr.activate(true, TransitionType.CircleOutside, 
+            1.0/30.0, 
+            (ev) => this.reset(ev), 
+            new RGB(0, 0, 0));
+        this.objects.centerTransition(ev.tr);
     }
 
 
@@ -110,33 +125,28 @@ export class Game extends Scene {
             return; 
         }
 
-        // TEMP
-        if (ev.input.actions["start"].state == State.Pressed) {
+        if (this.pauseMenu.active) {
 
-            this.paused = !this.paused;
-            if (this.paused)
-                ev.audio.pauseMusic();
-            else
-                ev.audio.resumeMusic();
-
-            // Sound effect
-			ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+            this.pauseMenu.update(ev);
+            return;
         }
 
-        if (this.paused) {
+        if (ev.input.actions["start"].state == State.Pressed) {
+
+            this.pauseMenu.activate();
+            ev.audio.pauseMusic();
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["pause"], 0.60);
             
             return;
         }
 
+
         this.stage.update(this.cam, ev);
         if (!this.objects.update(this.cam, this.stage, this.message, ev)) {
 
-            ev.tr.activate(true, TransitionType.CircleOutside, 
-                1.0/30.0, 
-                (ev) => this.reset(ev), 
-                new RGB(0, 0, 0));
-            this.objects.centerTransition(ev.tr);
-
+            this.resetTransition(ev);
             return;
         }
         this.cam.update(ev);
@@ -179,5 +189,7 @@ export class Game extends Scene {
             c.moveTo(0, 0);
             this.message.draw(c, true);
         }
+
+        this.pauseMenu.draw(c);
     }
 }

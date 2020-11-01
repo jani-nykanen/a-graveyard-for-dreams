@@ -14,6 +14,7 @@ import { TransitionType } from "./core/transition.js";
 import { RGB } from "./core/vector.js";
 import { MessageBox } from "./messagebox.js";
 import { PauseMenu } from "./pausemenu.js";
+import { TitleScreen } from "./titlescreen.js";
 
 
 export class Game extends Scene {
@@ -40,7 +41,10 @@ export class Game extends Scene {
 
                 this.objects.killPlayer(ev);
             }, 
-            ev => {ev.audio.resumeMusic();}, ev);
+            ev => {
+                
+                this.quit(ev);
+            }, ev);
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
@@ -74,6 +78,20 @@ export class Game extends Scene {
             (ev) => this.reset(ev), 
             new RGB(0, 0, 0));
         this.objects.centerTransition(ev.tr);
+    }
+
+
+    quit(ev) {
+
+        ev.tr.activate(true, TransitionType.VerticalBar, 
+            1.0/30.0, 
+            (ev) => {
+
+                ev.changeScene(TitleScreen);
+                ev.tr.deactivate();
+            },
+            new RGB(0, 0, 0));
+
     }
 
 

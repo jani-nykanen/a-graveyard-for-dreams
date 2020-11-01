@@ -1,6 +1,12 @@
 {
+    "audiointro": "Enable audio?\nPress enter\nto confirm.",
+    
     "yes": "Yes",
     "no": "No",
+
+    "newgame": "New Game",
+    "continue": "Load Game",
+    "copyright": "©2020 Jani Nykänen",
 
     "resume": "Resume",
     "respawn": "Respawn",
@@ -16,5 +22,8 @@
     "npc0": ["I am the\ndefault NPC.", "Hopefully you\nwon't find me\nin the final\nversion."],
 
     "itemName0": "a\nDUMMY ITEM!",
-    "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."]
+    "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."],
+
+    "saveGame": "Save your\nprogress? This\nwill overwrite\nthe old save.",
+    "badResult": "Not implemented\nyet. Sorry."
 }

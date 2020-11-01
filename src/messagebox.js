@@ -180,13 +180,13 @@ export class MessageBox {
 
                     if (this.queue.length == 0) {
 
+                        if (this.acceptCb != null) {
+
+                            this.acceptCb(ev);
+                        }
                         this.deactivate();
                     }
 
-                    if (this.acceptCb != null) {
-
-                        this.acceptCb(ev);
-                    }
                 }
 
                 this.endSymbolWave = 

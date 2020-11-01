@@ -61,13 +61,13 @@ export class Savepoint extends InteractableObject {
     
     triggerEvent(message, pl, ev) {
         
+        let loc = ev.assets.localization["en"];
+
         message.addMessage(
-            "Save your\nprogress? This\nwill override\nthe old save.",
+            loc["saveGame"],
             ).activate((ev) => {
 
-                message.addMessage(
-                    "Not implemented\nyet. Sorry."
-                ).activate(ev => {}, false) 
+                message.addMessage(loc["badResult"]).activate(ev => {}, false) 
 
         }, true);
 

@@ -13,6 +13,7 @@ export const TransitionType = {
     Empty: -1,
     Fade: 0,
     CircleOutside: 1,
+    VerticalBar: 2,
 }
 
 
@@ -100,11 +101,10 @@ export class Transition {
         let cx = this.center.x;
         let cy = this.center.y;
 
+        
         switch(this.mode) {
 
         case TransitionType.Fade:
-
-            // TODO: Implement dithering here
 
             if (this.param != null) {
 
@@ -131,6 +131,15 @@ export class Transition {
 
             break;
 
+        case TransitionType.VerticalBar:
+
+            r = Math.round(c.height/2 * t);
+            c.setColor(this.color.r, this.color.g, this.color.b);
+            c.fillRect(0, 0, c.width, r);
+            c.fillRect(0, c.height-r, c.width, r);
+
+            break;
+
         default:
             break;
         }
@@ -139,7 +148,7 @@ export class Transition {
     }
 
 
-    disable() {
+    deactivate() {
 
         this.active = false;
     }

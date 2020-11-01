@@ -16,10 +16,12 @@ export class AudioIntro extends Scene {
 
         super(ev, param);
 
+        let loc = ev.assets.localization["en"];
+
         this.menu = new Menu(12, true,
             [
                 new MenuButton(
-                    "YES", (ev) => {
+                    loc["yes"], (ev) => {
 
                         ev.audio.toggle(true);
                         ev.audio.setGlobalSampleVolume(0.60);   
@@ -28,12 +30,14 @@ export class AudioIntro extends Scene {
                         
                     }, false),
                 new MenuButton(
-                    "NO", (ev) => {
+                    loc["no"], (ev) => {
 
                         ev.audio.toggle(false);
                         ev.changeScene(Game);
                     }, true)
             ]);
+
+        this.questionText = loc["audiointro"];
     }
 
 
@@ -48,7 +52,7 @@ export class AudioIntro extends Scene {
         c.clear(0, 85, 170);
 
         c.drawText(c.bitmaps["font"],
-            "ENABLE AUDIO?\nPRESS ENTER\nTO CONFIRM.",
+            this.questionText,
             32, c.height/2 - 32, 0, 2, false);
 
         this.menu.draw(c, c.width/2, c.height/2+16);

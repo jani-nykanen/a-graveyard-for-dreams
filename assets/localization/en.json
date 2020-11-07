@@ -16,13 +16,20 @@
     "quitText": "Return to the\nmain menu?\nYou will lose\nyour progress!",
 
     "obtain": "You obtain",
-    "itemNameHeart": "a\nHEART CONTAINER!",
-    "itemDescHeart": ["It increases\nyour health\nby one."],
 
-    "npc0": ["I am the\ndefault NPC.", "Hopefully you\nwon't find me\nin the final\nversion."],
+    "heartName": "a\nHEART CONTAINER!",
+    "heartDesc": ["It increases\nyour health\nby one."],
 
     "itemName0": "a\nDUMMY ITEM!",
     "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."],
+
+    "keyName": "an\nOLD KEY!",
+    "keyDesc": ["It's pretty\nfragile, but it\ncan be used to\nopen one door."],
+
+    "orbName": "a\nDREAM ORB!",
+    "orbDesc": ["It's smooth and\nmysterious! Just\nlike Uranus!"],
+
+    "npc0": ["I am the\ndefault NPC.", "Hopefully you\nwon't find me\nin the final\nversion."],
 
     "saveGame": "Save your\nprogress? This\nwill overwrite\nthe old save.",
     "badResult": "Not implemented\nyet. Sorry."

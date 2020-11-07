@@ -90,7 +90,7 @@ export class Player extends CollisionObject {
         this.showArrow = false;
         this.showArrowTimer = 0.0;
 
-        this.obtainedItem = -1;
+        this.obtainedItem = null;
     }
 
 
@@ -730,7 +730,7 @@ export class Player extends CollisionObject {
         this.canJump = false;
         this.touchWall = false;
         this.showArrow = false;
-        this.obtainedItem = -1;
+        this.obtainedItem = null;
     }
 
 
@@ -819,10 +819,12 @@ export class Player extends CollisionObject {
                 7, px, py - 16, Flip.None);
         }
 
-        if (this.obtainedItem >= 0) {
+        if (this.obtainedItem != null) {
 
             c.drawBitmapRegion(c.bitmaps["items"],
-                this.obtainedItem*16, 0, 16, 16,
+                this.obtainedItem.x*16, 
+                this.obtainedItem.y*16, 
+                16, 16,
                 px, py-16, Flip.None);
         }
     }
@@ -1179,10 +1181,10 @@ export class Player extends CollisionObject {
     }
 
 
-    setObtainItemPose(itemId) {
+    setObtainItemPose(type, id) {
 
         this.spr.setFrame(0, 8);
 
-        this.obtainedItem = Math.max(itemId+1, 0);
+        this.obtainedItem = new Vector2(id, type);
     }
 }

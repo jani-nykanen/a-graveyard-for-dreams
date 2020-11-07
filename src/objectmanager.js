@@ -60,21 +60,18 @@ export class ObjectManager {
                     this.interactableObjects.push(new Savepoint(x*16+8, y*16+8));
                     break;
 
-                // Health chest
+                // Chests
                 case 33:
-
-                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, -1));
-                    break;
-                
-                // Item chest
                 case 34:
+                case 35:
+                case 36:
 
                     // TODO: Get item ID somewhere
-                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, 0));
+                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, tid-33, 0));
                     break;
 
                 // NPC
-                case 35:
+                case 37:
 
                     // TODO: Get NPC ID somewhere
                     this.interactableObjects.push(new NPC(x*16+8, y*16+8, 0));

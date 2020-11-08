@@ -5,6 +5,7 @@
  */
 
 import { Flip } from "./core/canvas.js";
+import { Vector2 } from "./core/vector.js";
 import { InteractableObject } from "./interactableobject.js";
 
 
@@ -16,6 +17,8 @@ export class Savepoint extends InteractableObject {
         super(x, y);
 
         this.active = false;
+
+        this.hitbox = new Vector2(10, 16);
     }
 
 
@@ -59,7 +62,7 @@ export class Savepoint extends InteractableObject {
     }
 
     
-    triggerEvent(message, pl, ev) {
+    triggerEvent(message, pl, cam, ev) {
         
         let loc = ev.assets.localization["en"];
 
@@ -67,7 +70,7 @@ export class Savepoint extends InteractableObject {
             loc["saveGame"],
             ).activate((ev) => {
 
-                message.addMessage(loc["badResult"]).activate(ev => {}, false) 
+                message.addMessage(loc["badResult"]).activate(ev => {}, false);
 
         }, true);
 

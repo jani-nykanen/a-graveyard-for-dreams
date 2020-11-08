@@ -5,6 +5,7 @@
  */
 
 import { Flip } from "./core/canvas.js";
+import { Vector2 } from "./core/vector.js";
 import { InteractableObject } from "./interactableobject.js";
 
 
@@ -18,6 +19,8 @@ export class NPC extends InteractableObject {
         this.messageId = messageId;
 
         this.spr.setFrame((((x / 16) | 0) + ((y / 16) | 0)) % 4, 0);
+
+        this.hitbox = new Vector2(10, 16);
     }
 
 
@@ -43,7 +46,7 @@ export class NPC extends InteractableObject {
     }
 
     
-    triggerEvent(message, pl, ev) {
+    triggerEvent(message, pl, cam, ev) {
 
         let loc = ev.assets.localization["en"];
 

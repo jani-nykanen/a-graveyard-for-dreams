@@ -1187,4 +1187,19 @@ export class Player extends CollisionObject {
 
         this.obtainedItem = new Vector2(id, type);
     }
+
+
+    setDoorPose(inside) {
+
+        this.spr.setFrame(inside ? 1 : 2, 8);
+    }
+
+
+    moveTo(p, cam) {
+
+        this.pos = p.clone();
+        this.stopMovement();
+
+        cam.setPosition((this.pos.x / 160) | 0, (this.pos.y / 144) | 0);
+    }
 }

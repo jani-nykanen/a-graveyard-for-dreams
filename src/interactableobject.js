@@ -22,6 +22,8 @@ export class InteractableObject {
         this.flip = Flip.None;
 
         this.disabled = false;
+
+        this.hitbox = new Vector2(16, 16);
     }
 
 
@@ -32,11 +34,11 @@ export class InteractableObject {
 
 
     playerCollisionEvent(pl, ev) {}
-    triggerEvent(pl, ev) {}
+    triggerEvent(pl, cam, ev) {}
     playerEvent(pl, ev) {}
 
 
-    playerCollision(message, pl, ev) {
+    playerCollision(message, pl, cam, ev) {
 
         if (this.disabled || !this.inCamera || pl.dying) 
             return false;
@@ -46,7 +48,8 @@ export class InteractableObject {
         if (ev == null) 
             return false;
 
-        if (pl.overlay(this.pos.x-8, this.pos.y-8, 16, 16)) {
+        if (pl.overlay(this.pos.x-this.hitbox.x/2, this.pos.y-this.hitbox.y/2, 
+            this.hitbox.x, this.hitbox.y)) {
 
             this.playerCollisionEvent(pl, ev);
 
@@ -60,7 +63,7 @@ export class InteractableObject {
                     ev.audio.playSample(ev.assets.samples["activate"], 0.50);
 
                     pl.disableArrow();
-                    this.triggerEvent(message, pl, ev);
+                    this.triggerEvent(message, pl, cam, ev);
                 }
             }
             return true;

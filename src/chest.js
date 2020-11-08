@@ -5,6 +5,7 @@
  */
 
 import { Flip } from "./core/canvas.js";
+import { Vector2 } from "./core/vector.js";
 import { InteractableObject } from "./interactableobject.js";
 
 
@@ -35,6 +36,8 @@ export class Chest extends InteractableObject {
             this.type*2);
 
         this.itemWaitTime = 0;
+
+        this.hitbox = new Vector2(12, 16);
     }
 
 
@@ -62,7 +65,7 @@ export class Chest extends InteractableObject {
     }
 
     
-    triggerEvent(message, pl, ev) {
+    triggerEvent(message, pl, cam, ev) {
 
         const TYPE_NAMES = ["heart", "item", "key", "orb"];
         const OFFSET = 8;

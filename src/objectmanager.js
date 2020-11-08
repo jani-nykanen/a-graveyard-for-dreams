@@ -9,6 +9,7 @@ import { Bullet } from "./bullet.js";
 import { Chest } from "./chest.js";
 import { Collectible } from "./collectible.js";
 import { clamp, nextObject } from "./core/util.js";
+import { Door } from "./door.js";
 import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
 import { NPC } from "./npc.js";
@@ -29,6 +30,26 @@ export class ObjectManager {
         this.interactableObjects = new Array();
 
         this.progress = progress;
+    }
+
+
+    linkDoors() {
+
+        for (let o of this.interactableObjects) {
+
+            if (o.isDoor != undefined) {
+
+                for (let p of this.interactableObjects) {
+
+                    if (p.isDoor != undefined && p.id == o.id &&
+                        p.inside != o.inside) {
+
+                        p.linkDoor(o);
+                        o.linkDoor(p);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -81,6 +102,13 @@ export class ObjectManager {
                     this.interactableObjects.push(new NPC(x*16+8, y*16+8, id));
                     break;
 
+                // Door
+                case 38:
+                case 39:
+
+                    this.interactableObjects.push(new Door(x*16+8, y*16, tid == 39, id));
+                    break;
+
                 default:
                     break;
                 }
@@ -105,6 +133,8 @@ export class ObjectManager {
                 }
             }
         }
+
+        this.linkDoors();
     }
 
 
@@ -176,7 +206,7 @@ export class ObjectManager {
 
             o.checkIfInCamera(cam);
             o.update(ev);
-            o.playerCollision(message, this.player, ev);
+            o.playerCollision(message, this.player, cam, ev);
         }
 
         for (let b of this.bullets) {

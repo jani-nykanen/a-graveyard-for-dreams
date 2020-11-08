@@ -95,6 +95,18 @@ export class Game extends Scene {
     }
 
 
+    drawItemString(c, bmp, count, icon, y, offset) {
+
+        let str = String.fromCharCode(icon) + 
+            String.fromCharCode(2) + 
+            String(count);
+
+        let x = str.length * 8 + offset;
+
+        c.drawText(bmp, str, c.width - x, y, 0, 0, false);
+    }
+
+
     drawHUD(c) {
 
         const SIDE_OFFSET = 2;
@@ -122,14 +134,23 @@ export class Game extends Scene {
             }
         }
 
-        // Money
-        let str = String.fromCharCode(6) + 
-            String.fromCharCode(2) + 
-            String(this.progress.coins);
+        // Items
+        let y = 2;
+        this.drawItemString(c, bmp, this.progress.coins,
+            6, y, SIDE_OFFSET);
+        if (this.progress.keys > 0) {
 
-        x = str.length * 8 + SIDE_OFFSET;
-
-        c.drawText(c.bitmaps["font"], str, c.width - x, 2, 0, 0, false);
+            y += 10;
+            this.drawItemString(c, bmp, this.progress.keys,
+                7, y, SIDE_OFFSET);  
+            
+        }
+        if (this.progress.orbs > 0) {
+         
+            y += 10;
+            this.drawItemString(c, bmp, this.progress.orbs,
+                8, y, SIDE_OFFSET);     
+        }      
     }
 
 

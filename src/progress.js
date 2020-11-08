@@ -15,7 +15,8 @@ export class GameProgress {
 
         this.gems = 0;
         this.coins = 0;
-        this.smallKeys = 0;
+        this.keys = 0;
+        this.orbs = 0;
     }
 
 
@@ -34,6 +35,18 @@ export class GameProgress {
     addCoins(count) {
 
         this.coins += count;
+    }
+
+
+    addOrbs(count) {
+
+        this.orbs += count;
+    }
+
+
+    addKeys(count) {
+
+        this.keys += count;
     }
 
 

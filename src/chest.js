@@ -123,10 +123,29 @@ export class Chest extends InteractableObject {
             .activate((ev) => {
                 ev.audio.resumeMusic();
 
-                if (this.type == 0) {
+                switch(this.type) {
 
+                case 0:
                     pl.progress.addMaxHealth(1);
+                    break;
+
+                case 1:
+                    // ...
+                    break;
+
+                case 2:
+                    pl.progress.addKeys(1);
+                    break;
+
+                case 3:
+                    pl.progress.addOrbs(1);
+                    break;
+
+                default:
+                    break;
                 }
+
+
             }, false);
     }
 

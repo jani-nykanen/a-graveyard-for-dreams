@@ -38,6 +38,8 @@ export class ObjectManager {
 
         let index = 0;
         let tid = 0;
+        let id;
+
         for (let y = 0; y < h; ++ y) {
 
             for (let x = 0; x < w; ++ x) {
@@ -45,6 +47,10 @@ export class ObjectManager {
                 tid = data[y * w + x] - 512;
                 if (tid <= 0) continue;
                 -- tid;
+
+                id = 0;
+                if (y > 0)
+                    id = Math.max(0, data[(y-1)*w + x] - 512 - 240 -1);
 
                 switch(tid) {
 
@@ -66,15 +72,13 @@ export class ObjectManager {
                 case 35:
                 case 36:
 
-                    // TODO: Get item ID somewhere
-                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, tid-33, 0));
+                    this.interactableObjects.push(new Chest(x*16+8, y*16+8, tid-33, id));
                     break;
 
                 // NPC
                 case 37:
 
-                    // TODO: Get NPC ID somewhere
-                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, 0));
+                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, id));
                     break;
 
                 default:
@@ -309,6 +313,12 @@ export class ObjectManager {
         for (let o of this.interactableObjects) {
 
             o.playerCollision(null, this.player, null);
+
+            // For chests
+            if (o.initialCheck != undefined) {
+
+                o.initialCheck(this.player.progress);
+            }
         }
     }
 

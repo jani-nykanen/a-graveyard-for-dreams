@@ -17,6 +17,12 @@ export class GameProgress {
         this.coins = 0;
         this.keys = 0;
         this.orbs = 0;
+
+        this.openedChests = new Array(4);
+        for (let i = 0; i < this.openedChests.length; ++ i) {
+
+            this.openedChests[i] = (new Array(4)).fill(false);
+        }
     }
 
 
@@ -66,5 +72,17 @@ export class GameProgress {
     getHealthRatio() {
 
         return this.health / this.maxHealth;
+    }
+
+
+    markChestOpened(type, id) {
+
+        (this.openedChests[type])[id] = true;
+    }
+
+
+    isChestOpened(type, id) {
+
+        return (this.openedChests[type])[id];
     }
 }

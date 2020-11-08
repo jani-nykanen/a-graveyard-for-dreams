@@ -8,6 +8,14 @@ import { Flip } from "./core/canvas.js";
 import { InteractableObject } from "./interactableobject.js";
 
 
+export const ChestType = {
+    Health: 0,
+    Item: 1,
+    Key: 2,
+    Orb: 3,
+};
+
+
 export class Chest extends InteractableObject {
 
 
@@ -59,7 +67,7 @@ export class Chest extends InteractableObject {
         const TYPE_NAMES = ["heart", "item", "key", "orb"];
         const OFFSET = 8;
 
-        if (this.opening) return;
+        if (this.opening || this.opened) return;
 
         let loc = ev.assets.localization["en"];
 
@@ -113,7 +121,8 @@ export class Chest extends InteractableObject {
 
                     this.spr.setFrame(3, this.type*2+1);
 
-                    pl.setObtainItemPose(this.type, this.id);
+                    pl.setObtainItemPose(this.type, 
+                        this.type == ChestType.Item ? this.id : 0);
 
                     // Sound effect
                     ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
@@ -125,26 +134,26 @@ export class Chest extends InteractableObject {
 
                 switch(this.type) {
 
-                case 0:
+                case ChestType.Health:
                     pl.progress.addMaxHealth(1);
                     break;
 
-                case 1:
+                case ChestType.Item:
                     // ...
                     break;
 
-                case 2:
+                case ChestType.Key:
                     pl.progress.addKeys(1);
                     break;
 
-                case 3:
+                case ChestType.Orb:
                     pl.progress.addOrbs(1);
                     break;
 
                 default:
                     break;
                 }
-
+                pl.progress.markChestOpened(this.type, this.id);
 
             }, false);
     }
@@ -153,6 +162,18 @@ export class Chest extends InteractableObject {
     playerEvent(pl, ev) {
 
         this.flip = pl.pos.x < this.pos.x ? Flip.None : Flip.Horizontal;
+    }
+
+
+    initialCheck(progress) {
+        
+        this.opened = progress.isChestOpened(this.type, this.id);
+        if (this.opened) {
+
+            this.opening = false;
+            this.disabled = true;
+            this.spr.setFrame(3, 1 + this.type*2);
+        }
     }
 
 }

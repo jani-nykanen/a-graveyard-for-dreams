@@ -86,6 +86,7 @@ export class Door extends InteractableObject {
                 this.open = true;
                 this.opened = false;
                 pl.progress.addKeys(-1);
+                pl.progress.markDoorOpened(this.id);
 
                 pl.forceWait(WAIT_TIME);
 
@@ -115,6 +116,13 @@ export class Door extends InteractableObject {
 
         // Sound effect
         ev.audio.playSample(ev.assets.samples["door"], 0.70);
+    }
+
+
+    initialCheck(progress) {
+
+        this.open = progress.isDoorOpened(this.id);
+        this.opened = this.open;
     }
 
 }

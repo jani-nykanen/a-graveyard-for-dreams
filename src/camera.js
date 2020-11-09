@@ -30,6 +30,8 @@ export class Camera {
         this.screenCountX = screenCountX;
         this.screenCountY = screenCountY;
         this.loopx = loopx;
+
+        this.jumpForced = false;
     }
 
 
@@ -88,6 +90,8 @@ export class Camera {
 
     updateMovement(ev) {
 
+        this.jumpForced = false;
+
         if (!this.moving) return;
 
         if ((this.moveTimer -= this.moveSpeed * ev.step) <= 0) {
@@ -127,6 +131,8 @@ export class Camera {
         this.pos = new Vector2(x, y);
         this.target = this.pos.clone();
         this.rpos = this.pos.clone();
+
+        this.jumpForced = true;
     }
 
 

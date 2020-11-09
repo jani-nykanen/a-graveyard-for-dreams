@@ -15,6 +15,7 @@ import { RGB } from "./core/vector.js";
 import { MessageBox } from "./messagebox.js";
 import { PauseMenu } from "./pausemenu.js";
 import { TitleScreen } from "./titlescreen.js";
+import { loadData } from "./savedata.js";
 
 
 export class Game extends Scene {
@@ -47,12 +48,20 @@ export class Game extends Scene {
             }, ev);
 
         // Test
-        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
+        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.40);
 
         ev.tr.activate(false, TransitionType.CircleOutside, 
             1.0/30.0, null, new RGB(0, 0, 0));
         this.objects.centerTransition(ev.tr);
         this.objects.initialCheck(this.cam);
+
+        // If I write "param == null" someone will come here
+        // to say that "== true" is useless. But param can be null!
+        if (param === true) {
+
+            loadData(this.objects.player);        
+            this.objects.positionCamera(this.cam);
+        }
     }
 
 
@@ -67,7 +76,7 @@ export class Game extends Scene {
         this.progress.reset();
 
         // Test
-        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.60);
+        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.40);
     }
 
 
@@ -92,6 +101,57 @@ export class Game extends Scene {
             },
             new RGB(0, 0, 0));
 
+    }
+
+
+    refresh(ev) {
+
+        // Needed when using doors etc
+        if (this.cam.jumpForced) {
+
+            this.objects.initialCheck(this.cam);
+            this.cam.jumpForced = false;
+        }
+
+        if (ev.tr.active) return;
+
+        if (this.message.active) {
+
+            this.message.update(ev);
+            return; 
+        }
+
+        if (this.pauseMenu.active) {
+
+            this.pauseMenu.update(ev);
+            return;
+        }
+
+        if (ev.input.actions["start"].state == State.Pressed) {
+
+            this.pauseMenu.activate();
+            ev.audio.pauseMusic();
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+            
+            return;
+        }
+
+
+        this.stage.update(this.cam, ev);
+        if (!this.objects.update(this.cam, this.stage, this.message, ev)) {
+
+            this.resetTransition(ev);
+            return;
+        }
+        this.cam.update(ev);
+    }
+
+
+    dispose() {
+
+        // ...
     }
 
 
@@ -151,50 +211,6 @@ export class Game extends Scene {
             this.drawItemString(c, bmp, this.progress.orbs,
                 8, y, SIDE_OFFSET);     
         }      
-    }
-
-
-    refresh(ev) {
-
-        if (ev.tr.active) return;
-
-        if (this.message.active) {
-
-            this.message.update(ev);
-            return; 
-        }
-
-        if (this.pauseMenu.active) {
-
-            this.pauseMenu.update(ev);
-            return;
-        }
-
-        if (ev.input.actions["start"].state == State.Pressed) {
-
-            this.pauseMenu.activate();
-            ev.audio.pauseMusic();
-
-            // Sound effect
-            ev.audio.playSample(ev.assets.samples["pause"], 0.60);
-            
-            return;
-        }
-
-
-        this.stage.update(this.cam, ev);
-        if (!this.objects.update(this.cam, this.stage, this.message, ev)) {
-
-            this.resetTransition(ev);
-            return;
-        }
-        this.cam.update(ev);
-    }
-
-
-    dispose() {
-
-        // ...
     }
 
 

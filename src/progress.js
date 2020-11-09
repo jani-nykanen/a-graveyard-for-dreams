@@ -23,6 +23,26 @@ export class GameProgress {
 
             this.openedChests[i] = (new Array(4)).fill(false);
         }
+
+        this.openedDoors = (new Array(16)).fill(false);
+    }
+
+
+    parseObject(obj) {
+
+        this.maxHealth = obj.maxHealth;
+        this.health = this.maxHealth;
+
+        this.gems = obj.gems;
+        this.coins = obj.coins;
+        this.keys = obj.keys;
+        this.orbs = obj.orbs;
+
+        for (let i = 0; i < this.openedChests.length; ++ i) {
+
+            this.openedChests[i] = Array.from(obj.openedChests[i]);
+        }
+        this.openedDoors = Array.from(obj.openedDoors);
     }
 
 
@@ -84,5 +104,17 @@ export class GameProgress {
     isChestOpened(type, id) {
 
         return (this.openedChests[type])[id];
+    }
+
+
+    markDoorOpened(id) {
+
+        this.openedDoors[id] = true;
+    }
+
+
+    isDoorOpened(id) {
+
+        return this.openedDoors[id];
     }
 }

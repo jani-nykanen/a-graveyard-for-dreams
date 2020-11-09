@@ -18,7 +18,7 @@ export class InteractableObject {
 
         this.spr = new Sprite(16, 16);
 
-        this.inCamera = true;
+        this.inCamera = false;
         this.flip = Flip.None;
 
         this.disabled = false;

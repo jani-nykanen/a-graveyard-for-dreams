@@ -7,6 +7,7 @@
 import { Flip } from "./core/canvas.js";
 import { Vector2 } from "./core/vector.js";
 import { InteractableObject } from "./interactableobject.js";
+import { saveData } from "./savedata.js";
 
 
 export class Savepoint extends InteractableObject {
@@ -70,7 +71,10 @@ export class Savepoint extends InteractableObject {
             loc["saveGame"],
             ).activate((ev) => {
 
-                message.addMessage(loc["badResult"]).activate(ev => {}, false);
+                let res = saveData(pl);
+
+                message.addMessage(loc[res ? "goodResult" : "badResult"])
+                    .activate(ev => {}, false);
 
         }, true);
 

@@ -32,8 +32,11 @@
     "npc0": ["I am the\ndefault NPC.", "Hopefully you\nwon't find me\nin the final\nversion."],
 
     "saveGame": "Save your\nprogress? This\nwill overwrite\nthe old save.",
-    "badResult": "Not implemented\nyet. Sorry.",
+    "goodResult": "Game saved.",
+    "badResult": "Failed to\nsave data.",
 
     "openDoor": "Open the door\nwith an old\nkey? The key\nwill be con-\nsumed.",
-    "needKey": "The door is\nlocked."
+    "needKey": "The door is\nlocked.",
+
+    "noSaveData": "No save data\nfound or it\ncould not be\nloaded!"
 }

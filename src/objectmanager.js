@@ -347,6 +347,7 @@ export class ObjectManager {
 
         for (let o of this.interactableObjects) {
 
+            o.checkIfInCamera(cam);
             o.playerCollision(null, this.player, null);
 
             // For chests

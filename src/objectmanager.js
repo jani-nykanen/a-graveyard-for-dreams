@@ -163,39 +163,44 @@ export class ObjectManager {
 
     update(cam, stage, message, ev) {
 
-        for (let e of this.enemies) {
+        let wait = this.player.updateForceWait(ev);
 
-            e.cameraEvent(cam, ev);
-            if (!cam.moving) {
+        if (!wait) {
+            
+            for (let e of this.enemies) {
 
-                e.update(ev);
-                e.playerCollision(this.player, this, ev);
-                
-                stage.objectCollision(e, this, ev);
-            }
+                e.cameraEvent(cam, ev);
+                if (!cam.moving) {
 
-            if (e.isActive()) {
-                
-                for (let e2 of this.enemies) {
+                    e.update(ev);
+                    e.playerCollision(this.player, this, ev);
+                    
+                    stage.objectCollision(e, this, ev);
+                }
 
-                    if (e2 != e) {
+                if (e.isActive()) {
+                    
+                    for (let e2 of this.enemies) {
 
-                        e.enemyCollision(e2);
+                        if (e2 != e) {
+
+                            e.enemyCollision(e2);
+                        }
                     }
                 }
             }
-        }
 
-        if (!cam.moving) {
+            if (!cam.moving) {
 
-            this.player.update(ev);
-            stage.objectCollision(this.player, this, ev);
-            if (this.player.boomerang.exist) {
+                this.player.update(ev);
+                stage.objectCollision(this.player, this, ev);
+                if (this.player.boomerang.exist) {
 
-                stage.objectCollision(this.player.boomerang, this, ev);
+                    stage.objectCollision(this.player.boomerang, this, ev);
+                }
             }
+            this.player.cameraEvent(cam, ev);
         }
-        this.player.cameraEvent(cam, ev);
 
         for (let t of this.flyingText) {
 

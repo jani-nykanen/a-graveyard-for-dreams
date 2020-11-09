@@ -45,11 +45,13 @@ export class Door extends InteractableObject {
 
         const OPEN_SPEED = 8;
 
-        if (this.open && !this.opened) {
+        this.disabled = this.open && !this.opened;
+        if (this.disabled) {
 
             this.spr.animate(0, 0, 4, OPEN_SPEED, ev.step);
             this.opened = this.spr.frame == 4;
         }
+        this.noActivationSound = this.open && this.opened;
     }
 
 
@@ -64,6 +66,8 @@ export class Door extends InteractableObject {
 
     
     triggerEvent(message, pl, cam, ev) {
+
+        const WAIT_TIME = 32;
 
         let loc = ev.assets.localization["en"];
 
@@ -83,6 +87,11 @@ export class Door extends InteractableObject {
                 this.opened = false;
                 pl.progress.addKeys(-1);
 
+                pl.forceWait(WAIT_TIME);
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["open"], 0.80);
+
             }, true);
             return;
         }     
@@ -95,7 +104,6 @@ export class Door extends InteractableObject {
             p.y += 8;
 
             pl.moveTo(p, cam);
-
             pl.setDoorPose(true);
 
         }, new RGB(0, 0, 0));
@@ -104,6 +112,9 @@ export class Door extends InteractableObject {
         pl.pos.x = this.pos.x;
 
         pl.setDoorPose(false);
+
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["door"], 0.70);
     }
 
 }

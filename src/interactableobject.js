@@ -22,6 +22,7 @@ export class InteractableObject {
         this.flip = Flip.None;
 
         this.disabled = false;
+        this.noActivationSound = false;
 
         this.hitbox = new Vector2(16, 16);
     }
@@ -59,8 +60,11 @@ export class InteractableObject {
 
                 if (ev.input.upPress()) {
 
-                    // Sound effect
-                    ev.audio.playSample(ev.assets.samples["activate"], 0.50);
+                    if (!this.noActivationSound) {
+                        
+                        // Sound effect
+                        ev.audio.playSample(ev.assets.samples["activate"], 0.50);
+                    }
 
                     pl.disableArrow();
                     this.triggerEvent(message, pl, cam, ev);

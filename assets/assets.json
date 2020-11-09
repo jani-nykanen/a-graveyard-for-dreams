@@ -60,6 +60,8 @@
         {"name": "activate",  "path": "activate.wav"},
         {"name": "treasure",  "path": "treasure.wav"},
         {"name": "deny",  "path": "deny.wav"},
+        {"name": "door",  "path": "door.wav"},
+        {"name": "open",  "path": "open.wav"},
 
         {"name": "testTrack",  "path": "test_track.ogg"}
     ],

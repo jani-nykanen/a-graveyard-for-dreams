@@ -91,6 +91,8 @@ export class Player extends CollisionObject {
         this.showArrowTimer = 0.0;
 
         this.obtainedItem = null;
+
+        this.forceWaitTimer = 0.0;
     }
 
 
@@ -1201,5 +1203,21 @@ export class Player extends CollisionObject {
         this.stopMovement();
 
         cam.setPosition((this.pos.x / 160) | 0, (this.pos.y / 144) | 0);
+    }
+
+
+    forceWait(time) {
+
+        this.forceWaitTimer = time;
+    }
+
+
+    updateForceWait(ev) {
+
+        if (this.forceWaitTimer <= 0.0)
+            return false;
+
+       this.forceWaitTimer -= ev.step; 
+       return true;
     }
 }

@@ -176,11 +176,17 @@ export class Game extends Scene {
     }
 
 
-    drawHUD(c) {
+    drawHUD(c, coinOnly) {
 
         const SIDE_OFFSET = 2;
 
         let bmp = c.bitmaps["font"];
+
+        // Coins
+        let y = 2;
+        this.drawItemString(c, bmp, this.progress.coins,
+            6, y, SIDE_OFFSET);
+        if (coinOnly) return;
 
         // Life
         let x;
@@ -203,10 +209,7 @@ export class Game extends Scene {
             }
         }
 
-        // Items
-        let y = 2;
-        this.drawItemString(c, bmp, this.progress.coins,
-            6, y, SIDE_OFFSET);
+        // Other items
         if (this.progress.keys > 0) {
 
             y += 10;
@@ -236,15 +239,17 @@ export class Game extends Scene {
         this.stage.draw(c, this.cam);
         this.objects.draw(c);
 
-        c.moveTo();
-        this.drawHUD(c);
+        c.moveTo(0, 0);
+        this.drawHUD(c, false);
 
         if (this.message.active) {
 
-            c.moveTo(0, 0);
             this.message.draw(c, true);
         }
         this.pauseMenu.draw(c);
         this.shop.draw(c);
+
+        if (this.shop.active)
+            this.drawHUD(c, true);
     }
 }

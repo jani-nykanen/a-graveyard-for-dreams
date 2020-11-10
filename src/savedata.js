@@ -11,14 +11,18 @@ export function saveData(player) {
 
     let data = {};
 
-    data.progress = Object.assign(player.progress);
-    data.savePoint = {x: player.checkpoint.x, y: player.checkpoint.y};
+    //
+    // TODO: This does not work when compiled with Closure
+    //
+
+    data["progress"] = Object.assign(player.progress);
+    data["savePoint"] = {"x": player.checkpoint.x, "y": player.checkpoint.y};
 
     let strData = JSON.stringify(data);
 
     try {
 
-        localStorage.setItem("agff_savedata", strData);
+        window.localStorage.setItem("agff_savedata", strData);
     }
     catch(e) {
 
@@ -36,7 +40,7 @@ export function loadData(player) {
 
     try {
 
-        dataStr = localStorage.getItem("agff_savedata");
+        dataStr = window.localStorage.getItem("agff_savedata");
     }
     catch(e) {
 
@@ -55,7 +59,7 @@ export function loadData(player) {
         player.progress.parseObject(obj.progress);
 
     if (obj.savePoint != undefined) 
-        player.respawnToCheckpoint(new Vector2(obj.savePoint.x, obj.savePoint.y));
+        player.respawnToCheckpoint(new Vector2(obj["savePoint"]["x"], obj["savePoint"]["y"]));
 
     return true;
 }

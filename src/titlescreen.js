@@ -40,7 +40,7 @@ export class TitleScreen extends Scene {
                         let exist = false;
                         try {
 
-                            exist = localStorage.getItem("agff_savedata");
+                            exist = window.localStorage.getItem("agff_savedata");
                         }
                         catch(e) {
 

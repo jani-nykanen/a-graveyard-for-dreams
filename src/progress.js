@@ -30,19 +30,23 @@ export class GameProgress {
 
     parseObject(obj) {
 
-        this.maxHealth = obj.maxHealth;
+        this.maxHealth = obj["maxHealth"];
         this.health = this.maxHealth;
 
-        this.gems = obj.gems;
-        this.coins = obj.coins;
-        this.keys = obj.keys;
-        this.orbs = obj.orbs;
+        this.gems = obj["gems"];
+        this.coins = obj["coins"];
+        this.keys = obj["keys"];
+        this.orbs = obj["orbs"];
 
-        for (let i = 0; i < this.openedChests.length; ++ i) {
+        if (obj["openedChests"] != undefined) {
 
-            this.openedChests[i] = Array.from(obj.openedChests[i]);
+            for (let i = 0; i < this.openedChests.length; ++ i) {
+
+                this.openedChests[i] = Array.from(obj["openedChests"][i]);
+            }
         }
-        this.openedDoors = Array.from(obj.openedDoors);
+        if (obj["openedDoors"] != undefined)
+            this.openedDoors = Array.from(obj["openedDoors"]);
     }
 
 

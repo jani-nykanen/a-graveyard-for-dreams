@@ -17,7 +17,7 @@ window.onload = () => (new Application(160, 144, 0))
             {name: "fire2", key: "KeyX", button1: 2},
             {name: "fire3", key: "KeyC", button1: 1},
             {name: "start", key: "Enter", button1: 9, button2: 7},
-            {name: "back", key: "Escape"},
+            {name: "back", key: "Escape", button1: 8, button2: 6},
         ]
     )
     .run(AudioIntro);

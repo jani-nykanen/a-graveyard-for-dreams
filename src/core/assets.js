@@ -163,7 +163,7 @@ export class AssetPack {
 
         ++ this.total;
         
-        this.loadTextfile(path, "xml", (str) => {
+        this.loadTextfile(path, "json", (str) => {
 
             this.localization[name] = JSON.parse(str);
             ++ this.loaded;

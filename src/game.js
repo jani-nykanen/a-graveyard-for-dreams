@@ -16,6 +16,7 @@ import { MessageBox } from "./messagebox.js";
 import { PauseMenu } from "./pausemenu.js";
 import { TitleScreen } from "./titlescreen.js";
 import { loadData } from "./savedata.js";
+import { Shop } from "./shop.js";
 
 
 export class Game extends Scene {
@@ -33,8 +34,10 @@ export class Game extends Scene {
 
         this.progress = new GameProgress();
 
+        this.shop = new Shop(this.progress, ev)
+
         this.message = new MessageBox(ev);
-        this.objects = new ObjectManager(this.progress);
+        this.objects = new ObjectManager(this.progress, this.shop);
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
         
@@ -119,6 +122,12 @@ export class Game extends Scene {
 
             this.message.update(ev);
             return; 
+        }
+
+        if (this.shop.active) {
+
+            this.shop.update(ev);
+            return;
         }
 
         if (this.pauseMenu.active) {
@@ -235,7 +244,7 @@ export class Game extends Scene {
             c.moveTo(0, 0);
             this.message.draw(c, true);
         }
-
         this.pauseMenu.draw(c);
+        this.shop.draw(c);
     }
 }

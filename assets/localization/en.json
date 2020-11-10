@@ -3,6 +3,7 @@
     
     "yes": "Yes",
     "no": "No",
+    "back": "Back",
 
     "newgame": "New Game",
     "continue": "Load Game",
@@ -24,7 +25,7 @@
     "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."],
 
     "keyName": "an\nOLD KEY!",
-    "keyDesc": ["It's pretty\nfragile, but it\ncan be used to\nopen one door."],
+    "keyDesc": ["It's pretty\nfragile, but it\ncan be used to\nopen a door."],
 
     "orbName": "a\nDREAM ORB!",
     "orbDesc": ["It's smooth and\nmysterious! Just\nlike Uranus!"],
@@ -40,5 +41,13 @@
 
     "noSaveData": "No save data\nfound or it\ncould not be\nloaded!",
 
-    "shopkeeper": "Good morning,\nfriend! I am\na travelling\nmerchant!"
+    "shopkeeper": "Good morning,\nfriend! I am\na travelling\nmerchant!",
+
+    "shopItemNames1": ["Heart Cont.", "Old Key", "Auto-Map", "Spd.Boots"],
+    "shopItemDesc1": [
+        "Increases your\nlife by one",
+        "Can be used\nto open a door.",
+        "The world map.\nShows the areas\nyou have\nvisited",
+        "Increases your\nrunning speed."
+    ]
 }

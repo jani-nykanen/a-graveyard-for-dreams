@@ -1,9 +1,9 @@
-
 /**
  * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
+
 
 import { Bullet } from "./bullet.js";
 import { Chest } from "./chest.js";
@@ -21,7 +21,7 @@ import { Shopkeeper } from "./shopkeeper.js";
 export class ObjectManager {
 
 
-    constructor(progress) {
+    constructor(progress, shop) {
 
         this.player = null;
         this.enemies = new Array();
@@ -31,6 +31,8 @@ export class ObjectManager {
         this.interactableObjects = new Array();
 
         this.progress = progress;
+
+        this.shop = shop;
     }
 
 
@@ -79,7 +81,7 @@ export class ObjectManager {
                 // Player
                 case 0:
 
-                    this.player = new Player(x*16+8, y*16+8, this.progress );
+                    this.player = new Player(x*16+8, y*16+8, this.progress);
                     break;
 
                 // Savepoint
@@ -113,7 +115,7 @@ export class ObjectManager {
                 // Shopkeeper
                 case 40:
 
-                    this.interactableObjects.push(new Shopkeeper(x*16+8, y*16+4));
+                    this.interactableObjects.push(new Shopkeeper(x*16+8, y*16+4, this.shop));
                     break;
 
                 default:

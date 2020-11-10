@@ -13,7 +13,7 @@ import { InteractableObject } from "./interactableobject.js";
 export class Shopkeeper extends InteractableObject {
 
 
-    constructor(x, y) {
+    constructor(x, y, shop) {
 
         super(x, y);
 
@@ -21,6 +21,8 @@ export class Shopkeeper extends InteractableObject {
 
         this.spr = new Sprite(24, 24);
         this.hitbox = new Vector2(12, 16);
+
+        this.shop = shop;
     }
 
 
@@ -52,7 +54,7 @@ export class Shopkeeper extends InteractableObject {
             loc["shopkeeper"],
             ).activate((ev) => {
 
-                // ...
+            this.shop.activate();
 
         }, false);
 

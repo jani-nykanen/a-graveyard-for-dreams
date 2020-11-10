@@ -15,6 +15,7 @@ import { FlyingText } from "./flyingtext.js";
 import { NPC } from "./npc.js";
 import { Player } from "./player.js";
 import { Savepoint } from "./savepoint.js";
+import { Shopkeeper } from "./shopkeeper.js";
 
 
 export class ObjectManager {
@@ -107,6 +108,12 @@ export class ObjectManager {
                 case 39:
 
                     this.interactableObjects.push(new Door(x*16+8, y*16, tid == 39, id));
+                    break;
+
+                // Shopkeeper
+                case 40:
+
+                    this.interactableObjects.push(new Shopkeeper(x*16+8, y*16+4));
                     break;
 
                 default:

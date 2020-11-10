@@ -20,6 +20,7 @@
         {"name": "items",  "path": "items.png"},
         {"name": "npc",  "path": "npc.png"},
         {"name": "door",  "path": "door.png"},
+        {"name": "shopkeeper",  "path": "shopkeeper.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

@@ -65,6 +65,7 @@ export class Game extends Scene {
             loadData(this.objects.player);        
             this.objects.positionCamera(this.cam);
         }
+        this.shop.disableButtons();
     }
 
 

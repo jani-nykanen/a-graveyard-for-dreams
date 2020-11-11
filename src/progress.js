@@ -14,7 +14,7 @@ export class GameProgress {
         this.health = this.maxHealth;
 
         this.gems = 0;
-        this.coins = 0;
+        this.coins = 20;
         this.keys = 0;
         this.orbs = 0;
 
@@ -25,6 +25,9 @@ export class GameProgress {
         }
 
         this.openedDoors = (new Array(16)).fill(false);
+
+        // Approximated size, might need to increase later
+        this.boughtItems = (new Array(5)).fill(false);
     }
 
 
@@ -47,6 +50,9 @@ export class GameProgress {
         }
         if (obj["openedDoors"] != undefined)
             this.openedDoors = Array.from(obj["openedDoors"]);
+
+        if (obj["boughtItems"] != undefined)
+            this.boughtItems = Array.from(obj["boughtItems"]);
     }
 
 
@@ -120,5 +126,17 @@ export class GameProgress {
     isDoorOpened(id) {
 
         return this.openedDoors[id];
+    }
+
+
+    setItemBoughtStatus(index, bought) {
+
+        this.boughtItems[index] = bought;
+    }
+
+
+    isItemBought(index) {
+
+        return this.boughtItems[index];
     }
 }

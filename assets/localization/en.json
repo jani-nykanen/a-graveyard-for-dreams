@@ -50,5 +50,9 @@
         "The world map.\nShows the areas\nyou have already\nvisited.",
         "Increases your\nrunning speed.",
         "Revives you once\nif you die and\nrestores all\nyour health"
-    ]
+    ],
+
+    "cannotAfford": "You cannot\nafford that\nitem!",
+    "confirmTransaction": "Buy this item?",
+    "sold": "SOLD"
 }

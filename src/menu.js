@@ -17,6 +17,7 @@ export class MenuButton {
         this.cb = cb;
 
         this.deny = deny;
+        this.disabled = false;
     }
 }
 
@@ -60,6 +61,12 @@ export class Menu {
     }
 
 
+    toggleButton(id, state) {
+
+        this.buttons[id].disabled = !state;
+    }
+
+
     update(ev) {
 
         if (!this.active) return;
@@ -84,11 +91,12 @@ export class Menu {
         if (ev.input.actions["start"].state == State.Pressed ||
             ev.input.actions["fire1"].state == State.Pressed) {
 
-            if (b.cb != null) {
+            if (!b.disabled && b.cb != null) {
 
                 b.cb(ev);
             }
-            ev.audio.playSample(ev.assets.samples[b.deny ? "deny" : "accept"], 0.60);
+            ev.audio.playSample(ev.assets.samples[
+                b.deny || b.disabled ? "deny" : "accept"], 0.60);
         }
     }
 
@@ -105,7 +113,12 @@ export class Menu {
         let font = "";
         for (let i = 0; i < this.buttons.length; ++ i) {
 
-            font = this.cpos == i ? "fontYellow" : "font";
+            if (this.buttons[i].disabled)
+                font = "fontGray";
+            else if (this.cpos == i)
+                font = "fontYellow";
+            else
+                font = "font";
 
             str = this.cpos == i ? "@" : " ";
             str += this.buttons[i].text;

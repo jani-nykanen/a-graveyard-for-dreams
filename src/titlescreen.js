@@ -82,6 +82,8 @@ export class TitleScreen extends Scene {
 
     refresh(ev) {
 
+        if (ev.tr.active) return;
+
         if (this.message.active) {
 
             this.message.update(ev);

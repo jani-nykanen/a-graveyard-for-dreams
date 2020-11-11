@@ -7,15 +7,30 @@
 import { Vector2 } from "./core/vector.js";
 
 
+// Needed when working with Closure
+let copyProgress = (progress) => {
+    
+    return {
+    
+        "maxHealth": progress.maxHealth,
+        "health": progress.health,
+        "gems": progress.gems,
+        "coins": progress.coins,
+        "keys": progress.keys,
+        "orbs": progress.orbs,
+        "openedChests": progress.openedChests,
+        "openedDoors": progress.openedDoors,
+        "boughtItems": progress.boughtItems,
+    };
+};
+
+
+
 export function saveData(player) {
 
     let data = {};
 
-    //
-    // TODO: This does not work when compiled with Closure
-    //
-
-    data["progress"] = Object.assign(player.progress);
+    data["progress"] = copyProgress(Object.assign(player.progress));
     data["savePoint"] = {"x": player.checkpoint.x, "y": player.checkpoint.y};
 
     let strData = JSON.stringify(data);
@@ -55,10 +70,10 @@ export function loadData(player) {
 
     let obj = JSON.parse(dataStr);
 
-    if (obj.progress != undefined) 
+    if (obj["progress"] != undefined) 
         player.progress.parseObject(obj.progress);
 
-    if (obj.savePoint != undefined) 
+    if (obj["savePoint"] != undefined) 
         player.respawnToCheckpoint(new Vector2(obj["savePoint"]["x"], obj["savePoint"]["y"]));
 
     return true;

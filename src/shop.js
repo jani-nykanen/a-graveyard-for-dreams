@@ -6,6 +6,7 @@
 
 import { State } from "./core/input.js";
 import { Menu, MenuButton } from "./menu.js";
+import { MessageBox } from "./messagebox.js";
 import { drawBoxWithOutlines } from "./misc.js";
 
 
@@ -29,6 +30,8 @@ export class Shop {
 
         // Needed in drawing
         this.loc = ev.assets.localization["en"];
+
+        this.message = new MessageBox(ev);
     }
 
 
@@ -41,8 +44,37 @@ export class Shop {
         for (let i = 0; i < loc["shopItemNames1"].length; ++ i) {
 
             buttons.push(new MenuButton(loc["shopItemNames1"][i], 
-                (ev) => {}, false));
+                (ev) => {
+
+                    if (this.progress.isItemBought(i)) {
+
+                        // TODO: Disable the other sound effect
+                        // ev.audio.playSample(ev.assets.samples["deny"], 0.60);
+                        return;
+                    }
+
+                    if (this.progress.coins < PRICES[i]) {
+
+                        this.message.addMessage(loc["cannotAfford"])    
+                            .activate((ev) => {}, false);
+                    }
+                    else {
+
+                        this.message.addMessage(loc["confirmTransaction"])
+                            .activate((ev) => {
+
+                                this.progress.setItemBoughtStatus(i, true);
+                                this.progress.addCoins(-PRICES[i]);
+
+                                this.menu.toggleButton(i, false);
+
+                            }, true);
+                    }
+
+                }, false));
         }
+
+        
         buttons.push(new MenuButton(loc["back"], 
             (ev) => {
 
@@ -54,9 +86,27 @@ export class Shop {
     }
 
 
+    disableButtons() {
+
+        for (let i = 0; i < this.menu.buttons.length-1; ++ i) {
+
+            if (this.progress.isItemBought(i)) {
+
+                this.menu.toggleButton(i, false);
+            }
+        }
+    }
+
+
     update(ev) {
 
         if (!this.active) return;
+
+        if (this.message.active) {
+
+            this.message.update(ev);
+            return;
+        }
 
         if (ev.input.actions["back"].state == State.Pressed) {
 
@@ -111,13 +161,23 @@ export class Shop {
         // Prices
         let str = "";
         let x = 0;
+        let font = "";
         for (let i = 0; i < PRICES.length; ++ i) {
 
-            str = String(PRICES[i]) + String.fromCharCode(6);
+            if (this.progress.isItemBought(i)) {
+
+                str = this.loc["sold"];
+                font = "fontGray";
+            }
+            else {
+
+                font = this.menu.cpos == i ? "fontYellow" : "font";
+                str = String(PRICES[i]) + String.fromCharCode(6);
+            }
             x = MENU_RIGHT - str.length * 8;
 
             c.drawText(
-                c.bitmaps[this.menu.cpos == i ? "fontYellow" : "font"], str, 
+                c.bitmaps[font], str, 
                 x, topElementY + i*this.menu.offset, 0, 0, false);
         }
 
@@ -138,6 +198,14 @@ export class Shop {
             c.drawText(c.bitmaps["font"], str, 
                 MENU_X - this.menu.width/2, bottomElementY -2, 0, 1, 
                 false);
+        }
+        
+        if (this.message.active) {
+
+            c.setColor(0, 0, 0, 0.67);
+            c.fillRect(0, 0, c.width, c.height);
+
+            this.message.draw(c, true);
         }
     }
 

@@ -17,6 +17,54 @@ export const ChestType = {
 };
 
 
+export function applyItemEvent(type, pl) {
+
+    switch(type) {
+
+        case ChestType.Health:
+            pl.progress.addMaxHealth(1);
+            break;
+
+        case ChestType.Item:
+            // ...
+            break;
+
+        case ChestType.Key:
+            pl.progress.addKeys(1);
+            break;
+
+        case ChestType.Orb:
+            pl.progress.addOrbs(1);
+            break;
+
+        default:
+            break;
+        }
+}
+
+
+export function addItemDescription(loc, message, type, id) {
+
+    const TYPE_NAMES = ["heart", "item", "key", "orb"];
+
+    let nameStr = TYPE_NAMES [type] + "Name";
+    let descStr = TYPE_NAMES [type] + "Desc";
+
+    if (type == 1) {
+
+        nameStr += String(id);
+        descStr += String(id);
+    }
+
+    // Add obtain text and description to the message queue
+    message.addMessage(loc["obtain"] + " " + loc[nameStr]);
+    for (let m of loc[descStr]) {
+
+        message.addMessage(m);
+    }
+}
+
+
 export class Chest extends InteractableObject {
 
 
@@ -67,7 +115,6 @@ export class Chest extends InteractableObject {
     
     triggerEvent(message, pl, cam, ev) {
 
-        const TYPE_NAMES = ["heart", "item", "key", "orb"];
         const OFFSET = 8;
 
         if (this.opening || this.opened) return;
@@ -83,22 +130,8 @@ export class Chest extends InteractableObject {
         this.spr.setFrame(0, 1 + 2 * this.type);
 
         ev.audio.pauseMusic();
-        
-        let nameStr = TYPE_NAMES [this.type] + "Name";
-        let descStr = TYPE_NAMES [this.type] + "Desc";
 
-        if (this.type == 1) {
-
-            nameStr += String(this.id);
-            descStr += String(this.id);
-        }
-
-        // Add obtain text and description to the message queue
-        message.addMessage(loc["obtain"] + " " + loc[nameStr]);
-        for (let m of loc[descStr]) {
-
-            message.addMessage(m);
-        }
+        addItemDescription(loc, message, this.type, this.id);
 
         message.addStartCondition((ev) => {
 
@@ -135,27 +168,7 @@ export class Chest extends InteractableObject {
             .activate((ev) => {
                 ev.audio.resumeMusic();
 
-                switch(this.type) {
-
-                case ChestType.Health:
-                    pl.progress.addMaxHealth(1);
-                    break;
-
-                case ChestType.Item:
-                    // ...
-                    break;
-
-                case ChestType.Key:
-                    pl.progress.addKeys(1);
-                    break;
-
-                case ChestType.Orb:
-                    pl.progress.addOrbs(1);
-                    break;
-
-                default:
-                    break;
-                }
+                applyItemEvent(this.type, pl);
                 pl.progress.markChestOpened(this.type, this.id);
 
             }, false);

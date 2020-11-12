@@ -4,10 +4,19 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { addItemDescription, applyItemEvent, ChestType } from "./chest.js";
 import { State } from "./core/input.js";
 import { Menu, MenuButton } from "./menu.js";
 import { MessageBox } from "./messagebox.js";
 import { drawBoxWithOutlines } from "./misc.js";
+
+
+const ITEM_TYPES = [
+    0, 2, 1, 1, 1
+];
+const ITEM_IDS = [
+    16, 16, 17, 18, 19
+];
 
 
 // What do you mean I'm hard-coding prices?
@@ -20,22 +29,29 @@ const PRICES = [
 export class Shop {
 
 
-    constructor(progress, ev) {
+    constructor(progress, globalMessage, ev) {
 
         this.progress = progress;
-
-        this.menu = new Menu(12, true, this.constructMenuButtons(ev));
-
+        this.menu = null;
         this.active = false;
 
         // Needed in drawing
         this.loc = ev.assets.localization["en"];
 
         this.message = new MessageBox(ev);
+        this.globalMessage = globalMessage;
+
+        this.itemWaitTime = 0;
     }
 
 
-    constructMenuButtons(ev) {
+    constructMenu(pl, ev) {
+
+        this.menu = new Menu(12, true, this.constructMenuButtons(pl, ev));
+    }
+
+
+    constructMenuButtons(pl, ev) {
 
         let loc = ev.assets.localization["en"];
 
@@ -59,14 +75,40 @@ export class Shop {
                             .activate((ev) => {}, false);
                     }
                     else {
+                        
 
                         this.message.addMessage(loc["confirmTransaction"])
                             .activate((ev) => {
 
+                                const ITEM_WAIT = 60;
+                
                                 this.progress.setItemBoughtStatus(i, true);
                                 this.progress.addCoins(-PRICES[i]);
 
                                 this.menu.toggleButton(i, false);
+
+                                this.deactivate();
+                                addItemDescription(this.loc, this.globalMessage, 
+                                    ITEM_TYPES[i], ITEM_IDS[i]);
+                                this.itemWaitTime = ITEM_WAIT;
+
+                                pl.setObtainItemPose(ITEM_TYPES[i], 
+                                    ITEM_TYPES[i] == ChestType.Item ? ITEM_IDS[i] : 0);
+
+                                // Sound effect
+                                ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
+
+                                ev.audio.pauseMusic();
+                                this.globalMessage.addStartCondition((ev) => {
+
+                                    return (this.itemWaitTime -= ev.step) <= 0;
+                                    
+                                }).activate((ev) => {
+
+                                    applyItemEvent(ITEM_TYPES[i], pl);
+                                    ev.audio.resumeMusic();
+
+                                }, false);
 
                             }, true);
                     }

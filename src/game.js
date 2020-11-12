@@ -33,13 +33,14 @@ export class Game extends Scene {
             true);
 
         this.progress = new GameProgress();
-
-        this.shop = new Shop(this.progress, ev)
-
         this.message = new MessageBox(ev);
-        this.objects = new ObjectManager(this.progress, this.shop);
+        this.shop = new Shop(this.progress, this.message, ev);
+       
+        this.objects = new ObjectManager(this.progress, this.shop); 
         this.stage.parseObjects(this.objects);
         this.objects.positionCamera(this.cam);
+
+        this.shop.constructMenu(this.objects.player, ev);
         
         this.pauseMenu = new PauseMenu(ev => {
 

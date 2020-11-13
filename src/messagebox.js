@@ -230,7 +230,7 @@ export class MessageBox {
             x = tx + w - 20;
             y = ty + h + 14;
 
-            cw = 32;
+            cw = 36;
             ch = 24;
 
             drawBoxWithOutlines(c, x - cw/2, y - ch/2 -2, cw, ch);

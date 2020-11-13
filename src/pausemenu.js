@@ -105,7 +105,7 @@ export class PauseMenu {
 
     draw(c) {
 
-        const BOX_WIDTH = 64;
+        const BOX_WIDTH = 68;
         const BOX_HEIGHT = 40;
 
         if (!this.active) return;

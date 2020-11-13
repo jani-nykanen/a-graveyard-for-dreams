@@ -25,7 +25,7 @@
     "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."],
 
     "keyName": "an\nOLD KEY!",
-    "keyDesc": ["It's pretty\nfragile, but it\ncan be used to\nopen a door."],
+    "keyDesc": ["It can be\nused to unlock\na door."],
 
     "orbName": "a\nDREAM ORB!",
     "orbDesc": ["It's smooth and\nmysterious! Just\nlike Uranus!"],
@@ -36,7 +36,7 @@
     "goodResult": "Game saved.",
     "badResult": "Failed to\nsave data.",
 
-    "openDoor": "Open the door\nwith an old\nkey? The key\nwill be con-\nsumed.",
+    "openDoor": "Unlock the door\nwith an old\nkey? The key\nwill be con-\nsumed.",
     "needKey": "The door is\nlocked.",
 
     "noSaveData": "No save data\nfound or it\ncould not be\nloaded!",
@@ -46,7 +46,7 @@
     "shopItemNames1": ["Heart Cont.", "Old Key", "Auto-Map", "Spd.Boots", "Life Potion"],
     "shopItemDesc1": [
         "Increases your\nmaximum life by\none.",
-        "Can be used to\nopen a door.",
+        "Can be used to\nunlock a door.",
         "The world map.\nShows the areas\nyou have already\nvisited.",
         "Increases your\nrunning speed.",
         "Revives you once\nif you die and\nrestores all\nyour health"

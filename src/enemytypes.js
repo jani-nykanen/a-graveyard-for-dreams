@@ -1499,7 +1499,7 @@ export class Spook extends Enemy {
 	
 	animate(ev) {
 		
-		const EPS = 0.25;
+		const EPS = 0.125;
 
 		let frame = 1;
 		if (this.speed.y < -EPS)

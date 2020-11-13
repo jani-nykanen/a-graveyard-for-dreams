@@ -5,6 +5,7 @@
  */
 
 import { addItemDescription, applyItemEvent, ChestType } from "./chest.js";
+import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { Menu, MenuButton } from "./menu.js";
 import { MessageBox } from "./messagebox.js";
@@ -59,7 +60,7 @@ export class Shop {
 
         for (let i = 0; i < loc["shopItemNames1"].length; ++ i) {
 
-            buttons.push(new MenuButton(loc["shopItemNames1"][i], 
+            buttons.push(new MenuButton(" " + loc["shopItemNames1"][i], 
                 (ev) => {
 
                     if (this.progress.isItemBought(i)) {
@@ -180,7 +181,7 @@ export class Shop {
         c.setColor(0, 0, 0, 0.67);
         c.fillRect(0, 0, c.width, c.height);
 
-        let topElementY = c.height/2 - this.menu.height/2 + Y_OFFSET ;
+        let topElementY = c.height/2 - this.menu.height/2 + Y_OFFSET;
 
         // "Shop" box
         drawBoxWithOutlines(c,
@@ -190,15 +191,23 @@ export class Shop {
         c.drawText(c.bitmaps["font"], "SHOP",
             c.width/2, TOP_BOX_OFFSET_Y+2, 0, 0, true);
 
-        // Content box
+        // Name box
         drawBoxWithOutlines(c, 
-            MENU_X - this.menu.width/2 -4, 
+            MENU_X - (this.menu.width-8)/2 -4, 
             topElementY - 2,
             c.width - (c.width/2 - MENU_X) + 4, 
             this.menu.height);
+        // Names
+        this.menu.draw(c, MENU_X +4, c.height/2 + Y_OFFSET);
 
-        // Name
-        this.menu.draw(c, MENU_X, c.height/2 + Y_OFFSET);
+        // Icons
+        for (let i = 0; i < PRICES.length; ++ i) {
+
+            c.drawBitmapRegion(c.bitmaps["shopicons"],
+                i*8, this.progress.isItemBought(i) ? 8 : 0, 8, 8,
+                MENU_X - (this.menu.width-8)/2 + 7, 
+                topElementY + i*this.menu.offset, Flip.None);
+        }
 
         // Prices
         let str = "";
@@ -228,7 +237,7 @@ export class Shop {
             this.menu.height + 
             BOTTOM_BOX_TOP_OFFSET + 12;
         drawBoxWithOutlines(c, 
-            MENU_X - this.menu.width/2 -4, 
+            MENU_X - (this.menu.width-8)/2 -4, 
             bottomElementY - 4,
             c.width - (c.width/2 - MENU_X) + 4, 
             BOTTOM_BOX_HEIGHT);
@@ -238,7 +247,7 @@ export class Shop {
 
             str = this.loc["shopItemDesc1"] [this.menu.cpos];
             c.drawText(c.bitmaps["font"], str, 
-                MENU_X - this.menu.width/2, bottomElementY -2, 0, 1, 
+                MENU_X - (this.menu.width-8)/2, bottomElementY -2, 0, 1, 
                 false);
         }
         

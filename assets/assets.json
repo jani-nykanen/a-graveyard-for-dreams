@@ -22,6 +22,7 @@
         {"name": "npc",  "path": "npc.png"},
         {"name": "door",  "path": "door.png"},
         {"name": "shopkeeper",  "path": "shopkeeper.png"},
+        {"name": "shopicons",  "path": "shopicons.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

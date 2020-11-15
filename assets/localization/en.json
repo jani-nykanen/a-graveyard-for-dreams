@@ -21,8 +21,12 @@
     "heartName": "a\nHEART CONTAINER!",
     "heartDesc": ["It increases\nyour health\nby one."],
 
-    "itemName0": "a\nDUMMY ITEM!",
-    "itemDesc0": ["It is the\ndefault item\nwith no real\neffect."],
+    "itemName": [
+        "a\nRUSTY SWORD!"
+    ],
+    "itemDesc": [
+        ["It's old and\ndangerous!\nPress X or (Y)\nto attack!"]
+    ],
 
     "keyName": "an\nOLD KEY!",
     "keyDesc": ["It can be\nused to unlock\na door."],

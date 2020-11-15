@@ -50,15 +50,23 @@ export function addItemDescription(loc, message, type, id) {
     let nameStr = TYPE_NAMES [type] + "Name";
     let descStr = TYPE_NAMES [type] + "Desc";
 
+    let resNameStr = "";
+    let resDescStrs;
+
     if (type == 1) {
 
-        nameStr += String(id);
-        descStr += String(id);
+        resNameStr = loc["obtain"] + " " + loc[nameStr][id];
+        resDescStrs = loc[descStr][id];
+    }
+    else {
+
+        resNameStr = loc["obtain"] + " " + loc[nameStr];
+        resDescStrs = loc[descStr];
     }
 
     // Add obtain text and description to the message queue
-    message.addMessage(loc["obtain"] + " " + loc[nameStr]);
-    for (let m of loc[descStr]) {
+    message.addMessage(resNameStr);
+    for (let m of resDescStrs) {
 
         message.addMessage(m);
     }

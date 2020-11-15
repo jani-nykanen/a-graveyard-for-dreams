@@ -19,6 +19,9 @@ import { loadData } from "./savedata.js";
 import { Shop } from "./shop.js";
 
 
+export const MAIN_THEME_VOLUME = 0.40;
+
+
 export class Game extends Scene {
 
 
@@ -52,7 +55,7 @@ export class Game extends Scene {
             }, ev);
 
         // Test
-        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.30);
+        ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
 
         ev.tr.activate(false, TransitionType.CircleOutside, 
             1.0/30.0, null, new RGB(0, 0, 0));
@@ -81,7 +84,7 @@ export class Game extends Scene {
         this.progress.reset();
 
         // Test
-        ev.audio.playMusic(ev.assets.samples["testTrack"], 0.30);
+        ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
     }
 
 

@@ -22,10 +22,51 @@
     "heartDesc": ["It increases\nyour health\nby one."],
 
     "itemName": [
-        "a\nRUSTY SWORD!"
+
+        "a\nRUSTY SWORD!",
+        "a\npair of\nWINGED BOOTS!",
+        "a\nBOOMERANG!",
+        "a\npair of\nFLIPPERS!",
+
+        "an\nAIR BUBBLE!",
+        "a\nbottle of\nLUBRICANT!",
+        "a...\nDOWNWARDS ATTACK?!\nSure, whatever.",
+        "a\nchunk of\nFLAMING ORE!",
+
+        "a\npair of\nSTICKY GLOVES!",
+        "a\npair of\nTINY WINGS!",
+        "a\nCAN OF BEANS!",
+        "an\nORB OF FIRE!",
+
+        "null",
+        "null",
+        "null",
+        "null",
+
+        "an\nAUTOMATIC MAP!",
+        "a\npair of\nRUNNING BOOTS!"
     ],
     "itemDesc": [
-        ["It's old and\ndangerous!\nPress X or (Y)\nto attack!"]
+        ["It's old and\ndangerous!\nPress X or (Y)\nto attack!"],
+        ["The wings are\nso tiny you\ncannot even fly,\nbut you can\njump higher."],
+        ["Press C or (A) to\nthrow it. It\nwill come back.\nEventually."],
+        ["It has nothing to\ndo with pinball,\nbut now you\ncan swim in\ndeep water."],
+        ["It lets you\nbreathe under-\nwater."],
+        ["Now you slide!\nHold down and\npress the jump\nbutton to slide\nlike a pro."],
+        ["Hold down and\npress the attack\nbutton while\non air to\nperform it."],
+        ["It lets you\nperform a\npower attack."],
+        ["They are so\nsticky you\ncan do a wall\njump!"],
+        ["They are too tiny\nfor flying, but\nyou can flap\nyour arms by\nholding the\njump button."],
+        ["Don't ask how,\nbut with the\nbeans you can\ndo a double jump."],
+        ["It sets your\nboomerang on\nfire, making\nit a ball of\nfire!"],
+
+        ["null"],
+        ["null"],
+        ["null"],
+        ["null"],
+
+        ["Press Shift or\n[BACK] to open\nit."],
+        ["Now you can\nrun a bit\nfaster. Gotta\ngo f... no."]
     ],
 
     "keyName": "an\nOLD KEY!",
@@ -53,7 +94,7 @@
         "Can be used to\nunlock a door.",
         "The world map.\nShows the areas\nyou have already\nvisited.",
         "Increases your\nrunning speed.",
-        "Revives you once\nif you die and\nrestores all\nyour health"
+        "Restores your\nhealth."
     ],
 
     "cannotAfford": "You cannot\nafford that\nitem!",

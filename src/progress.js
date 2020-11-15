@@ -58,7 +58,7 @@ export class GameProgress {
 
     reset() {
 
-        this.health = this.maxHealth;
+        this.health = 6; // this.maxHealth;
     }
 
 

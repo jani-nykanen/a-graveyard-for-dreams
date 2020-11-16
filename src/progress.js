@@ -139,4 +139,10 @@ export class GameProgress {
 
         return this.boughtItems[index];
     }
+
+
+    restoreHealth() {
+
+        this.health = this.maxHealth;
+    }
 }

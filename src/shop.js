@@ -12,19 +12,30 @@ import { MessageBox } from "./messagebox.js";
 import { drawBoxWithOutlines } from "./misc.js";
 
 
+/*
+ * Insert any spaghetti-related meme here
+ */
+
+
 const ITEM_TYPES = [
-    0, 2, 1, 1, 1
+    4, 0, 2, 1, 1,
+    1, 1, 1, 1, 1
 ];
 const ITEM_IDS = [
-    16, 16, 17, 18, 19
+    0, 16, 16, 17, 18,
+    19, 20, 21, 22, 23
 ];
 
 
 // What do you mean I'm hard-coding prices?
-// ...well, I am. You were right
+// ...well, I am. You were right.
 const PRICES = [
-    20, 10, 20, 30, 10
+    10, 10, 10, 20, 30,
+    50, 50, 50, 50, 50
 ];
+
+
+const SHOP_ITEM_MAX = 5;
 
 
 export class Shop {
@@ -33,7 +44,7 @@ export class Shop {
     constructor(progress, globalMessage, ev) {
 
         this.progress = progress;
-        this.menu = null;
+        this.menu = new Array();
         this.active = false;
 
         // Needed in drawing
@@ -43,12 +54,19 @@ export class Shop {
         this.globalMessage = globalMessage;
 
         this.itemWaitTime = 0;
+
+        this.id = 0;
     }
 
 
     constructMenu(pl, ev) {
 
-        this.menu = new Menu(12, true, this.constructMenuButtons(pl, ev));
+        let buttons = this.constructMenuButtons(pl, ev);
+
+        for (let j = 0; j < buttons.length; ++ j) {
+
+            this.menu[j] = new Menu(12, true, buttons[j]);
+        }
     }
 
 
@@ -56,74 +74,80 @@ export class Shop {
 
         let loc = ev.assets.localization["en"];
 
+        let names = loc["shopItemNames"];
+
         let buttons = new Array();
 
-        for (let i = 0; i < loc["shopItemNames1"].length; ++ i) {
+        for (let j = 0; j < names.length; ++ j) {
 
-            buttons.push(new MenuButton(" " + loc["shopItemNames1"][i], 
+            buttons.push(new Array());
+            
+            for (let i = 0; i < names[j].length; ++ i) {
+
+                buttons[j].push(new MenuButton(" " + names[j][i], 
+                    (ev) => {
+
+                        if (this.progress.isItemBought(j*SHOP_ITEM_MAX + i)) {
+
+                            return;
+                        }
+
+                        if (this.progress.coins < PRICES[j*SHOP_ITEM_MAX + i]) {
+
+                            this.message.addMessage(loc["cannotAfford"])    
+                                .activate((ev) => {}, false);
+                        }
+                        else {
+
+                            this.message.addMessage(loc["confirmTransaction"])
+                                .activate((ev) => {
+
+                                    const ITEM_WAIT = 60;
+                                    
+                                    if (ITEM_TYPES[j*SHOP_ITEM_MAX + i] != 4) {
+
+                                        this.progress.setItemBoughtStatus(j*SHOP_ITEM_MAX + i, true);
+                                        this.menu[this.id].toggleButton(i, false);
+                                    }
+                                        
+                                    this.progress.addCoins(-PRICES[j*SHOP_ITEM_MAX + i]);
+
+                                    this.deactivate();
+                                    addItemDescription(this.loc, this.globalMessage, 
+                                        ITEM_TYPES[j*SHOP_ITEM_MAX + i], ITEM_IDS[j*SHOP_ITEM_MAX +i]);
+                                    this.itemWaitTime = ITEM_WAIT;
+
+                                    pl.setObtainItemPose(ITEM_TYPES[i], 
+                                        ITEM_TYPES[j*SHOP_ITEM_MAX + i] == ChestType.Item ? ITEM_IDS[j*SHOP_ITEM_MAX +i] : 0);
+
+                                    // Sound effect
+                                    ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
+
+                                    ev.audio.pauseMusic();
+                                    this.globalMessage.addStartCondition((ev) => {
+
+                                        return (this.itemWaitTime -= ev.step) <= 0;
+                                        
+                                    }).activate((ev) => {
+
+                                        applyItemEvent(ITEM_TYPES[j*SHOP_ITEM_MAX + i], pl);
+                                        ev.audio.resumeMusic();
+
+                                    }, false);
+
+                                }, true);
+                        }
+
+                    }, false));
+            }
+
+            buttons[j].push(new MenuButton(loc["back"], 
                 (ev) => {
 
-                    if (this.progress.isItemBought(i)) {
+                    this.deactivate();
 
-                        // TODO: Disable the other sound effect
-                        // ev.audio.playSample(ev.assets.samples["deny"], 0.60);
-                        return;
-                    }
-
-                    if (this.progress.coins < PRICES[i]) {
-
-                        this.message.addMessage(loc["cannotAfford"])    
-                            .activate((ev) => {}, false);
-                    }
-                    else {
-                        
-
-                        this.message.addMessage(loc["confirmTransaction"])
-                            .activate((ev) => {
-
-                                const ITEM_WAIT = 60;
-                
-                                this.progress.setItemBoughtStatus(i, true);
-                                this.progress.addCoins(-PRICES[i]);
-
-                                this.menu.toggleButton(i, false);
-
-                                this.deactivate();
-                                addItemDescription(this.loc, this.globalMessage, 
-                                    ITEM_TYPES[i], ITEM_IDS[i]);
-                                this.itemWaitTime = ITEM_WAIT;
-
-                                pl.setObtainItemPose(ITEM_TYPES[i], 
-                                    ITEM_TYPES[i] == ChestType.Item ? ITEM_IDS[i] : 0);
-
-                                // Sound effect
-                                ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
-
-                                ev.audio.pauseMusic();
-                                this.globalMessage.addStartCondition((ev) => {
-
-                                    return (this.itemWaitTime -= ev.step) <= 0;
-                                    
-                                }).activate((ev) => {
-
-                                    applyItemEvent(ITEM_TYPES[i], pl);
-                                    ev.audio.resumeMusic();
-
-                                }, false);
-
-                            }, true);
-                    }
-
-                }, false));
+                }, true));
         }
-
-        
-        buttons.push(new MenuButton(loc["back"], 
-            (ev) => {
-
-                this.deactivate();
-
-            }, true));
 
         return buttons;
     }
@@ -131,11 +155,14 @@ export class Shop {
 
     disableButtons() {
 
-        for (let i = 0; i < this.menu.buttons.length-1; ++ i) {
+        for (let j = 0; j < this.menu.length; ++ j) {
 
-            if (this.progress.isItemBought(i)) {
+            for (let i = 0; i < this.menu[j].buttons.length-1; ++ i) {
 
-                this.menu.toggleButton(i, false);
+                if (this.progress.isItemBought(j*SHOP_ITEM_MAX + i)) {
+
+                    this.menu[j].toggleButton(i, false);
+                }
             }
         }
     }
@@ -160,11 +187,13 @@ export class Shop {
             return;
         }
 
-        this.menu.update(ev);
+        this.menu[this.id].update(ev);
     }
 
 
     draw(c) {
+
+        const MENU_WIDTH = 148;
 
         const TOP_BOX_WIDTH = 48;
         const TOP_BOX_HEIGHT = 12;
@@ -172,7 +201,7 @@ export class Shop {
 
         const Y_OFFSET = -12;
         const MENU_X = 60;
-        const MENU_RIGHT = 144;
+        const MENU_RIGHT = 148;
         const BOTTOM_BOX_TOP_OFFSET = -4;
         const BOTTOM_BOX_HEIGHT = 40;
 
@@ -181,7 +210,7 @@ export class Shop {
         c.setColor(0, 0, 0, 0.67);
         c.fillRect(0, 0, c.width, c.height);
 
-        let topElementY = c.height/2 - this.menu.height/2 + Y_OFFSET;
+        let topElementY = c.height/2 - this.menu[this.id].height/2 + Y_OFFSET;
 
         // "Shop" box
         drawBoxWithOutlines(c,
@@ -193,61 +222,62 @@ export class Shop {
 
         // Name box
         drawBoxWithOutlines(c, 
-            MENU_X - (this.menu.width-8)/2 -4, 
+            c.width/2 - MENU_WIDTH/2, 
             topElementY - 2,
-            c.width - (c.width/2 - MENU_X) + 4, 
-            this.menu.height);
+            MENU_WIDTH, 
+            this.menu[this.id].height);
         // Names
-        this.menu.draw(c, MENU_X +4, c.height/2 + Y_OFFSET);
+        this.menu[this.id].draw(c, MENU_X +4, c.height/2 + Y_OFFSET);
 
         // Icons
         for (let i = 0; i < PRICES.length; ++ i) {
 
             c.drawBitmapRegion(c.bitmaps["shopicons"],
-                i*8, this.progress.isItemBought(i) ? 8 : 0, 8, 8,
-                MENU_X - (this.menu.width-8)/2 + 7, 
-                topElementY + i*this.menu.offset, Flip.None);
+                (this.id*SHOP_ITEM_MAX + i)*8, 
+                this.progress.isItemBought(this.id*SHOP_ITEM_MAX + i) ? 8 : 0, 8, 8,
+                MENU_X - (this.menu[this.id].width-8)/2 + 7, 
+                topElementY + i*this.menu[this.id].offset, Flip.None);
         }
 
         // Prices
         let str = "";
         let x = 0;
         let font = "";
-        for (let i = 0; i < PRICES.length; ++ i) {
+        for (let i = 0; i < SHOP_ITEM_MAX; ++ i) {
 
-            if (this.progress.isItemBought(i)) {
+            if (this.progress.isItemBought(this.id*SHOP_ITEM_MAX + i)) {
 
                 str = this.loc["sold"];
                 font = "fontGray";
             }
             else {
 
-                font = this.menu.cpos == i ? "fontYellow" : "font";
-                str = String(PRICES[i]) + String.fromCharCode(6);
+                font = this.menu[this.id].cpos == i ? "fontYellow" : "font";
+                str = String(PRICES[this.id*SHOP_ITEM_MAX + i]) + String.fromCharCode(6);
             }
             x = MENU_RIGHT - str.length * 8;
 
             c.drawText(
                 c.bitmaps[font], str, 
-                x, topElementY + i*this.menu.offset, 0, 0, false);
+                x, topElementY + i*this.menu[this.id].offset, 0, 0, false);
         }
 
         // Bottom box
         let bottomElementY = topElementY + 
-            this.menu.height + 
+            this.menu[this.id].height + 
             BOTTOM_BOX_TOP_OFFSET + 12;
         drawBoxWithOutlines(c, 
-            MENU_X - (this.menu.width-8)/2 -4, 
+            c.width/2 - MENU_WIDTH/2, 
             bottomElementY - 4,
-            c.width - (c.width/2 - MENU_X) + 4, 
+            MENU_WIDTH, 
             BOTTOM_BOX_HEIGHT);
 
         // Description
-        if (this.menu.cpos < this.menu.buttons.length-1) {
+        if (this.menu[this.id].cpos < this.menu[this.id].buttons.length-1) {
 
-            str = this.loc["shopItemDesc1"] [this.menu.cpos];
+            str = this.loc["shopItemDesc"][this.id][this.menu[this.id].cpos];
             c.drawText(c.bitmaps["font"], str, 
-                MENU_X - (this.menu.width-8)/2, bottomElementY -2, 0, 1, 
+                MENU_X - (this.menu[this.id].width-8)/2, bottomElementY -2, 0, 1, 
                 false);
         }
         
@@ -261,16 +291,18 @@ export class Shop {
     }
 
 
-    activate() {
+    activate(id) {
+
+        this.id = id;
 
         this.active = true;
-        this.menu.activate(this.menu.buttons.length-1);
+        this.menu[this.id].activate(this.menu[this.id].buttons.length-1);
     }
 
 
     deactivate() {
 
-        this.menu.deactivate();
+        this.menu[this.id].deactivate();
         this.active = false;
     }
 }

@@ -115,7 +115,7 @@ export class ObjectManager {
                 // Shopkeeper
                 case 40:
 
-                    this.interactableObjects.push(new Shopkeeper(x*16+8, y*16+4, this.shop));
+                    this.interactableObjects.push(new Shopkeeper(x*16+8, y*16+4, this.shop, id));
                     break;
 
                 default:

@@ -14,6 +14,7 @@ export const ChestType = {
     Item: 1,
     Key: 2,
     Orb: 3,
+    Potion: 4,
 };
 
 
@@ -37,6 +38,11 @@ export function applyItemEvent(type, pl) {
             pl.progress.addOrbs(1);
             break;
 
+        case ChestType.Potion:
+
+            pl.progress.restoreHealth();
+            break;
+
         default:
             break;
         }
@@ -45,7 +51,7 @@ export function applyItemEvent(type, pl) {
 
 export function addItemDescription(loc, message, type, id) {
 
-    const TYPE_NAMES = ["heart", "item", "key", "orb"];
+    const TYPE_NAMES = ["heart", "item", "key", "orb", "potion"];
 
     let nameStr = TYPE_NAMES [type] + "Name";
     let descStr = TYPE_NAMES [type] + "Desc";

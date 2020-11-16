@@ -1180,6 +1180,8 @@ export class Player extends CollisionObject {
         this.flip = dir > 0 ? Flip.Horizontal : Flip.None;
 
         this.spr.setFrame(4, 6);
+
+        this.hurtTimer = 0;
     }
 
 
@@ -1188,12 +1190,16 @@ export class Player extends CollisionObject {
         this.spr.setFrame(0, 8);
 
         this.obtainedItem = new Vector2(id, type);
+
+        this.hurtTimer = 0;
     }
 
 
     setDoorPose(inside) {
 
         this.spr.setFrame(inside ? 1 : 2, 8);
+    
+        this.hurtTimer = 0;
     }
 
 

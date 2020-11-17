@@ -46,7 +46,7 @@
         "an\nAUTOMATIC MAP!",
         "a\npair of\nRUNNING BOOTS!",
         "a\nCHESTPLATE!",
-        "MAGIC PILLS!",
+        "\nMAGIC PILLS!",
 
         "a\nTREASURE\nTRACKER!",
         "a\nDUMMY ITEM!",
@@ -72,7 +72,7 @@
         ["null"],
         ["null"],
 
-        ["Press Shift or\n[BACK] to open\nit."],
+        ["Press Shift or\n(BACK) to open\nit."],
         ["Now you can\nrun a bit\nfaster. Gotta\ngo fa... no."],
         ["It reduces the\ndamage you take."],
         ["They taste weird.\nAll the hearts\nyou collect will\nheal you more."],

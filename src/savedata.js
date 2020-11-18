@@ -21,6 +21,7 @@ let copyProgress = (progress) => {
         "openedChests": progress.openedChests,
         "openedDoors": progress.openedDoors,
         "boughtItems": progress.boughtItems,
+        "obtainedItems": progress.obtainedItems,
     };
 };
 

@@ -30,7 +30,7 @@ const ITEM_IDS = [
 // What do you mean I'm hard-coding prices?
 // ...well, I am. You were right.
 const PRICES = [
-    10, 10, 10, 20, 30,
+    10, 20, 10, 20, 30,
     30, 20, 30, 50, 20
 ];
 

@@ -11,11 +11,12 @@ import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
 import { overlay } from "./core/util.js";
+import { ItemType } from "./progress.js";
 
-const ATTACK_TIME = 20;
+const ATTACK_TIME = 16;
 // TODO: Make sure the number below is sufficient
 const ATTACK_HIT_TIME = 5;
-const SPC_RELEASE_TIME = 10;
+const SPC_RELEASE_TIME = 12;
 
 
 export class Player extends CollisionObject {
@@ -161,6 +162,9 @@ export class Player extends CollisionObject {
         const DOWN_ATTACK_GRAVITY = 4.0;
         const DOWN_ATTACK_INITIAL_SPEED = -3.0;
         const DOWN_ATTACK_FRICTION = 0.35;
+
+        if (!this.progress.hasItem(ItemType.Sword))
+            return;
         
         let atkButtonState = ev.input.actions["fire2"].state;
 
@@ -211,18 +215,17 @@ export class Player extends CollisionObject {
         const SWIMMING_MOD_Y = 0.25;
 
         // If swimming, lower the friction (and target speeds)
-        if (this.swimming) {
+        if (!this.swimming) 
+            return;
 
-            this.friction.x *= SWIMMING_MOD_X;
-            this.friction.y *= SWIMMING_MOD_Y;
+        this.friction.x *= SWIMMING_MOD_X;
+        this.friction.y *= SWIMMING_MOD_Y;
 
-            this.target.x *= SWIMMING_MOD_X;
-            this.target.y *= SWIMMING_MOD_Y;
+        this.target.x *= SWIMMING_MOD_X;
+        this.target.y *= SWIMMING_MOD_Y;
 
-            this.touchWall = false;
-            this.wallJumpMargin = 0;
-        }
-
+        this.touchWall = false;
+        this.wallJumpMargin = 0;
     }
 
 
@@ -350,7 +353,8 @@ export class Player extends CollisionObject {
         const THROW_TIME = 30;
         const RETURN_TIME = 24;
 
-        if (this.boomerang.exist)
+        if (!this.progress.hasItem(ItemType.Boomerang) ||
+            this.boomerang.exist)
             return false;
 
         // TODO: Make sure this happens only if
@@ -630,7 +634,7 @@ export class Player extends CollisionObject {
             if (this.swimming)
                 this.speed.y *= SWIMMING_MOD_Y;
 
-            this.jumpTimer -= ev.step;
+            this.jumpTimer -= (this.progress.hasItem(ItemType.JumpBoots) ? 1 : 2) * ev.step;
         }
 
         if (this.slideTimer > 0) {
@@ -928,7 +932,12 @@ export class Player extends CollisionObject {
     }
 
 
-    waterCollision(x, y, w, h, ev) {
+    waterCollision(x, y, w, h, surface, ev) {
+
+        if (!surface && !this.progress.hasItem(ItemType.Flippers)) {
+
+            return this.floorCollision(x, y-4, w, ev, false);
+        }
 
         if (this.overlay(x, y, w, h)) {
 

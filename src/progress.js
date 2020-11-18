@@ -5,6 +5,15 @@
  */
 
 
+export const ItemType = {
+    Sword: 0,
+    JumpBoots: 1,
+    Boomerang: 2,
+    Flippers: 3,
+};
+
+
+
 export class GameProgress {
 
 
@@ -27,7 +36,9 @@ export class GameProgress {
         this.openedDoors = (new Array(16)).fill(false);
 
         // Approximated size, might need to increase later
-        this.boughtItems = (new Array(5)).fill(false);
+        this.boughtItems = (new Array(5*2)).fill(false);
+
+        this.obtainedItems = (new Array(32)).fill(false);
     }
 
 
@@ -53,6 +64,9 @@ export class GameProgress {
 
         if (obj["boughtItems"] != undefined)
             this.boughtItems = Array.from(obj["boughtItems"]);
+
+        if (obj["obtainedItems"] != undefined)
+            this.obtainedItems = Array.from(obj["obtainedItems"]);    
     }
 
 
@@ -108,6 +122,10 @@ export class GameProgress {
     markChestOpened(type, id) {
 
         (this.openedChests[type])[id] = true;
+        if (type == 1) {
+
+            this.obtainedItems[id] = true;
+        }
     }
 
 
@@ -144,5 +162,17 @@ export class GameProgress {
     restoreHealth() {
 
         this.health = this.maxHealth;
+    }
+
+
+    obtainItem(id) {
+
+        this.obtainedItems[id] = true;
+    }
+
+
+    hasItem(id) {
+
+        return this.obtainedItems[id];
     }
 }

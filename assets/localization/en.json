@@ -24,7 +24,7 @@
     "itemName": [
 
         "a\nRUSTY SWORD!",
-        "a\npair of\nWINGED BOOTS!",
+        "a\npair of\nJUMPING BOOTS!",
         "a\nBOOMERANG!",
         "a\npair of\nFLIPPERS!",
 
@@ -55,7 +55,7 @@
     ],
     "itemDesc": [
         ["It's old and\ndangerous,\njust like you!", "Press X or (Y)\nto attack!"],
-        ["The wings are\nso tiny you\ncannot even fly,\nbut you can\njump higher."],
+        ["They have tiny\nsprings, letting\nyou jump higher."],
         ["Press C or (A) to\nthrow it. It\nwill come back.\nEventually."],
         ["It has nothing to\ndo with pinball,\nbut now you\ncan swim in\ndeep water."],
         ["It lets you\nbreathe under-\nwater."],

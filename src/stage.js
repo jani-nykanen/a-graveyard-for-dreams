@@ -465,7 +465,7 @@ export class Stage {
 
             if (o.waterCollision != undefined) {
     
-                o.waterCollision(x*16, y*16+8, 16, 8, ev);
+                o.waterCollision(x*16, y*16+8, 16, 8, true, ev);
             }
             break;
 
@@ -474,7 +474,7 @@ export class Stage {
 
             if (o.waterCollision != undefined) {
 
-                o.waterCollision(x*16, y*16, 16, 16, ev);
+                o.waterCollision(x*16, y*16, 16, 16, false, ev);
             }
             break;
 

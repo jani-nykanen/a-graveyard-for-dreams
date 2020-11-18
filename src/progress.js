@@ -6,10 +6,16 @@
 
 
 export const ItemType = {
+
     Sword: 0,
     JumpBoots: 1,
     Boomerang: 2,
     Flippers: 3,
+
+    Snorkel: 4,
+    Lubricant: 5,
+    DownAttack: 6,
+    Fire: 7,
 };
 
 

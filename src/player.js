@@ -49,6 +49,7 @@ export class Player extends CollisionObject {
         this.climbingBegun = false;
     
         this.swimming = false;
+        this.oxygenTime = 0;
 
         this.slideTimer = 0;
 
@@ -134,7 +135,8 @@ export class Player extends CollisionObject {
         this.stopMovement();
         if (!special) {
 
-            this.attackTimer += SPC_RELEASE_TIME;
+            if (this.progress.hasItem(ItemType.Fire))
+                this.attackTimer += SPC_RELEASE_TIME;
         }
         else if (!this.climbing) {
 
@@ -172,7 +174,8 @@ export class Player extends CollisionObject {
         if (atkButtonState == State.Pressed) {
 
             // Down attack
-            if (!this.climbing && !this.swimming &&
+            if (this.progress.hasItem(ItemType.DownAttack) &&
+                !this.climbing && !this.swimming &&
                 !this.canJump && ev.input.stick.y > EPS) {
                 
                 this.stopMovement();
@@ -283,7 +286,8 @@ export class Player extends CollisionObject {
         // Jumping and related actions
         if (jumpButtonState == State.Pressed) {
 
-            if (!this.swimming && 
+            if (this.progress.hasItem(ItemType.Lubricant) &&
+                !this.swimming && 
                 this.canJump && ev.input.stick.y > EPS) {
 
                 this.slideTimer = SLIDE_TIME;
@@ -397,7 +401,10 @@ export class Player extends CollisionObject {
         let atkButtonState = ev.input.actions["fire2"].state;
         let released = atkButtonState == State.Released ||
                        atkButtonState == State.Up;
-        if (!released) return;
+                       
+        if (!released ||
+            !this.progress.hasItem(ItemType.Fire)) 
+            return;
 
         if (this.charging && released) {
 
@@ -622,6 +629,21 @@ export class Player extends CollisionObject {
         const CHARGE_MAX = 20; // Could be anything, really
         const SHOW_ARROW_SPEED = 1.0 / 30.0;
 
+        if (this.progress.hasItem(ItemType.Flippers) &&
+            !this.progress.hasItem(ItemType.Snorkel) && 
+            this.swimming) {
+
+            if ((this.oxygenTime -= ev.step) <= 0) {
+
+                this.kill(ev);
+                return;
+            }
+        }
+        else {
+
+            this.oxygenTime = 0;
+        }
+
         if (this.showArrow) {
 
             this.showArrowTimer += SHOW_ARROW_SPEED * ev.step;
@@ -656,7 +678,8 @@ export class Player extends CollisionObject {
             this.attackTimer -= ev.step;    
 
              // "Charge attack"
-            if (!this.specialAttack &&
+            if (this.progress.hasItem(ItemType.Fire) &&
+                !this.specialAttack &&
                 this.swordAttack && 
                 this.attackTimer <= 0) {
 
@@ -833,6 +856,16 @@ export class Player extends CollisionObject {
                 16, 16,
                 px, py-16, Flip.None);
         }
+
+        // Oxygen time
+        if (this.progress.hasItem(ItemType.Flippers) && 
+            !this.progress.hasItem(ItemType.Snorkel) && 
+            this.swimming &&
+            this.oxygenTime > 0) {
+
+            c.drawText(c.bitmaps["font"], String(Math.round(this.oxygenTime / 60)),
+                px + 8, py - 10, -1, 0, true);
+        }
     }
 
 
@@ -934,12 +967,19 @@ export class Player extends CollisionObject {
 
     waterCollision(x, y, w, h, surface, ev) {
 
+        const OXYGEN_TIME = 5 * 60;
+
         if (!surface && !this.progress.hasItem(ItemType.Flippers)) {
 
             return this.floorCollision(x, y-4, w, ev, false);
         }
 
         if (this.overlay(x, y, w, h)) {
+
+            if (this.oxygenTime <= 0 && !this.swimming) {
+
+                this.oxygenTime = OXYGEN_TIME;
+            }
 
             this.swimming = true;
             this.jumpMargin = 1;

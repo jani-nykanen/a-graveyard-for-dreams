@@ -30,15 +30,15 @@
 
         "a\nSNORKEL!",
         "a\nbottle of\nLUBRICANT!",
-        "a...\nDOWNWARDS ATTACK?!\nSure, whatever.",
-        "a\nchunk of\nFLAMING ORE!",
+        "\na... DOWNWARDS\nATTACK?! Sure,\nwhatever.",
+        "a\nFRIENDLY FIRE!",
 
         "a\npair of\nSTICKY GLOVES!",
         "a\npair of\nTINY WINGS!",
         "a\nCAN OF MAGIC\nBEANS!",
         "an\nORB OF FIRE!",
 
-        "null",
+        "a\nbag of\nFAIRY DUST!",
         "null",
         "null",
         "null",
@@ -58,16 +58,18 @@
         ["They have tiny\nsprings, letting\nyou jump higher."],
         ["Press C or (A) to\nthrow it. It\nwill come back.\nEventually."],
         ["It has nothing to\ndo with pinball,\nbut now you\ncan swim in\ndeep water."],
+
         ["It lets you\nbreathe under-\nwater. Somehow."],
-        ["Now you slide!\nHold down and\npress the jump\nbutton to slide\nlike a pro."],
+        ["Now you can\nslide by holding\nthe down button\nand pressing the\njump button."],
         ["Hold down and\npress the attack\nbutton while\non air to\nperform it."],
-        ["It lets you\nperform a\npower attack."],
+        ["Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nrelease it."],
+
         ["They are so\nsticky you\ncan do a wall\njump!"],
         ["They are too tiny\nfor flying, but\nyou can flap\nyour arms by\nholding the\njump button."],
         ["Don't ask how,\nbut with the\nbeans you can\ndo a double jump."],
         ["It sets your\nboomerang on\nfire, making\nit a ball of\nfire!"],
 
-        ["null"],
+        ["When you die,\na bigger portion\nof your health\nis restored."],
         ["null"],
         ["null"],
         ["null"],

@@ -31,12 +31,12 @@
         "a\nSNORKEL!",
         "a\nbottle of\nLUBRICANT!",
         "\na... DOWNWARDS\nATTACK?! Sure,\nwhatever.",
-        "a\nFRIENDLY FIRE!",
+        "a\nPROTEIN BAR!",
 
         "a\npair of\nSTICKY GLOVES!",
         "a\npair of\nTINY WINGS!",
-        "a\nCAN OF MAGIC\nBEANS!",
-        "an\nORB OF FIRE!",
+        "\nMAGIC BEANS!",
+        "a\nFRIENDLY FIRE!",
 
         "a\nbag of\nFAIRY DUST!",
         "null",
@@ -62,12 +62,12 @@
         ["It lets you\nbreathe under-\nwater. Somehow."],
         ["Now you can\nslide by holding\nthe down button\nand pressing the\njump button."],
         ["Hold down and\npress the attack\nbutton while\non air to\nperform it."],
-        ["Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nrelease it."],
+        ["It makes you\nfeel powerful.", "Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nrelease it."],
 
         ["They are so\nsticky you\ncan do a wall\njump!"],
         ["They are too tiny\nfor flying, but\nyou can flap\nyour arms by\nholding the\njump button."],
         ["Don't ask how,\nbut with the\nbeans you can\ndo a double jump."],
-        ["It sets your\nboomerang on\nfire, making\nit a ball of\nfire!"],
+        ["It sets your\nboomerang on\nfire."],
 
         ["When you die,\na bigger portion\nof your health\nis restored."],
         ["null"],

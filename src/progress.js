@@ -15,7 +15,12 @@ export const ItemType = {
     Snorkel: 4,
     Lubricant: 5,
     DownAttack: 6,
-    Fire: 7,
+    ProteinBar: 7,
+
+    StickyGlove: 8,
+    TinyWings: 9,
+    Beans: 10,
+    FireBall: 11,
 };
 
 

@@ -135,7 +135,7 @@ export class Player extends CollisionObject {
         this.stopMovement();
         if (!special) {
 
-            if (this.progress.hasItem(ItemType.Fire))
+            if (this.progress.hasItem(ItemType.ProteinBar))
                 this.attackTimer += SPC_RELEASE_TIME;
         }
         else if (!this.climbing) {
@@ -296,7 +296,7 @@ export class Player extends CollisionObject {
                 ev.audio.playSample(ev.assets.samples["jump"], 0.50);
             }
             else if (this.canJump || this.jumpMargin > 0 || 
-                !this.doubleJump ||
+                (this.progress.hasItem(ItemType.Beans) && !this.doubleJump) ||
                 this.wallJumpMargin > 0) {
 
                 this.doubleJump = !this.canJump && 
@@ -336,10 +336,10 @@ export class Player extends CollisionObject {
     
         // Flapping
         this.flapping = 
+            this.progress.hasItem(ItemType.TinyWings) &&
             this.jumpReleased &&
-            this.doubleJump &&
+            (!this.progress.hasItem(ItemType.Beans) || this.doubleJump) &&
             this.attackTimer <= 0 &&
-            this.doubleJump &&
             (jumpButtonState & State.DownOrPressed) == 1 &&
             this.jumpTimer <= 0;
 
@@ -403,7 +403,7 @@ export class Player extends CollisionObject {
                        atkButtonState == State.Up;
                        
         if (!released ||
-            !this.progress.hasItem(ItemType.Fire)) 
+            !this.progress.hasItem(ItemType.ProteinBar)) 
             return;
 
         if (this.charging && released) {
@@ -678,7 +678,7 @@ export class Player extends CollisionObject {
             this.attackTimer -= ev.step;    
 
              // "Charge attack"
-            if (this.progress.hasItem(ItemType.Fire) &&
+            if (this.progress.hasItem(ItemType.ProteinBar) &&
                 !this.specialAttack &&
                 this.swordAttack && 
                 this.attackTimer <= 0) {
@@ -910,9 +910,12 @@ export class Player extends CollisionObject {
             !this.swimming &&
             this.speed.y > 0.0 &&
             ev.input.stick.x*dir > EPS) {
+            
+            if (this.progress.hasItem(ItemType.StickyGlove)) {
 
-            this.touchWall = true;
-            this.wallJumpMargin = WALL_JUMP_MARGIN;
+                this.touchWall = true;
+                this.wallJumpMargin = WALL_JUMP_MARGIN;
+            }
 
             this.wallDir = dir;
 

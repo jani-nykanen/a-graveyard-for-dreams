@@ -39,7 +39,7 @@
         "a\nFRIENDLY FIRE!",
 
         "a\nbag of\nFAIRY DUST!",
-        "null",
+        "a\nPRECIOUS GEM!",
         "null",
         "null",
 
@@ -70,7 +70,7 @@
         ["It sets your\nboomerang on\nfire."],
 
         ["When you die,\na bigger portion\nof your health\nis restored."],
-        ["null"],
+        ["When you touch it,\nit turns into\na pile of coins."],
         ["null"],
         ["null"],
 

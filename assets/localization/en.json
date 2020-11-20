@@ -40,8 +40,8 @@
 
         "a\nbag of\nFAIRY DUST!",
         "a\nPRECIOUS GEM!",
-        "null",
-        "null",
+        "a\nHARD HELMET!",
+        "\nnull",
 
         "an\nAUTOMATIC MAP!",
         "a\npair of\nRUNNING BOOTS!",
@@ -67,11 +67,11 @@
         ["They are so\nsticky you\ncan do a wall\njump!"],
         ["They are too tiny\nfor flying, but\nyou can flap\nyour arms by\nholding the\njump button."],
         ["Don't ask how,\nbut with the\nbeans you can\ndo a double jump."],
-        ["It sets your\nboomerang on\nfire."],
+        ["It sets your\nboomerang on\nfire, making it\nmelt ice blocks\nand go through\nenemies."],
 
         ["When you die,\na bigger portion\nof your health\nis restored."],
         ["When you touch it,\nit turns into\na pile of coins."],
-        ["null"],
+        ["Now you may\nbreak tiles\nwith your\nhead."],
         ["null"],
 
         ["Press Shift or\n(BACK) to open\nit."],

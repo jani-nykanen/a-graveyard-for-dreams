@@ -8,6 +8,61 @@ import { CollisionObject } from "./collisionobject.js";
 import { Vector2 } from "./core/vector.js";
 import { Sprite } from "./core/sprite.js";
 import { Flip } from "./core/canvas.js";
+import { clamp, nextObject } from "./core/util.js";
+
+
+class Flame {
+
+
+    constructor() {
+
+        this.pos = new Vector2(0, 0);
+
+        this.timer = 0.0;
+        this.speed = 1.0;
+
+        this.exist = false;
+    }
+
+
+    spawn(x, y, speed) {
+
+        this.pos.x = x;
+        this.pos.y = y;
+
+        this.speed = speed;
+        this.timer = 1.0;
+
+        this.exist = true;
+    }
+
+
+    update(ev) {
+
+        if (!this.exist)
+            return;
+
+        if ((this.timer -= this.speed * ev.step) <= 0) {
+
+            this.exist = false;
+        }
+    }
+
+
+    draw(c) {
+
+        if (!this.exist) return;
+
+        let frame = 5 + clamp(Math.round((1.0-this.timer) * 5), 0, 4);
+        
+        c.drawBitmapRegion(c.bitmaps["figure"],
+            frame*16, 80, 16, 16,
+            Math.round(this.pos.x-8),
+            Math.round(this.pos.y-8), Flip.None);
+
+    }
+}
+
 
 
 export class Boomerang extends CollisionObject {
@@ -37,10 +92,14 @@ export class Boomerang extends CollisionObject {
         this.directionChanged = false;
 
         this.hitId = 0;
+
+        this.flames = new Array();
+        this.flameTimer = 0;
+        this.hasFlames = false;
     }
 
 
-    spawn(x, y, sx, sy, returnTime, returnObject) {
+    spawn(x, y, sx, sy, returnTime, returnObject, hasFlames) {
 
         this.pos = new Vector2(x, y);
 
@@ -61,6 +120,37 @@ export class Boomerang extends CollisionObject {
         this.directionChanged = false;
 
         ++ this.hitId;
+
+        this.hasFlames = hasFlames;
+    }
+
+
+    updateFlames(ev) {
+
+        const FLAME_SPEED = 1.0/20.0;
+        const FLAME_SPAWN_TIME = 6;
+
+        for (let f of this.flames) {
+
+            f.update(ev);
+        }
+
+        if (!this.exist) return;
+
+        if ((this.flameTimer -= ev.step) <= 0) {
+
+            nextObject(this.flames, Flame)
+                .spawn(this.pos.x, this.pos.y, FLAME_SPEED);
+
+            this.flameTimer += FLAME_SPAWN_TIME;
+        }
+    }
+
+
+    preUpdate(ev) {
+        
+        if (this.hasFlames)
+            this.updateFlames(ev);
     }
 
 
@@ -79,8 +169,13 @@ export class Boomerang extends CollisionObject {
 
         if (!this.returning) {
 
-            if ((this.returnTime -= ev.step) <= 0) 
+            if ((this.returnTime -= ev.step) <= 0) {
+
+                if (this.hasFlames)
+                    ++ this.hitId;
+
                 this.returning = true;
+            }
         }
         else {
 
@@ -107,6 +202,18 @@ export class Boomerang extends CollisionObject {
     }
 
 
+    preDraw(c) {
+
+        if (!this.hasFlames)
+            return;
+
+        for (let f of this.flames) {
+
+            f.draw(c);
+        }
+    }
+
+
     draw(c) {
 
         if (!this.exist) return;
@@ -126,6 +233,9 @@ export class Boomerang extends CollisionObject {
 
         this.returnTime = 0;
         this.returning = true;
+
+        if (this.hasFlames)
+            ++ this.hitId;
     }
 
     
@@ -137,7 +247,7 @@ export class Boomerang extends CollisionObject {
 
     forceReturn() {
 
-        if (this.returning) true;
+        if (this.hasFlames || this.returning) return;
 
         this.stopMovement();
 

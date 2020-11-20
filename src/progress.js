@@ -21,6 +21,10 @@ export const ItemType = {
     TinyWings: 9,
     Beans: 10,
     FireBall: 11,
+
+    FairyDust: 12,
+    Gem: 13,
+    Helmet: 14,
 };
 
 
@@ -83,7 +87,11 @@ export class GameProgress {
 
     reset() {
 
-        this.health = 6; // this.maxHealth;
+        this.health = 6;
+        if (this.hasItem(ItemType.FairyDust)) {
+
+            this.health = Math.max(this.maxHealth, 12);
+        }
     }
 
 
@@ -135,7 +143,7 @@ export class GameProgress {
         (this.openedChests[type])[id] = true;
         if (type == 1) {
 
-            this.obtainedItems[id] = true;
+            this.obtainItem(id);
         }
     }
 
@@ -178,7 +186,15 @@ export class GameProgress {
 
     obtainItem(id) {
 
+        const GEM_COIN_BONUS = 50;
+
         this.obtainedItems[id] = true;
+
+        // Hard-coded stuff hooray
+        if (id == ItemType.Gem) {
+
+            this.addCoins(GEM_COIN_BONUS);
+        }
     }
 
 

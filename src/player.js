@@ -374,7 +374,7 @@ export class Player extends CollisionObject {
             this.boomerang.spawn(
                 this.pos.x+4*this.dir, this.pos.y+2,
                 THROW_SPEED*this.dir, 0, RETURN_TIME,
-                this);
+                this, this.progress.hasItem(ItemType.FireBall));
 
             // Required for collisions, when throwing the boomerang
             // next to a wall
@@ -747,6 +747,7 @@ export class Player extends CollisionObject {
         this.updateTimers(ev);
         this.animate(ev);
 
+        this.boomerang.preUpdate(ev);
         this.boomerang.update(ev);
 
         this.climbing = false;
@@ -800,6 +801,8 @@ export class Player extends CollisionObject {
     draw(c) {
 
         if (!this.exist) return;
+
+        this.boomerang.preDraw(c);
 
         if (this.dying) {
 
@@ -1121,6 +1124,13 @@ export class Player extends CollisionObject {
 
                 return this.specialAttack || this.downAttack ? 2 : 1;
             }
+        }
+        
+        //if (this.progress.hasItem())
+        if (this.progress.hasItem(ItemType.Helmet) &&
+            this.ceilingCollision(x, y+16, w, ev, false)) {
+
+            return 2;
         }
         
         return 0;

@@ -173,8 +173,12 @@ export class Stage {
 
         // Electricity
         case 329:
+        case 330:
 
-            this.sprElectricty.draw(c, c.bitmaps["electricity"],
+            this.sprElectricty.drawFrame(
+                c, c.bitmaps["electricity"],
+                this.sprElectricty.frame,
+                tid-329,
                 x*16, y*16, Flip.None);
             break;
 
@@ -186,7 +190,7 @@ export class Stage {
 
     drawLayer(c, bmp, layer, sx, sy, w, h) {
 
-        const SPECIAL_TILES = [133, 329];
+        const SPECIAL_TILES = [133, 329, 330];
 
         let tid;
         let srcx, srcy;
@@ -540,6 +544,21 @@ export class Stage {
             if (o.hurtCollision != undefined) {
 
                 o.hurtCollision(x*16+2, y*16, 14, 16, ELECTIRICTY_DAMAGE, ev);
+            }
+
+            break;
+
+        // Electricity, horizontal
+        case 26:
+            
+            if (o.ignoreFence) break;
+
+            o.floorCollision(x*16, y*16+4, 16, ev);
+            o.ceilingCollision(x*16, y*16+8, 16, ev);
+
+            if (o.hurtCollision != undefined) {
+
+                o.hurtCollision(x*16, y*16+2, 16, 14, ELECTIRICTY_DAMAGE, ev);
             }
 
             break;

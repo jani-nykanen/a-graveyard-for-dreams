@@ -96,6 +96,8 @@ export class Boomerang extends CollisionObject {
         this.flames = new Array();
         this.flameTimer = 0;
         this.hasFlames = false;
+
+        this.ignoreFence = true;
     }
 
 

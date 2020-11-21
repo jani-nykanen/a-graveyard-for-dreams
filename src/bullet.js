@@ -28,6 +28,8 @@ export class Bullet extends CollisionObject {
         this.friction = new Vector2(0.05, 0.05);
 
         this.dmg = 1;
+
+        this.ignoreFence = true;
     }
 
 

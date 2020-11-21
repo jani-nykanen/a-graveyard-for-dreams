@@ -19,6 +19,7 @@ export class CollisionObject extends GameObject {
         this.collisionBox = this.hitbox.clone();
 
         this.disableCollisions = false;
+        this.ignoreFence = false;
 
         this.bounceX = 0.0;
         this.bounceY = 0.0;

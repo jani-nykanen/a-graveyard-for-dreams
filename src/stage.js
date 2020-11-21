@@ -6,6 +6,7 @@ import { Chip } from "./chip.js";
  */
 
 import { Flip } from "./core/canvas.js";
+import { Sprite } from "./core/sprite.js";
 import { negMod, nextObject } from "./core/util.js";
 import { Vector2 } from "./core/vector.js";
 
@@ -113,6 +114,8 @@ export class Stage {
 
         this.chips = new Array();
         this.fallingBarrels = new Array();
+
+        this.sprElectricty = new Sprite(16, 16);
     }
 
 
@@ -168,6 +171,13 @@ export class Stage {
 
             break;
 
+        // Electricity
+        case 329:
+
+            this.sprElectricty.draw(c, c.bitmaps["electricity"],
+                x*16, y*16, Flip.None);
+            break;
+
         default:
             break;
         }
@@ -176,7 +186,7 @@ export class Stage {
 
     drawLayer(c, bmp, layer, sx, sy, w, h) {
 
-        const SPECIAL_TILES = [133];
+        const SPECIAL_TILES = [133, 329];
 
         let tid;
         let srcx, srcy;
@@ -246,6 +256,7 @@ export class Stage {
 
         const CLOUD_SPEED = 0.5;
         const WATER_SPEED = 0.125;
+        const ELEC_SPEED = 3;
 
         this.cloudPos = (this.cloudPos + CLOUD_SPEED * ev.step) % 96;
 
@@ -263,6 +274,8 @@ export class Stage {
 
             b.update(this, ev);
         }
+
+        this.sprElectricty.animate(0, 0, 3, ELEC_SPEED, ev.step);
     }
 
 
@@ -375,7 +388,7 @@ export class Stage {
     }
 
 
-    swapPurpleTiles(x, y) {
+    modifyTiles(x, y, cb) {
 
         let topx = (x / 10) | 0;
         let topy = (y / 9) | 0;
@@ -393,14 +406,34 @@ export class Stage {
 
                     t = this.tmap.getLoopedTile(layer, x, y);
 
-                    if (t == 252 || t == 253) {
-
-                        this.tmap.setTile(layer, x, y, t == 252 ? 253 : 252);
-                    }
+                    cb(t, layer, x, y);
                 }
             }
         }
+    }
 
+
+    swapPurpleTiles(x, y) {
+
+        this.modifyTiles(x, y, (t, layer, x, y) => {
+
+            if (t == 252 || t == 253) {
+
+                this.tmap.setTile(layer, x, y, t == 252 ? 253 : 252);
+            }
+        });
+    }
+
+
+    disableElectricity(x, y) {
+
+        this.modifyTiles(x, y, (t, layer, x, y) => {
+
+            if (t == 330 || t == 331) {
+
+                this.tmap.setTile(layer, x, y, 0);
+            }
+        });
     }
 
 
@@ -411,6 +444,7 @@ export class Stage {
         const SPIKE_COLLISION_WIDTH = [12, 8, 12, 8];
         const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
         const SPIKE_DAMAGE = 2;
+        const ELECTIRICTY_DAMAGE = 2;
         const BARREL_SPEED = 1;
         
         const BREAK_X_MARGIN = 2;
@@ -482,13 +516,31 @@ export class Stage {
 
                         this.swapPurpleTiles(x, y);   
                     }
+                    else if (tid == 24) {
 
+                        this.disableElectricity(x, y);
+                    }
 
                     return;
                 }
                 
             }
             this.checkBaseTileCollision(o, 14, x, y, ev);
+
+            break;
+
+        // Electricity, vertical
+        case 25:
+            
+            if (o.ignoreFence) break;
+
+            o.wallCollision(x*16+4, y*16, 16, 1, ev);
+            o.wallCollision(x*16+12, y*16, 16, -1, ev);
+
+            if (o.hurtCollision != undefined) {
+
+                o.hurtCollision(x*16+2, y*16, 14, 16, ELECTIRICTY_DAMAGE, ev);
+            }
 
             break;
 

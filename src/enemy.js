@@ -54,6 +54,8 @@ export class Enemy extends CollisionObject {
 
 		this.takeExtraCollisions = false;
 		this.ignoreEnemyCollisions = false;
+
+		this.ignoreFence = true;
 	}
 	
 	

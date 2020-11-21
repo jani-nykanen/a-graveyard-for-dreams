@@ -11,6 +11,7 @@ import { Flip } from "./core/canvas.js";
 import { TransitionType } from "./core/transition.js";
 import { RGB } from "./core/vector.js";
 import { MessageBox } from "./messagebox.js";
+import { State } from "./core/input.js";
 
 
 const APPEAR_TIME = 60;
@@ -95,9 +96,21 @@ export class TitleScreen extends Scene {
             if ((this.timer -= ev.step) <= 0) {
 
                 ++ this.phase;
+                this.timer = 29;
             }
         }
         else if (this.phase == 1) {
+
+            if (ev.input.actions["start"].state == State.Pressed ||
+                ev.input.actions["fire1"].state == State.Pressed) {
+
+                ++ this.phase;
+                ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+            }
+
+            this.timer = (this.timer + ev.step) % 60;
+        }
+        else if (this.phase == 2) {
 
             this.menu.update(ev);
         }
@@ -124,7 +137,18 @@ export class TitleScreen extends Scene {
             this.loc["copyright"],
             c.width/2 + c.width*t, c.height-9, 0, 0, true);
 
-        this.menu.draw(c, -c.width * t + c.width/2, c.height-32);
+        if (this.phase == 2) {
+
+            this.menu.draw(c,  c.width/2, c.height-32);
+        }
+        else if (this.phase == 1) {
+
+            if (this.timer >= 30) {
+
+                c.drawText(c.bitmaps["font"], "Press Enter or (Start)",
+                    c.width/2, c.height/2 + 32, -1, 0, true);
+            }
+        }
 
         this.message.draw(c, true);
     }

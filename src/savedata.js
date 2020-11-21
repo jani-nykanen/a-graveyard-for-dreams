@@ -12,6 +12,7 @@ let copyProgress = (progress) => {
     
     return {
     
+        "health": progress.health,
         "maxHealth": progress.maxHealth,
         "health": progress.health,
         "gems": progress.gems,

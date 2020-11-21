@@ -60,7 +60,7 @@ export class GameProgress {
     parseObject(obj) {
 
         this.maxHealth = obj["maxHealth"];
-        this.health = this.maxHealth;
+        this.health = obj["health"];
 
         this.gems = obj["gems"];
         this.coins = obj["coins"];

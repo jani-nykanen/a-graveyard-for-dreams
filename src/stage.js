@@ -375,6 +375,35 @@ export class Stage {
     }
 
 
+    swapPurpleTiles(x, y) {
+
+        let topx = (x / 10) | 0;
+        let topy = (y / 9) | 0;
+
+        topx *= 10;
+        topy *= 9;
+
+        let t = 0;
+
+        for (let layer = 0; layer < this.tmap.layers.length-1; ++ layer) {
+
+            for (let y = topy; y < topy + 9; ++ y) {
+                
+                for (let x = topx; x < topx + 10; ++ x) {
+
+                    t = this.tmap.getLoopedTile(layer, x, y);
+
+                    if (t == 252 || t == 253) {
+
+                        this.tmap.setTile(layer, x, y, t == 252 ? 253 : 252);
+                    }
+                }
+            }
+        }
+
+    }
+
+
     checkSpecialTileCollision(o, tid, baseId, x, y, layer, objm, ev) {
 
         const SPIKE_COLLISION_X = [2, 0, 2, 8];
@@ -386,6 +415,8 @@ export class Stage {
         
         const BREAK_X_MARGIN = 2;
         const CHIP_COUNT = 6;
+
+        let ret = 0;
 
         switch(tid) {
 
@@ -419,12 +450,18 @@ export class Stage {
         case 20:
         case 21:
         case 22:
+        case 23:
+        case 24:
  
             if (o.breakCollision != undefined) {
 
-                if (o.breakCollision(
-                        x*16+BREAK_X_MARGIN, y*16, 
-                        16-BREAK_X_MARGIN*2, 16, ev)-1 >= (tid-20)) {
+                ret = o.breakCollision(
+                    x*16+BREAK_X_MARGIN, y*16, 
+                    16-BREAK_X_MARGIN*2, 16, ev)-1;
+
+                if ((ret < 2 && ret >= (tid-20)) ||
+                    (ret == 2 && tid != 21) ||
+                    (ret >= 0 && tid >= 23) ) {
 
                     this.tmap.setTile(layer, x, y, 0);
                     this.spawnChips(x*16+8, y*16+8, 
@@ -441,7 +478,11 @@ export class Stage {
 
                         objm.spawnCollectibles(x*16+8, y*16+8, o.pos, 1, 1);
                     }
-                    
+                    else if (tid == 23) {
+
+                        this.swapPurpleTiles(x, y);   
+                    }
+
 
                     return;
                 }

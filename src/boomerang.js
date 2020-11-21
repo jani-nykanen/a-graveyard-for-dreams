@@ -241,7 +241,10 @@ export class Boomerang extends CollisionObject {
     
     breakCollision(x, y, w, h, ev) {
 
-        return this.exist && this.overlay(x, y, w, h) ? 1 : 0;
+        if (!this.exist || !this.overlay(x, y, w, h))
+            return 0;
+
+        return this.hasFlames ? 3 : 1;
     }
 
 

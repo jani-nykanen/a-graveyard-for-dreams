@@ -1,12 +1,13 @@
-import { Sprite } from "./core/sprite.js";
 /**
  * A Graveyard for Fools
  * 
  * (c) 2020 Jani Nykänen
  */
 
+
 import { overlay, updateSpeedAxis } from "./core/util.js";
 import { Vector2 } from "./core/vector.js";
+import { Sprite } from "./core/sprite.js";
 
 
 export class GameObject {

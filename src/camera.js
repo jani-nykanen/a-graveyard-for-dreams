@@ -5,7 +5,10 @@
  */
 
 import { Vector2 } from "./core/vector.js";
-import { negMod } from "./core/util.js";
+
+
+export const ROOM_WIDTH = 10;
+export const ROOM_HEIGHT = 9;
 
 
 export class Camera {

@@ -32,7 +32,7 @@ export const ItemType = {
 export class GameProgress {
 
 
-    constructor() {
+    constructor(roomCountX, roomCountY) {
 
         this.maxHealth = 6;
         this.health = this.maxHealth;
@@ -54,6 +54,10 @@ export class GameProgress {
         this.boughtItems = (new Array(5*2)).fill(false);
 
         this.obtainedItems = (new Array(32)).fill(false);
+
+        this.visitedRooms = (new Array(roomCountX * roomCountY)).fill(false),
+        this.roomCountX = roomCountX;
+        this.roomCountY = roomCountY;
     }
 
 
@@ -82,6 +86,9 @@ export class GameProgress {
 
         if (obj["obtainedItems"] != undefined)
             this.obtainedItems = Array.from(obj["obtainedItems"]);    
+
+        if (obj["visitedRooms"] != undefined)
+            this.visitedRooms = Array.from(obj["visitedRooms"]);
     }
 
 
@@ -201,5 +208,17 @@ export class GameProgress {
     hasItem(id) {
 
         return this.obtainedItems[id];
+    }
+
+
+    markRoomVisited(x, y) {
+
+        this.visitedRooms[y * this.roomCountX + x] = true;
+    }
+
+
+    isRoomVisited(x, y) {
+
+        return this.visitedRooms[y * this.roomCountX + x];
     }
 }

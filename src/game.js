@@ -8,7 +8,7 @@ import { Scene } from "./core/scene.js";
 import { Stage } from "./stage.js";
 import { ObjectManager } from "./objectmanager.js";
 import { GameProgress } from "./progress.js";
-import { Camera } from "./camera.js";
+import { Camera, ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
 import { State } from "./core/input.js";
 import { TransitionType } from "./core/transition.js";
 import { RGB } from "./core/vector.js";
@@ -17,6 +17,7 @@ import { PauseMenu } from "./pausemenu.js";
 import { TitleScreen } from "./titlescreen.js";
 import { loadData } from "./savedata.js";
 import { Shop } from "./shop.js";
+import { GameMap } from "./gamemap.js";
 
 
 export const MAIN_THEME_VOLUME = 0.40;
@@ -31,11 +32,13 @@ export class Game extends Scene {
 
         this.stage = new Stage(ev.assets);
         this.cam = new Camera(0, 0, 160, 144,
-            (this.stage.width/10) | 0,
-            (this.stage.height/9) | 0,
+            (this.stage.width/ROOM_WIDTH) | 0,
+            (this.stage.height/ROOM_HEIGHT) | 0,
             true);
 
-        this.progress = new GameProgress();
+        this.progress = new GameProgress(
+            this.cam.screenCountX, 
+            this.cam.screenCountY);
         this.message = new MessageBox(ev);
         this.shop = new Shop(this.progress, this.message, ev);
        
@@ -70,6 +73,8 @@ export class Game extends Scene {
             this.objects.positionCamera(this.cam);
         }
         this.shop.disableButtons();
+
+        this.gameMap = new GameMap(this.stage.width, this.stage.height);
     }
 
 
@@ -123,6 +128,12 @@ export class Game extends Scene {
 
         if (ev.tr.active) return;
 
+        if (this.gameMap.active) {
+
+            this.gameMap.update(ev);
+            return;
+        }
+
         if (this.message.active) {
 
             this.message.update(ev);
@@ -141,6 +152,20 @@ export class Game extends Scene {
             return;
         }
 
+        // Map
+        if (!this.cam.moving &&
+            ev.input.actions["select"].state == State.Pressed) {
+
+            this.gameMap.activate(this.stage.generateMapData(), 
+                this.objects.player.pos, this.cam, this.progress);
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+
+            return;
+        }
+
+        // Pause
         if (ev.input.actions["start"].state == State.Pressed) {
 
             this.pauseMenu.activate();
@@ -151,7 +176,6 @@ export class Game extends Scene {
             
             return;
         }
-
 
         this.stage.update(this.cam, ev);
         if (!this.objects.update(this.cam, this.stage, this.message, ev)) {
@@ -256,5 +280,7 @@ export class Game extends Scene {
 
         if (this.shop.active)
             this.drawHUD(c, true);
+
+        this.gameMap.draw(c);
     }
 }

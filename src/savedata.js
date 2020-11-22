@@ -7,7 +7,7 @@
 import { Vector2 } from "./core/vector.js";
 
 
-// Needed when working with Closure
+// Needed when working with Closure compiler
 let copyProgress = (progress) => {
     
     return {
@@ -23,9 +23,9 @@ let copyProgress = (progress) => {
         "openedDoors": progress.openedDoors,
         "boughtItems": progress.boughtItems,
         "obtainedItems": progress.obtainedItems,
+        "visitedRooms": progress.visitedRooms,
     };
 };
-
 
 
 export function saveData(player) {

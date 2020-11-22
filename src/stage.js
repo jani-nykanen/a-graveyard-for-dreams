@@ -645,4 +645,39 @@ export class Stage {
             }
         }
     }
+
+
+    generateMapData() {
+
+        let arr = (new Array(this.width * this.height)).fill(0);
+        let tid, colId;
+
+        for (let layer = 0; layer < this.tmap.layers.length-1; ++ layer) {
+
+            for (let i = 0; i < this.tmap.layers[layer].length; ++ i) {
+
+                tid = this.tmap.layers[layer][i]-1;
+                colId = this.colMap.layers[0][tid]-1;
+
+                if (colId == 29 || colId == 30) {
+
+                    arr[i] = Math.max(arr[i], 1);
+                }
+                else if (colId >= 0 && colId <= 14) {
+
+                    arr[i] = Math.max(arr[i], 2);
+                }
+                else if (colId >= 20 && colId <= 22) {
+
+                    arr[i] = Math.max(arr[i], 3);
+                }
+                else if (colId == 15) {
+
+                    arr[i] = Math.max(arr[i], 4);
+                } 
+            }
+        }  
+        
+        return {width: this.width, height: this.height, data: arr};
+    }
 }

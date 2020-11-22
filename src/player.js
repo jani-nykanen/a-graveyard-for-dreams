@@ -12,6 +12,8 @@ import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
 import { overlay } from "./core/util.js";
 import { ItemType } from "./progress.js";
+import { ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
+
 
 const ATTACK_TIME = 16;
 // TODO: Make sure the number below is sufficient
@@ -95,6 +97,17 @@ export class Player extends CollisionObject {
         this.obtainedItem = null;
 
         this.forceWaitTimer = 0.0;
+
+        this.markRoomVisited();
+    }
+
+
+    markRoomVisited() {
+
+        let x = (((this.pos.x / 16) | 0) / ROOM_WIDTH) | 0;
+        let y = (((this.pos.y / 16) | 0) / ROOM_HEIGHT) | 0;
+
+        this.progress.markRoomVisited(x, y);
     }
 
 
@@ -1048,6 +1061,8 @@ export class Player extends CollisionObject {
                         // Loop
                         this.pos.x += dir * cam.width * cam.screenCountX;
                     }
+
+                    this.markRoomVisited();
                 }
 
             }

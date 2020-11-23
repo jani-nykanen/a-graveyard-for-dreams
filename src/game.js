@@ -7,7 +7,7 @@
 import { Scene } from "./core/scene.js";
 import { Stage } from "./stage.js";
 import { ObjectManager } from "./objectmanager.js";
-import { GameProgress } from "./progress.js";
+import { GameProgress, ItemType } from "./progress.js";
 import { Camera, ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
 import { State } from "./core/input.js";
 import { TransitionType } from "./core/transition.js";
@@ -126,6 +126,8 @@ export class Game extends Scene {
 
     refresh(ev) {
 
+        let loc = ev.assets.localization["en"];
+
         // Needed when using doors etc
         if (this.cam.jumpForced) {
 
@@ -163,11 +165,25 @@ export class Game extends Scene {
         if (!this.cam.moving &&
             ev.input.actions["select"].state == State.Pressed) {
 
-            this.gameMap.activate(this.stage.generateMapData(), 
-                this.objects.player.pos, this.cam, this.progress);
+            if (this.progress.hasItem(ItemType.DreamMap)) {
 
-            // Sound effect
-            ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+                this.gameMap.activate(this.stage.generateMapData(), 
+                    this.objects.player.pos, this.cam, this.progress);
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+            }
+            else {
+
+                for (let m of loc["noMap"]) {
+
+                    this.message.addMessage(m);
+                }
+                this.message.activate(() => {}, false);
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["deny"], 0.60);
+            }
 
             return;
         }

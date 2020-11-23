@@ -25,6 +25,9 @@ export const ItemType = {
     FairyDust: 12,
     Gem: 13,
     Helmet: 14,
+    Null1: 15,
+
+    DreamMap: 16,
 };
 
 

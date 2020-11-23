@@ -133,5 +133,6 @@
     "healthPotion": "Your health is\nrestored.",
 
     "mapHeader": "Dream Map",
-    "map": "Show Map"
+    "map": "Show Map",
+    "noMap" : ["You do not\nhave a map\nyet!"]
 }

@@ -230,7 +230,7 @@ export class Shop {
         this.menu[this.id].draw(c, MENU_X +4, c.height/2 + Y_OFFSET);
 
         // Icons
-        for (let i = 0; i < PRICES.length; ++ i) {
+        for (let i = 0; i < SHOP_ITEM_MAX; ++ i) {
 
             c.drawBitmapRegion(c.bitmaps["shopicons"],
                 (this.id*SHOP_ITEM_MAX + i)*8, 

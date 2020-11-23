@@ -17,7 +17,7 @@ const OPEN_TIME = 30;
 export class GameMap {
 
 
-    constructor(width, height) {
+    constructor(width, height, ev) {
 
         this.canvas = document.createElement("canvas");
         this.canvas.width = width;
@@ -39,6 +39,8 @@ export class GameMap {
 
         this.openTimer = 0;
         this.openPhase = 0;
+
+        this.loc = ev.assets.localization["en"];
     }
 
 
@@ -227,7 +229,9 @@ export class GameMap {
         }
 
         // Header
-        c.drawText(c.bitmaps["font"], "Auto-Map", c.width/2, dy - 9, 0, 0, true);
+        c.drawText(c.bitmaps["font"], 
+            this.loc["mapHeader"], 
+            c.width/2, dy - 9, 0, 0, true);
 
     }
 }

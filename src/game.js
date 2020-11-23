@@ -81,7 +81,7 @@ export class Game extends Scene {
         }
         this.shop.disableButtons();
 
-        this.gameMap = new GameMap(this.stage.width, this.stage.height);
+        this.gameMap = new GameMap(this.stage.width, this.stage.height, ev);
     }
 
 

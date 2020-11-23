@@ -43,7 +43,7 @@
         "a\nHARD HELMET!",
         "\nnull",
 
-        "an\nAUTOMATIC MAP!",
+        "a\nDREAM MAP!",
         "a\npair of\nRUNNING BOOTS!",
         "a\nCHESTPLATE!",
         "\nMAGIC PILLS!",
@@ -74,7 +74,7 @@
         ["Now you may\nbreak tiles\nwith your\nhead."],
         ["null"],
 
-        ["Press Shift or\n(BACK) to open\nit."],
+        ["It automatically\ncharts the\nrooms you have\nvisited.", "Press L.Shift or\neither shoulder\nbutton to open\nit."],
         ["Now you can\nrun a bit\nfaster. Gotta\ngo fa... no."],
         ["It reduces the\ndamage you take."],
         ["They taste weird.\nAll the hearts\nyou collect will\nheal you more."],
@@ -132,6 +132,6 @@
 
     "healthPotion": "Your health is\nrestored.",
 
-    "mapHeader": "Auto-Map",
-    "map": "Show map"
+    "mapHeader": "Dream Map",
+    "map": "Show Map"
 }

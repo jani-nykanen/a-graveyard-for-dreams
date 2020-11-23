@@ -24,8 +24,8 @@ export class Tilemap {
         let doc = (new DOMParser()).parseFromString(s, "text/xml");
 
         let root = doc.getElementsByTagName("map")[0];
-        this.width = String(root.getAttribute("width"));
-        this.height = String(root.getAttribute("height"));
+        this.width = Number(root.getAttribute("width"));
+        this.height = Number(root.getAttribute("height"));
 
         let data = root.getElementsByTagName("layer");
         this.layers = new Array();

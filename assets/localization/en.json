@@ -130,5 +130,8 @@
     "confirmTransaction": "Buy this item?",
     "sold": "SOLD",
 
-    "healthPotion": "Your health is\nrestored."
+    "healthPotion": "Your health is\nrestored.",
+
+    "mapHeader": "Auto-Map",
+    "map": "Show map"
 }

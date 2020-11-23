@@ -4,6 +4,7 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { State } from "./core/input.js";
 import { Menu, MenuButton } from "./menu.js";
 import { MessageBox } from "./messagebox.js";
 import { drawBoxWithOutlines } from "./misc.js";
@@ -12,7 +13,7 @@ import { drawBoxWithOutlines } from "./misc.js";
 export class PauseMenu {
 
 
-    constructor(resetCB, quitCB, ev) {
+    constructor(resetCB, quitCB, mapCB, ev) {
 
         let loc = ev.assets.localization["en"];
 
@@ -30,6 +31,12 @@ export class PauseMenu {
                 this.showRespawnMessage(ev);
             }, false),
 
+            new MenuButton(loc["map"], (ev) => {
+
+                mapCB(ev);
+                
+            }, false),
+
             new MenuButton(loc["quit"], (ev) => {
 
                 this.showQuitMessage(ev);
@@ -38,6 +45,7 @@ export class PauseMenu {
 
         this.resetCB = resetCB;
         this.quitCB = quitCB;
+        // this.mapCB = mapCB;
 
         this.active = false;
     }
@@ -99,16 +107,23 @@ export class PauseMenu {
             return;
         }
 
+        if (ev.input.actions["back"].state == State.Pressed) {
+
+            ev.audio.playSample(ev.assets.samples["deny"], 0.60);
+            this.deactivate(ev);
+            return;
+        }
+
         this.menu.update(ev);
     }
 
 
-    draw(c) {
+    draw(c, mapActive) {
 
-        const BOX_WIDTH = 68;
-        const BOX_HEIGHT = 40;
+        const BOX_WIDTH = 76;
+        const BOX_HEIGHT = 48;
 
-        if (!this.active) return;
+        if (!this.active || mapActive) return;
 
         c.setColor(0, 0, 0, 0.67);
         c.fillRect(0, 0, c.width, c.height);

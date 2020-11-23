@@ -55,7 +55,14 @@ export class Game extends Scene {
             ev => {
                 
                 this.quit(ev);
-            }, ev);
+            }, 
+            ev => {
+
+                this.gameMap.activate(this.stage.generateMapData(),
+                    this.objects.player.pos, this.cam,
+                    this.progress);
+            },
+            ev);
 
         // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
@@ -275,7 +282,7 @@ export class Game extends Scene {
 
             this.message.draw(c, true);
         }
-        this.pauseMenu.draw(c);
+        this.pauseMenu.draw(c, this.gameMap.active);
         this.shop.draw(c);
 
         if (this.shop.active)

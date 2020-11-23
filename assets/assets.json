@@ -24,6 +24,7 @@
         {"name": "shopkeeper",  "path": "shopkeeper.png"},
         {"name": "shopicons",  "path": "shopicons.png"},
         {"name": "electricity",  "path": "electricity.png"},
+        {"name": "map",  "path": "map.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

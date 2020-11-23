@@ -151,10 +151,6 @@ export class GameProgress {
     markChestOpened(type, id) {
 
         (this.openedChests[type])[id] = true;
-        if (type == 1) {
-
-            this.obtainItem(id);
-        }
     }
 
 

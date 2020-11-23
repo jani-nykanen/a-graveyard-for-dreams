@@ -49,7 +49,7 @@ export class GameMap {
         const COLORS = [
             "rgb(0,85,170)",
             "rgb(0,0,0)",
-            "rgb(255,170,0)",
+            "rgb(85,85,85)",
             "rgb(85,170,0)",
         ];
 

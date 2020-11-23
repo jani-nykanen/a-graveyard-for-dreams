@@ -58,13 +58,10 @@ export class Game extends Scene {
             }, 
             ev => {
 
-                this.gameMap.activate(this.stage.generateMapData(),
-                    this.objects.player.pos, this.cam,
-                    this.progress);
+                this.activateMap(this.pauseMenu.message, false, ev);
             },
             ev);
 
-        // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
 
         ev.tr.activate(false, TransitionType.CircleOutside, 
@@ -95,7 +92,6 @@ export class Game extends Scene {
         this.objects.initialCheck(this.cam);
         this.progress.reset();
 
-        // Test
         ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
     }
 
@@ -124,9 +120,35 @@ export class Game extends Scene {
     }
 
 
-    refresh(ev) {
+    activateMap(msg, playSound, ev) {
 
         let loc = ev.assets.localization["en"];
+
+        if (this.progress.hasItem(ItemType.DreamMap)) {
+
+            this.gameMap.activate(this.stage.generateMapData(), 
+                this.objects.player.pos, this.cam, this.progress);
+
+            // Sound effect
+            if (playSound)
+                ev.audio.playSample(ev.assets.samples["pause"], 0.60);
+        }
+        else {
+
+            for (let m of loc["noMap"]) {
+
+                msg.addMessage(m);
+            }
+            msg.activate(() => {}, false);
+
+            // Sound effect
+            if (playSound)
+                ev.audio.playSample(ev.assets.samples["deny"], 0.60);
+        }
+    }
+
+
+    refresh(ev) {
 
         // Needed when using doors etc
         if (this.cam.jumpForced) {
@@ -165,25 +187,7 @@ export class Game extends Scene {
         if (!this.cam.moving &&
             ev.input.actions["select"].state == State.Pressed) {
 
-            if (this.progress.hasItem(ItemType.DreamMap)) {
-
-                this.gameMap.activate(this.stage.generateMapData(), 
-                    this.objects.player.pos, this.cam, this.progress);
-
-                // Sound effect
-                ev.audio.playSample(ev.assets.samples["pause"], 0.60);
-            }
-            else {
-
-                for (let m of loc["noMap"]) {
-
-                    this.message.addMessage(m);
-                }
-                this.message.activate(() => {}, false);
-
-                // Sound effect
-                ev.audio.playSample(ev.assets.samples["deny"], 0.60);
-            }
+            this.activateMap(this.message, true, ev);
 
             return;
         }
@@ -191,7 +195,7 @@ export class Game extends Scene {
         // Pause
         if (ev.input.actions["start"].state == State.Pressed) {
 
-            this.pauseMenu.activate();
+            this.pauseMenu.activate(this.progress);
             ev.audio.pauseMusic();
 
             // Sound effect

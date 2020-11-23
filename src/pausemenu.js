@@ -8,6 +8,7 @@ import { State } from "./core/input.js";
 import { Menu, MenuButton } from "./menu.js";
 import { MessageBox } from "./messagebox.js";
 import { drawBoxWithOutlines } from "./misc.js";
+import { ItemType } from "./progress.js";
 
 
 export class PauseMenu {
@@ -51,10 +52,12 @@ export class PauseMenu {
     }
 
 
-    activate() {
+    activate(progress) {
 
         this.active = true;
         this.menu.activate(0);
+
+        this.menu.toggleButton(2, progress.hasItem(ItemType.DreamMap));
     }
 
 

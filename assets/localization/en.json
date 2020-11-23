@@ -108,14 +108,14 @@
 
     "shopItemNames": 
         [
-            ["H. Potion", "Heart Cont.", "Old Key", "Auto-Map", "Spd.Boots"],
+            ["H. Potion", "Heart Cont.", "Old Key", "Dream Map", "Spd.Boots"],
             ["Chestplate", "Magic Pills", "Trs. Tracker", "Dummy Item", "Life Potion"]
         ],
     "shopItemDesc": [
         ["Restores all your\nhealth.",
         "Increases your\nmaximum life by\none.",
         "Can be used to\nunlock a door.",
-        "The world map.\nShows the areas\nyou have already\nvisited.",
+        "Automatically charts\nthe rooms you have\nvisited.",
         "Increases your\nrunning speed."],
         [
         "Reduces the damage\nyou take.",

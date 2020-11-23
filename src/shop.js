@@ -73,10 +73,11 @@ export class Shop {
     constructMenuButtons(pl, ev) {
 
         let loc = ev.assets.localization["en"];
-
         let names = loc["shopItemNames"];
 
         let buttons = new Array();
+
+        let k;
 
         for (let j = 0; j < names.length; ++ j) {
 
@@ -87,12 +88,14 @@ export class Shop {
                 buttons[j].push(new MenuButton(" " + names[j][i], 
                     (ev) => {
 
-                        if (this.progress.isItemBought(j*SHOP_ITEM_MAX + i)) {
+                        let k = j*SHOP_ITEM_MAX +i;
+
+                        if (this.progress.isItemBought(k)) {
 
                             return;
                         }
 
-                        if (this.progress.coins < PRICES[j*SHOP_ITEM_MAX + i]) {
+                        if (this.progress.coins < PRICES[k]) {
 
                             this.message.addMessage(loc["cannotAfford"])    
                                 .activate((ev) => {}, false);
@@ -103,22 +106,22 @@ export class Shop {
                                 .activate((ev) => {
 
                                     const ITEM_WAIT = 60;
-                                    
-                                    if (ITEM_TYPES[j*SHOP_ITEM_MAX + i] != 4) {
 
-                                        this.progress.setItemBoughtStatus(j*SHOP_ITEM_MAX + i, true);
+                                    if (ITEM_TYPES[k] != 4) {
+
+                                        this.progress.setItemBoughtStatus(k, true);
                                         this.menu[this.id].toggleButton(i, false);
                                     }
                                         
-                                    this.progress.addCoins(-PRICES[j*SHOP_ITEM_MAX + i]);
+                                    this.progress.addCoins(-PRICES[k]);
 
                                     this.deactivate();
                                     addItemDescription(this.loc, this.globalMessage, 
-                                        ITEM_TYPES[j*SHOP_ITEM_MAX + i], ITEM_IDS[j*SHOP_ITEM_MAX +i]);
+                                        ITEM_TYPES[k], ITEM_IDS[k]);
                                     this.itemWaitTime = ITEM_WAIT;
 
-                                    pl.setObtainItemPose(ITEM_TYPES[i], 
-                                        ITEM_TYPES[j*SHOP_ITEM_MAX + i] == ChestType.Item ? ITEM_IDS[j*SHOP_ITEM_MAX +i] : 0);
+                                    pl.setObtainItemPose(ITEM_TYPES[k], // This was i before for some reason
+                                        ITEM_TYPES[k] == ChestType.Item ? ITEM_IDS[k] : 0);
 
                                     // Sound effect
                                     ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
@@ -130,7 +133,10 @@ export class Shop {
                                         
                                     }).activate((ev) => {
 
-                                        applyItemEvent(ITEM_TYPES[j*SHOP_ITEM_MAX + i], pl);
+                                        applyItemEvent(
+                                            ITEM_TYPES[k], 
+                                            ITEM_IDS[k],
+                                            pl);
                                         ev.audio.resumeMusic();
 
                                     }, false);

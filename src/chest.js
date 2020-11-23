@@ -18,16 +18,18 @@ export const ChestType = {
 };
 
 
-export function applyItemEvent(type, pl) {
+export function applyItemEvent(type, id, pl) {
 
     switch(type) {
 
         case ChestType.Health:
+
             pl.progress.addMaxHealth(1);
             break;
 
         case ChestType.Item:
-            // ...
+            
+            pl.progress.obtainItem(id);
             break;
 
         case ChestType.Key:
@@ -182,7 +184,7 @@ export class Chest extends InteractableObject {
             .activate((ev) => {
                 ev.audio.resumeMusic();
 
-                applyItemEvent(this.type, pl);
+                applyItemEvent(this.type, this.id, pl);
                 pl.progress.markChestOpened(this.type, this.id);
 
             }, false);

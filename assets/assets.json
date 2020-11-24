@@ -25,6 +25,7 @@
         {"name": "shopicons",  "path": "shopicons.png"},
         {"name": "electricity",  "path": "electricity.png"},
         {"name": "map",  "path": "map.png"},
+        {"name": "darkClouds",  "path": "dark_clouds.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

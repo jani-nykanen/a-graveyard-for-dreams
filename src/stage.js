@@ -1,3 +1,4 @@
+import { ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
 import { Chip } from "./chip.js";
 /**
  * A Graveyard for Fools
@@ -110,6 +111,7 @@ export class Stage {
         this.height =  this.tmap.height;
 
         this.cloudPos = 0.0;
+        this.darkCloudPos = 0.0;
         this.waterPos = 0.0;
 
         this.chips = new Array();
@@ -259,10 +261,12 @@ export class Stage {
     update(cam, ev) {
 
         const CLOUD_SPEED = 0.5;
+        const DARK_CLOUD_SPEED = 1.0;
         const WATER_SPEED = 0.125;
         const ELEC_SPEED = 3;
 
         this.cloudPos = (this.cloudPos + CLOUD_SPEED * ev.step) % 96;
+        this.darkCloudPos = (this.darkCloudPos + DARK_CLOUD_SPEED * ev.step) % 128;
 
         this.waterPos = (this.waterPos + WATER_SPEED * ev.step) % 16;
 
@@ -344,7 +348,7 @@ export class Stage {
                 i, startx, starty, w, h);
         }
 
-        // Falling barrle
+        // Falling barrel
         for (let b of this.fallingBarrels) {
 
             b.draw(c);
@@ -354,6 +358,27 @@ export class Stage {
         for (let o of this.chips) {
 
             o.draw(c);
+        }
+    }
+
+
+    postDraw(c, cam) {
+
+        const CLOUD_Y = -8;
+
+        cam.useYOnly(c);
+
+        let x = negMod(
+            this.darkCloudPos + (cam.rpos.x * ROOM_WIDTH),
+            128);
+
+        let bmp = c.bitmaps["darkClouds"];
+
+        if (cam.rpos.y * ROOM_HEIGHT > bmp.height + CLOUD_Y) return;
+
+        for (let j = 0; j < 3; ++ j) {
+
+            c.drawBitmap(bmp, -x + j * bmp.width, CLOUD_Y, Flip.None);
         }
     }
 

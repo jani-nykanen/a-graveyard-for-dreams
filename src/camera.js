@@ -129,6 +129,12 @@ export class Camera {
     }
 
 
+    useYOnly(c) {
+
+        c.moveTo(0, -Math.round(this.rpos.y * this.height));
+    }
+
+
     setPosition(x, y) {
 
         this.pos = new Vector2(x, y);

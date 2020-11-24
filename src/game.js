@@ -295,6 +295,9 @@ export class Game extends Scene {
         this.stage.draw(c, this.cam);
         this.objects.draw(c);
 
+        this.cam.use(c);
+        this.stage.postDraw(c, this.cam);
+
         c.moveTo(0, 0);
         this.drawHUD(c, false);
 

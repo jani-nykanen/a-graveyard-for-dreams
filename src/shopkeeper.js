@@ -54,7 +54,7 @@ export class Shopkeeper extends InteractableObject {
         let loc = ev.assets.localization["en"];
 
         message.addMessage(
-            loc["shopkeeper"],
+            loc["shopkeeper"][this.id],
             ).activate((ev) => {
 
             this.shop.activate(this.id);

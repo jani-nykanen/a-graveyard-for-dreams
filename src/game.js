@@ -299,6 +299,10 @@ export class Game extends Scene {
         this.stage.postDraw(c, this.cam);
 
         c.moveTo(0, 0);
+
+        // TEMP
+        c.drawText(c.bitmaps["fontGray"], "Test Map", 2, c.height-10, 0, 0, false);
+
         this.drawHUD(c, false);
 
         if (this.message.active) {

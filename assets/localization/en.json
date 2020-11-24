@@ -104,7 +104,10 @@
 
     "noSaveData": "No save data\nfound or it\ncould not be\nloaded!",
 
-    "shopkeeper": "Good morning,\nfriend! I am\na travelling\nmerchant!",
+    "shopkeeper": [
+        "Good morning,\nfriend! I am\na travelling\nmerchant!",
+        "Good evening,\npal, I am the\ncool travelling\nmerchant!"
+    ],
 
     "shopItemNames": 
         [

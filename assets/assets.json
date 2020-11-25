@@ -11,6 +11,7 @@
         {"name": "titlebg",  "path": "titlebg.png"},
         
         {"name": "figure",  "path": "figure.png"},
+        {"name": "figureNaked",  "path": "figure_naked.png"},
         {"name": "background",  "path": "background.png"},
         {"name": "chips",  "path": "chips.png"},
         {"name": "enemies",  "path": "enemies.png"},

@@ -851,7 +851,8 @@ export class Player extends CollisionObject {
                 py+1, this.flip);
         }
 
-        this.spr.drawFrame(c, c.bitmaps["figure"], 
+        let bmp = c.bitmaps[this.progress.hasItem(ItemType.Clothes) ? "figure" : "figureNaked"];
+        this.spr.drawFrame(c, bmp, 
             frame, this.spr.row,
             px, py, this.flip);
 

@@ -28,6 +28,7 @@ export const ItemType = {
     Null1: 15,
 
     DreamMap: 16,
+    RunningBoots: 17,
 };
 
 

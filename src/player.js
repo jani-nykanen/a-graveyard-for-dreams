@@ -166,7 +166,7 @@ export class Player extends CollisionObject {
         this.setSwordHitbox(
             this.pos.x + 13*this.dir,
             this.pos.y + 2, 
-            12, special ? 10 : 4);
+            14, special ? 12 : 6);
     }
 
 
@@ -445,6 +445,7 @@ export class Player extends CollisionObject {
         const BASE_FRICTION_X = 0.1;
         const BASE_FRICTION_Y = 0.15;
         const WALL_RIDE_REDUCE_GRAVITY = 0.25;
+        const BOOTS_BONUS = 1.25;
 
         this.dir = this.flip == Flip.None ? 1 : -1;
 
@@ -463,6 +464,12 @@ export class Player extends CollisionObject {
             this.target.y *= WALL_RIDE_REDUCE_GRAVITY;
 
         this.friction = new Vector2(BASE_FRICTION_X, BASE_FRICTION_Y);
+
+        if (this.progress.hasItem(ItemType.RunningBoots)) {
+
+            this.target.x *= BOOTS_BONUS;
+            this.friction.x *= BOOTS_BONUS;
+        }
 
         // Pretty. 
         // TODO: Refactor this, please

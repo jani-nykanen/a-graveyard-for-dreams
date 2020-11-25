@@ -30,7 +30,7 @@ const ITEM_IDS = [
 // What do you mean I'm hard-coding prices?
 // ...well, I am. You were right.
 const PRICES = [
-    10, 20, 10, 20, 30,
+    10, 15, 10, 15, 5,
     30, 20, 30, 50, 20
 ];
 
@@ -283,7 +283,7 @@ export class Shop {
 
             str = this.loc["shopItemDesc"][this.id][this.menu[this.id].cpos];
             c.drawText(c.bitmaps["font"], str, 
-                MENU_X - (this.menu[this.id].width-8)/2, bottomElementY -2, 0, 1, 
+                MENU_X - (this.menu[this.id].width-8)/2 - 2, bottomElementY -2, 0, 1, 
                 false);
         }
         

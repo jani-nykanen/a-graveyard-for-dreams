@@ -44,7 +44,7 @@
         "\nnull",
 
         "a\nDREAM MAP!",
-        "a\npair of\nRUNNING BOOTS!",
+        "a\npair of\nSPEED BOOTS!",
         "a\nCHESTPLATE!",
         "\nMAGIC PILLS!",
 
@@ -111,15 +111,15 @@
 
     "shopItemNames": 
         [
-            ["H. Potion", "Heart Cont.", "Old Key", "Dream Map", "Spd.Boots"],
+            ["H. Potion", "Heart Cont.", "Old Key", "Dream Map", "Speed Boots"],
             ["Chestplate", "Magic Pills", "Trs. Tracker", "Dummy Item", "Life Potion"]
         ],
     "shopItemDesc": [
         ["Restores all your\nhealth.",
         "Increases your\nmaximum life by\none.",
         "Can be used to\nunlock a door.",
-        "Automatically charts\nthe rooms you have\nvisited.",
-        "Increases your\nrunning speed."],
+        "Automatically\ncharts the rooms\nyou have\nvisited.",
+        "Slightly increases\nyour running\nspeed."],
         [
         "Reduces the damage\nyou take.",
         "Makes collectable\nhearts heal you\nmore.",

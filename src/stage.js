@@ -99,9 +99,11 @@ export class FallingBarrel {
 export class Stage {
 
 
-    constructor(assets) {
+    constructor(assets, isIntro) {
 
-        this.baseMap = assets.tilemaps["base"];
+        this.isIntro = isIntro;
+
+        this.baseMap = assets.tilemaps[isIntro ? "intro" : "base"];
         this.baseColMap = assets.tilemaps["collisions"];
 
         this.tmap = this.baseMap.shallowCopy();
@@ -118,6 +120,9 @@ export class Stage {
         this.fallingBarrels = new Array();
 
         this.sprElectricty = new Sprite(16, 16);
+
+        this.ashTimer = (new Array(2)).fill(0.0);
+        this.ashFloat = (new Array(2)).fill(0.0);
     }
 
 
@@ -258,6 +263,29 @@ export class Stage {
     }
 
 
+    updateAsh(ev) {
+
+        const ASH_MAX = 64;
+        const ASH_SPEED_BASE = [0.30, 0.40];
+        const ASH_SPEED_VARY = [0.20, 0.30];
+        const ASH_FLOAT_SPEED = [0.025, 0.030];
+
+        let s = 0.0;
+        for (let i = 0; i < 2; ++ i) {
+
+            s = ASH_SPEED_BASE[i] + 
+                ASH_SPEED_VARY[i] * Math.sin(this.ashFloat[i]);
+
+            this.ashTimer[i] += s * ev.step;
+            this.ashTimer[i] %= ASH_MAX;
+
+            this.ashFloat[i] += ASH_FLOAT_SPEED[i] * ev.step;
+            this.ashFloat[i] %= Math.PI * 2;
+        }
+        
+    }
+
+
     update(cam, ev) {
 
         const CLOUD_SPEED = 0.5;
@@ -269,6 +297,11 @@ export class Stage {
         this.darkCloudPos = (this.darkCloudPos + DARK_CLOUD_SPEED * ev.step) % 128;
 
         this.waterPos = (this.waterPos + WATER_SPEED * ev.step) % 16;
+
+        if (this.isIntro) {
+
+            this.updateAsh(ev);
+        }
 
         for (let c of this.chips) {
 
@@ -291,6 +324,12 @@ export class Stage {
 
         const CLOUD_BASE_Y = 96;
         const CLOUD_BOTTOM_HEIGHT = 16;
+
+        if (this.isIntro) {
+
+            c.clear(255, 255, 255);
+            return;
+        }
 
         let cloudRenderPos = negMod(
             this.cloudPos + (cam.rpos.x * 16),
@@ -362,11 +401,47 @@ export class Stage {
     }
 
 
+    drawAsh(c, cam) {
+
+        const FLOAT_X = [16, 24];
+
+        let w = (c.width / 64) | 0;
+        let h = (c.height / 64) | 0;
+
+        let posx = 0;
+        let posy = 0;
+        let fx = 0;
+        for (let i = 0; i < 2; ++ i) {
+
+            fx = Math.sin(this.ashFloat[i]) * FLOAT_X[i];
+            posx = negMod(this.ashTimer[i] * i + cam.rpos.x*c.width, 64);
+            posy = this.ashTimer[i];
+
+            for (let x = -1; x < w+1; ++ x) {
+
+                for (let y = -1; y < h+1; ++ y) {
+
+                    c.drawBitmapRegion(c.bitmaps["ash"],
+                        0, 64*i, 64, 64,
+                        x*64 - posx + fx, y*64 + posy,
+                        Flip.None);
+                }
+            }
+        }
+    }
+
+
     postDraw(c, cam) {
 
         const CLOUD_Y = -8;
 
         cam.useYOnly(c);
+
+        if (this.isIntro) {
+
+            this.drawAsh(c, cam);
+            return;
+        }
 
         let x = negMod(
             this.darkCloudPos + (cam.rpos.x * ROOM_WIDTH),

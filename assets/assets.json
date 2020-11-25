@@ -26,12 +26,14 @@
         {"name": "electricity",  "path": "electricity.png"},
         {"name": "map",  "path": "map.png"},
         {"name": "darkClouds",  "path": "dark_clouds.png"},
+        {"name": "ash",  "path": "ash.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 
 
     "tilemapPath" : "assets/maps/",
     "tilemaps" : [
+        {"name": "intro",  "path": "intro.tmx"},
         {"name": "base",  "path": "base.tmx"},
         {"name": "collisions",  "path": "collisions.tmx"}
     ],
@@ -69,7 +71,8 @@
         {"name": "door",  "path": "door.wav"},
         {"name": "open",  "path": "open.wav"},
 
-        {"name": "testTrack",  "path": "test_track.ogg"}
+        {"name": "mainTheme",  "path": "main_theme.ogg"},
+        {"name": "intro",  "path": "intro.ogg"}
     ],
 
     "localizationPath" : "assets/localization/",

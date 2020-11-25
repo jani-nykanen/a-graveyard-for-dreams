@@ -30,7 +30,9 @@ export class Game extends Scene {
 
         super(ev, param);
 
-        this.stage = new Stage(ev.assets);
+        this.isIntro = param !== true;
+
+        this.stage = new Stage(ev.assets, this.isIntro);
         this.cam = new Camera(0, 0, 160, 144,
             (this.stage.width/ROOM_WIDTH) | 0,
             (this.stage.height/ROOM_HEIGHT) | 0,
@@ -62,7 +64,9 @@ export class Game extends Scene {
             },
             ev);
 
-        ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
+        ev.audio.playMusic(
+            ev.assets.samples[this.isIntro ? "intro" : "mainTheme"], 
+            MAIN_THEME_VOLUME);
 
         ev.tr.activate(false, TransitionType.CircleOutside, 
             1.0/30.0, null, new RGB(0, 0, 0));
@@ -92,7 +96,9 @@ export class Game extends Scene {
         this.objects.initialCheck(this.cam);
         this.progress.reset();
 
-        ev.audio.playMusic(ev.assets.samples["testTrack"], MAIN_THEME_VOLUME);
+        ev.audio.playMusic(
+            ev.assets.samples[this.isIntro ? "intro" : "mainTheme"],
+            MAIN_THEME_VOLUME);
     }
 
 
@@ -301,7 +307,7 @@ export class Game extends Scene {
         c.moveTo(0, 0);
 
         // TEMP
-        c.drawText(c.bitmaps["fontGray"], "Test Map", 2, c.height-10, 0, 0, false);
+        // c.drawText(c.bitmaps["fontGray"], "Test Map", 2, c.height-10, 0, 0, false);
 
         this.drawHUD(c, false);
 

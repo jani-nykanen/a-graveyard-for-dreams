@@ -37,7 +37,7 @@ export class Transition {
 
     activate(fadeIn, mode, speed, cb, param, color) {
 
-        if (color == null) {
+        if (color == undefined) {
 
             this.color = new RGB();
         }
@@ -101,7 +101,6 @@ export class Transition {
         let cx = this.center.x;
         let cy = this.center.y;
 
-        
         switch(this.mode) {
 
         case TransitionType.Fade:
@@ -126,7 +125,7 @@ export class Transition {
             );
             
             r = (1-t) * maxRadius;
-            c.setColor(this.color.r, this.color.g, this.color.b);
+            c.setColor(this.color.r, this.color.g, this.color.b, 1.0);
             c.fillCircleOutside(r, cx, cy);
 
             break;

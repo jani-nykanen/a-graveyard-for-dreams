@@ -14,6 +14,7 @@ import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
 import { NPC } from "./npc.js";
 import { Player } from "./player.js";
+import { Portal } from "./portal.js";
 import { Savepoint } from "./savepoint.js";
 import { Shopkeeper } from "./shopkeeper.js";
 
@@ -56,7 +57,7 @@ export class ObjectManager {
     }
 
 
-    parseObjectLayer(data, w, h) {
+    parseObjectLayer(data, w, h, portalCb) {
 
         const MAX_ENEMY_INDEX = 31;
 
@@ -118,6 +119,12 @@ export class ObjectManager {
                     this.interactableObjects.push(new Shopkeeper(x*16+8, y*16+4, this.shop, id));
                     break;
 
+                // Portal
+                case 41:
+
+                    this.interactableObjects.push(new Portal(x*16+8, y*16-4, id, portalCb));
+                    break;
+
                 default:
                     break;
                 }
@@ -155,7 +162,7 @@ export class ObjectManager {
     }
 
 
-    reset(stage) {
+    reset(stage, portalCb, doNotGoToCheckpoint) {
 
         let checkpoint = this.player.checkpoint.clone();
 
@@ -165,8 +172,9 @@ export class ObjectManager {
         this.bullets = new Array();
         this.interactableObjects = new Array();
 
-        stage.parseObjects(this);
-        this.player.respawnToCheckpoint(checkpoint);
+        stage.parseObjects(this, portalCb);
+        if (!doNotGoToCheckpoint)
+            this.player.respawnToCheckpoint(checkpoint);
     }
 
 

@@ -45,7 +45,7 @@ export class Game extends Scene {
         this.shop = new Shop(this.progress, this.message, ev);
        
         this.objects = new ObjectManager(this.progress, this.shop); 
-        this.stage.parseObjects(this.objects);
+        this.stage.parseObjects(this.objects, (ev) => this.portalCallback(ev));
         this.objects.positionCamera(this.cam);
 
         this.shop.constructMenu(this.objects.player, ev);
@@ -86,10 +86,10 @@ export class Game extends Scene {
     }
 
 
-    reset(ev) {
+    reset(ev, doNotGoToCheckpoint) {
 
         this.stage.reset();
-        this.objects.reset(this.stage);
+        this.objects.reset(this.stage, (ev) => this.portalCallback(ev), doNotGoToCheckpoint);
         this.cam.reset();
         this.objects.positionCamera(this.cam);
         this.objects.centerTransition(ev.tr);
@@ -102,11 +102,28 @@ export class Game extends Scene {
     }
 
 
+    portalCallback(ev) {
+
+        if (this.isIntro) {
+
+            ev.audio.stopMusic();
+
+            this.isIntro = false;
+            this.stage = new Stage(ev.assets, false);
+            this.reset(ev, true);
+        }
+        else {
+
+            // ... ?
+        }
+    }
+
+
     resetTransition(ev) {
 
         ev.tr.activate(true, TransitionType.CircleOutside, 
             1.0/30.0, 
-            (ev) => this.reset(ev), 
+            (ev) => this.reset(ev, false), 
             new RGB(0, 0, 0));
         this.objects.centerTransition(ev.tr);
     }

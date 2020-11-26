@@ -123,6 +123,8 @@ export class Stage {
 
         this.ashTimer = (new Array(2)).fill(0.0);
         this.ashFloat = (new Array(2)).fill(0.0);
+
+        this.introCloudPos = (new Array(3)).fill(0.0);
     }
 
 
@@ -289,6 +291,7 @@ export class Stage {
     update(cam, ev) {
 
         const CLOUD_SPEED = 0.5;
+        const INTRO_CLOUD_SPEED = [0.25, 0.5, 1.0];
         const DARK_CLOUD_SPEED = 1.0;
         const WATER_SPEED = 0.125;
         const ELEC_SPEED = 3;
@@ -301,6 +304,11 @@ export class Stage {
         if (this.isIntro) {
 
             this.updateAsh(ev);
+            for (let i = 0; i < this.introCloudPos.length; ++ i) {
+
+                this.introCloudPos[i] = (this.introCloudPos[i] + 
+                    INTRO_CLOUD_SPEED[i] * ev.step) % 160;
+            }
         }
 
         for (let c of this.chips) {
@@ -320,6 +328,30 @@ export class Stage {
     }
 
 
+    drawIntroBackround(c, cam) {
+
+        const MIN_Y = 56;
+        const DIF_Y = 12;
+
+        c.clear(255, 255, 255);
+
+        c.drawBitmap(c.bitmaps["introBackground"], 0, 0, Flip.None);
+
+        // Clouds
+        for (let i = 0; i < 3; ++ i) {
+
+            for (let j = 0; j < 2; ++ j) {
+
+                c.drawBitmapRegion(c.bitmaps["clouds"], 
+                    0, 72*i, 160, 72,
+                    -Math.floor(this.introCloudPos[i]) + j*160, 
+                    MIN_Y + DIF_Y*i,
+                    Flip.None);
+            }
+        }
+    }
+
+
     drawBackground(c, cam) {
 
         const CLOUD_BASE_Y = 96;
@@ -327,7 +359,7 @@ export class Stage {
 
         if (this.isIntro) {
 
-            c.clear(255, 255, 255);
+            this.drawIntroBackround(c, cam);
             return;
         }
 
@@ -458,11 +490,11 @@ export class Stage {
     }
 
 
-    parseObjects(objects) {
+    parseObjects(objects, portalCb) {
 
         objects.parseObjectLayer(
             this.tmap.layers[this.tmap.layers.length-1], 
-            this.width, this.height);
+            this.width, this.height, portalCb);
     }
 
 

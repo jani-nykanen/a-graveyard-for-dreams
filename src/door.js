@@ -109,7 +109,7 @@ export class Door extends InteractableObject {
 
             ev.tr.setCenter(pl.pos.x % 160, pl.pos.y % 144);
 
-        }, new RGB(0, 0, 0));
+        }, null, new RGB(0, 0, 0));
         ev.tr.setCenter(this.pos.x % 160, this.pos.y % 144);
 
         pl.pos.x = this.pos.x;

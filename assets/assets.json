@@ -28,6 +28,9 @@
         {"name": "map",  "path": "map.png"},
         {"name": "darkClouds",  "path": "dark_clouds.png"},
         {"name": "ash",  "path": "ash.png"},
+        {"name": "clouds",  "path": "clouds.png"},
+        {"name": "introBackground",  "path": "intro_background.png"},
+        {"name": "portal",  "path": "portal.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 
@@ -71,6 +74,7 @@
         {"name": "deny",  "path": "deny.wav"},
         {"name": "door",  "path": "door.wav"},
         {"name": "open",  "path": "open.wav"},
+        {"name": "teleport",  "path": "teleport.wav"},
 
         {"name": "mainTheme",  "path": "main_theme.ogg"},
         {"name": "intro",  "path": "intro.ogg"}

@@ -22,6 +22,7 @@ export class InteractableObject {
         this.flip = Flip.None;
 
         this.disabled = false;
+        this.deactivated = false;
         this.noActivationSound = false;
 
         this.hitbox = new Vector2(16, 16);
@@ -46,7 +47,7 @@ export class InteractableObject {
 
         this.playerEvent(pl, ev);
 
-        if (ev == null) 
+        if (this.deactivated || ev == null) 
             return false;
 
         if (pl.overlay(this.pos.x-this.hitbox.x/2, this.pos.y-this.hitbox.y/2, 

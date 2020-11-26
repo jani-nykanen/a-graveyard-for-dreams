@@ -66,7 +66,7 @@ export class Portal extends InteractableObject {
     
     triggerEvent(message, pl, cam, ev) {
 
-        ev.tr.activate(true, TransitionType.CircleOutside, 1.0/60.0, 
+        ev.tr.activate(true, TransitionType.CircleOutside, 1.0/30.0, 
         (ev) => {
 
             this.cb(ev);

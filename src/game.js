@@ -110,6 +110,10 @@ export class Game extends Scene {
 
             this.isIntro = false;
             this.stage = new Stage(ev.assets, false);
+            this.cam = new Camera(0, 0, 160, 144,
+                (this.stage.width/ROOM_WIDTH) | 0,
+                (this.stage.height/ROOM_HEIGHT) | 0,
+                true);    
             this.reset(ev, true);
         }
         else {

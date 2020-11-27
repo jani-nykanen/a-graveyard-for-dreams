@@ -80,6 +80,9 @@ export class ObjectManager {
                 switch(tid) {
 
                 // Player
+                case 42:
+                    
+                    this.interactableObjects.push(new Portal(x*16+8, y*16-4, 1, portalCb));
                 case 0:
 
                     this.player = new Player(x*16+8, y*16+8, this.progress);

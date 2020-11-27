@@ -69,7 +69,8 @@ export class Game extends Scene {
             MAIN_THEME_VOLUME);
 
         ev.tr.activate(false, TransitionType.CircleOutside, 
-            1.0/30.0, null, new RGB(0, 0, 0));
+            this.isIntro ? 1.0/60.0 : 1.0/30.0, 
+            null, new RGB(0, 0, 0));
         this.objects.centerTransition(ev.tr);
         this.objects.initialCheck(this.cam);
 

@@ -9,6 +9,8 @@
 
         {"name": "logo",  "path": "logo.png"},
         {"name": "titlebg",  "path": "titlebg.png"},
+
+        {"name": "eye",  "path": "eye.png"},
         
         {"name": "figure",  "path": "figure.png"},
         {"name": "figureNaked",  "path": "figure_naked.png"},

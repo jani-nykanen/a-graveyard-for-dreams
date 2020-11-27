@@ -42,7 +42,7 @@ export class GameProgress {
         this.health = this.maxHealth;
 
         this.gems = 0;
-        this.coins = 20;
+        this.coins = 0;
         this.keys = 0;
         this.orbs = 0;
 

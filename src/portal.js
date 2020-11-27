@@ -20,6 +20,7 @@ export class Portal extends InteractableObject {
         super(x, y);
 
         this.spr = new Sprite(32, 40);
+        this.spr.setFrame(0, id);
         this.hitbox = new Vector2(12, 40);
 
         this.id = id;
@@ -60,18 +61,18 @@ export class Portal extends InteractableObject {
 
     playerEvent(pl, ev) {
 
-        this.open = pl.progress.hasItem(ItemType.Clothes);
+        this.open = this.id == 0 && pl.progress.hasItem(ItemType.Clothes);
     }
 
     
     triggerEvent(message, pl, cam, ev) {
 
-        ev.tr.activate(true, TransitionType.CircleOutside, 1.0/30.0, 
+        ev.tr.activate(true, TransitionType.CircleOutside, 1.0/60.0, 
         (ev) => {
 
             this.cb(ev);
 
-        }, null, new RGB(85, 170, 255));
+        }, null, new RGB(255, 255, 255));
         ev.tr.setCenter(this.pos.x % 160, (this.pos.y % 144) + 8);
 
         pl.pos.x = this.pos.x;

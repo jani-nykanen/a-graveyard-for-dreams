@@ -72,7 +72,7 @@
         ["When you die,\na bigger portion\nof your health\nis restored."],
         ["When you touch it,\nit turns into\na pile of coins."],
         ["Now you may\nbreak tiles\nwith your\nhead."],
-        ["It no longer\nfeels like\nyou were\nwearing noth-\ning at all."],
+        ["Now it only\nfeels like you\nwere wearing\nnothing at all."],
 
         ["It automatically\ncharts the\nrooms you have\nvisited.", "Press L.Shift or\neither shoulder\nbutton to open\nit."],
         ["Now you can\nrun a bit\nfaster. Gotta\ngo fa... no."],
@@ -140,8 +140,8 @@
     "noMap" : ["You do not\nhave a map\nyet!"],
 
     "storyIntro": [
-        "When dreams die,\nthey are buried\nin an unnamed\ngraveyard beyond\nthe world of dreams.",
-        "Some dreams, however,\nare so powerful\nthey refuse to\nremain dead.",
+        "When dreams die,\nthey are buried\nin an unnamed\ngraveyard beyond\nthe world of\ndreams.",
+        "However, some\ndreams are so\npowerful they\nrefuse to\nremain dead.",
         "We call them\nnightmares."
     ],
 

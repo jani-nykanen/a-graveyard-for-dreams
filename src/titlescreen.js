@@ -12,6 +12,7 @@ import { TransitionType } from "./core/transition.js";
 import { RGB } from "./core/vector.js";
 import { MessageBox } from "./messagebox.js";
 import { State } from "./core/input.js";
+import { StoryIntro } from "./storyintro.js";
 
 
 const APPEAR_TIME = 60;
@@ -74,7 +75,12 @@ export class TitleScreen extends Scene {
 
         ev.tr.activate(true, TransitionType.CircleOutside, 
             1.0/30.0, 
-            (ev) => ev.changeScene(Game),
+            (ev) => {
+                
+                ev.changeScene(this.load ? Game : StoryIntro);
+                if (!this.load)
+                    ev.tr.deactivate();
+            },
             new RGB(0, 0, 0));
 
         ev.tr.setCenter(78, 24);

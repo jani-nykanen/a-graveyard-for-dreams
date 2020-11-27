@@ -137,5 +137,21 @@
 
     "mapHeader": "Dream Map",
     "map": "Show Map",
-    "noMap" : ["You do not\nhave a map\nyet!"]
+    "noMap" : ["You do not\nhave a map\nyet!"],
+
+    "storyIntro": [
+        "When dreams die,\nthey are buried\nin an unnamed\ngraveyard beyond\nthe world of dreams.",
+        "Some dreams, however,\nare so powerful\nthey refuse to\nremain dead.",
+        "We call them\nnightmares."
+    ],
+
+    "deathIntro": [
+        "You wake up.",
+        "You remember dying.",
+        "The dream of your\ndeath is all\naround you."
+    ],
+
+    "deathLocation": ["A Dream of Death"],
+    "worldLocation": ["The World of Dreams"],
+    "finalLocation": ["The Dream of", "the Eye"]
 }

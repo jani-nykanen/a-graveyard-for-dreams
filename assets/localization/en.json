@@ -54,7 +54,7 @@
         "a\nMAGNIFICENT\nSWORD OF GREAT\nAWESOMENESS!"
     ],
     "itemDesc": [
-        ["It's old and\ndangerous,\njust like you!", "Press X or (Y)\nto attack!"],
+        ["It's old and\ndangerous,\njust like you!", "Press X or (X)\nto attack!"],
         ["They have tiny\nsprings, letting\nyou jump higher."],
         ["Press C or (A) to\nthrow it. It\nwill come back.\nEventually."],
         ["It has nothing to\ndo with pinball,\nbut now you\ncan swim in\ndeep water."],
@@ -153,5 +153,11 @@
 
     "deathLocation": ["A Dream of Death"],
     "worldLocation": ["The World of Dreams"],
-    "finalLocation": ["The Dream of", "the Eye"]
+    "finalLocation": ["The Dream of", "the Eye"],
+
+    "npc": [
+        ["Welcome to the\nWorld of Dream,\nstranger.",
+        "I see that you\njust came from\nthe graveyard.\nYou do look\npretty dead,\nif you ask me.",
+        "If you want to\ngo back, you\nneed to find\na way to\nactivate that\nportal."]
+    ]
 }

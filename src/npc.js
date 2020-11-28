@@ -50,7 +50,7 @@ export class NPC extends InteractableObject {
 
         let loc = ev.assets.localization["en"];
 
-        let msg = loc["npc" + String(this.messageId)];
+        let msg = loc["npc"][this.messageId];
 
         for (let m of msg) {
 

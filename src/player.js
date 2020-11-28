@@ -1023,6 +1023,8 @@ export class Player extends CollisionObject {
 
     cameraEvent(cam, ev) {
 
+        const MARGIN_Y = 8;
+
         const CAM_SPEED = 1.0 / 20.0;
         const MARGIN = 2;
 
@@ -1033,7 +1035,7 @@ export class Player extends CollisionObject {
         let dy = cam.target.y - cam.pos.y;
 
         let moveSpeedX = (this.hitbox.x+MARGIN) * cam.moveSpeed;
-        let moveSpeedY = (this.hitbox.y+MARGIN) * cam.moveSpeed;
+        let moveSpeedY = (MARGIN_Y+MARGIN) * cam.moveSpeed;
 
         let mx = 0;
         let my = 0;
@@ -1056,10 +1058,10 @@ export class Player extends CollisionObject {
                     this.pos.x+this.center.x-this.hitbox.x/2 < cx)
                     mx = -1;
                 else if (this.speed.y > 0 &&
-                    this.pos.y+this.center.y+this.hitbox.y/2 > cy+cam.height)
+                    this.pos.y+this.center.y+MARGIN_Y/2 > cy+cam.height)
                     my = 1;
                 else if (this.speed.y < 0 &&
-                    this.pos.y+this.center.y-this.hitbox.y/2 < cy)
+                    this.pos.y+this.center.y-MARGIN_Y/2 < cy)
                     my = -1;
 
                 if (mx != 0 || my != 0) {

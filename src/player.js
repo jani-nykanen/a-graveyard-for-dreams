@@ -53,6 +53,7 @@ export class Player extends CollisionObject {
     
         this.swimming = false;
         this.oxygenTime = 0;
+        this.onDeepWater = false;
 
         this.slideTimer = 0;
         this.forceSlide = false;
@@ -653,6 +654,7 @@ export class Player extends CollisionObject {
 
         if (this.progress.hasItem(ItemType.Flippers) &&
             !this.progress.hasItem(ItemType.Snorkel) && 
+            this.onDeepWater &&
             this.swimming) {
 
             if ((this.oxygenTime -= ev.step) <= 0) {
@@ -784,6 +786,7 @@ export class Player extends CollisionObject {
         this.showArrow = false;
         this.obtainedItem = null;
         this.forceSlide = false;
+        this.onDeepWater = false;
     }
 
 
@@ -888,6 +891,7 @@ export class Player extends CollisionObject {
         if (this.progress.hasItem(ItemType.Flippers) && 
             !this.progress.hasItem(ItemType.Snorkel) && 
             this.swimming &&
+            this.onDeepWater &&
             this.oxygenTime > 0) {
 
             c.drawText(c.bitmaps["font"], String(Math.round(this.oxygenTime / 60)),
@@ -1015,6 +1019,8 @@ export class Player extends CollisionObject {
         }
 
         if (this.overlay(x, y, w, h)) {
+
+            this.onDeepWater = this.onDeepWater || !surface;
 
             if (this.oxygenTime <= 0 && !this.swimming) {
 

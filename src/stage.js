@@ -718,7 +718,8 @@ export class Stage {
 
             if (o.waterCollision != undefined) {
 
-                o.waterCollision(x*16, y*16, 16, 16, false, ev);
+                // TODO: Make sure having sub-16 height won't cause problems
+                o.waterCollision(x*16, y*16+2, 16, 14, false, ev);
             }
             break;
 

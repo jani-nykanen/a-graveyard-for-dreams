@@ -248,15 +248,11 @@ export class Game extends Scene {
     }
 
 
-    drawItemString(c, bmp, count, icon, y, offset) {
+    genItemString(count, icon) {
 
-        let str = String.fromCharCode(icon) + 
-            String.fromCharCode(2) + 
-            String(count);
-
-        let x = str.length * 8 + offset;
-
-        c.drawText(bmp, str, c.width - x, y, 0, 0, false);
+        return String.fromCharCode(icon) + 
+               String.fromCharCode(2) + 
+               String(count);
     }
 
 
@@ -267,9 +263,10 @@ export class Game extends Scene {
         let bmp = c.bitmaps["font"];
 
         // Coins
-        let y = 2;
-        this.drawItemString(c, bmp, this.progress.coins,
-            6, y, SIDE_OFFSET);
+
+        let str = this.genItemString(this.progress.keys, 6);
+        c.drawText(bmp, str, c.width - str.length*8 -2, 2, 0, 0, false);
+
         if (coinOnly) return;
 
         // Life
@@ -296,16 +293,14 @@ export class Game extends Scene {
         // Other items
         if (this.progress.keys > 0) {
 
-            y += 10;
-            this.drawItemString(c, bmp, this.progress.keys,
-                7, y, SIDE_OFFSET);  
-            
+            c.drawText(bmp, this.genItemString(this.progress.keys, 7), 
+                2,  c.height-10, 1, 0, false);
         }
         if (this.progress.orbs > 0) {
-         
-            y += 10;
-            this.drawItemString(c, bmp, this.progress.orbs,
-                8, y, SIDE_OFFSET);     
+            
+            str = this.genItemString(this.progress.keys, 8);
+            c.drawText(bmp, str, 
+            c.width - str.length*8 -2, c.height-10, 1, 0, false);
         }      
     }
 
@@ -321,7 +316,7 @@ export class Game extends Scene {
             c.applyShake();
 
         this.stage.draw(c, this.cam);
-        this.objects.draw(c);
+        this.objects.draw(c, this.cam);
 
         this.cam.use(c);
         this.stage.postDraw(c, this.cam);

@@ -34,6 +34,8 @@ export class Camera {
         this.screenCountY = screenCountY;
         this.loopx = loopx;
 
+        this.isLooping = false;
+
         this.jumpForced = false;
     }
 
@@ -78,6 +80,8 @@ export class Camera {
             this.pos.x += this.screenCountX;
             this.target.x += this.screenCountX;
 
+            this.isLooping = true;
+
             return 1;
         }
         else if (this.loopx && this.target.x >= this.screenCountX) {
@@ -85,8 +89,13 @@ export class Camera {
             this.pos.x -= this.screenCountX;
             this.target.x -= this.screenCountX;
 
+            this.isLooping = true;
+
             return -1;
         }
+
+        this.isLooping = false; 
+
         return 0;
     }
 
@@ -104,6 +113,7 @@ export class Camera {
             this.rpos = this.pos.clone();
 
             this.moving = false;
+            this.isLooping = false;
 
             return;
         }

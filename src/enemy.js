@@ -225,7 +225,23 @@ export class Enemy extends CollisionObject {
 	preDraw(c) {}
 
 
-	draw(c) {
+	drawInstance(c, xoff) {
+
+		c.move(xoff, 0);
+
+		this.preDraw(c);
+		
+		let px = this.pos.x + this.renderOffset.x - this.spr.width/2;
+        let py = this.pos.y + this.renderOffset.y - this.spr.height/2;
+
+        this.spr.draw(c, c.bitmaps["enemies"], 
+			Math.round(px), Math.round(py), this.flip);
+			
+		c.move(-xoff, 0);
+	}
+
+
+	draw(c, cam) {
 		
 		if (this.deactivated ||
 			!this.exist || !this.inCamera ||
@@ -233,13 +249,13 @@ export class Enemy extends CollisionObject {
 			Math.floor(this.hurtTimer/2) % 2 == 0)) 
 			return;
 			
-		this.preDraw(c);
-		
-		let px = this.pos.x + this.renderOffset.x - this.spr.width/2;
-        let py = this.pos.y + this.renderOffset.y - this.spr.height/2;
+		this.drawInstance(c, 0);
 
-        this.spr.draw(c, c.bitmaps["enemies"], 
-            Math.round(px), Math.round(py), this.flip);
+		if (cam.moving) {
+			
+			this.drawInstance(c, cam.screenCountX * cam.width);
+			this.drawInstance(c, -cam.screenCountX * cam.width);
+		}
 	}
 	
 	
@@ -254,7 +270,9 @@ export class Enemy extends CollisionObject {
 		if (!this.exist) return;
 		
 		let oldState = this.inCamera;
-		this.inCamera = cam.isObjectInside(this);
+		this.inCamera = 
+			(this.inCamera && cam.isLooping && cam.moving) ||
+			cam.isObjectInside(this);
 		
 		if (!this.inCamera) {
 

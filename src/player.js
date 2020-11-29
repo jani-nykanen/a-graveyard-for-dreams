@@ -166,9 +166,9 @@ export class Player extends CollisionObject {
         this.swordAttack = true;
 
         this.setSwordHitbox(
-            this.pos.x + 13*this.dir,
+            this.pos.x + 14*this.dir,
             this.pos.y + 2, 
-            14, special ? 12 : 6);
+            16, special ? 14 : 8);
     }
 
 
@@ -893,6 +893,16 @@ export class Player extends CollisionObject {
             c.drawText(c.bitmaps["font"], String(Math.round(this.oxygenTime / 60)),
                 px + 8, py - 10, -1, 0, true);
         }
+
+        /*
+        if (this.isSwordActive()) {
+            
+            c.setColor(255, 0, 0);
+            c.fillRect(this.swordHitPos.x - this.swordHitSize.x/2, 
+                this.swordHitPos.y - this.swordHitSize.y/2, 
+                this.swordHitSize.x, this.swordHitSize.y);
+        }
+        */
     }
 
 

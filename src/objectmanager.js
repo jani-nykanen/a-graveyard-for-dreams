@@ -255,7 +255,7 @@ export class ObjectManager {
     }
 
 
-    draw(c) {
+    draw(c, cam) {
 
         for (let o of this.interactableObjects) {
 
@@ -264,7 +264,7 @@ export class ObjectManager {
 
         for (let e of this.enemies) {
 
-            e.draw(c);
+            e.draw(c, cam);
         }
 
         for (let o of this.collectibles) {

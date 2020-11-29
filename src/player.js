@@ -19,6 +19,7 @@ const ATTACK_TIME = 16;
 // TODO: Make sure the number below is sufficient
 const ATTACK_HIT_TIME = 5;
 const SPC_RELEASE_TIME = 12;
+const SLIDE_TIME = 20;
 
 
 export class Player extends CollisionObject {
@@ -54,6 +55,7 @@ export class Player extends CollisionObject {
         this.oxygenTime = 0;
 
         this.slideTimer = 0;
+        this.forceSlide = false;
 
         this.attackTimer = 0;
         this.swordAttack = false;
@@ -175,7 +177,7 @@ export class Player extends CollisionObject {
         const EPS = 0.1;
 
         const DOWN_ATTACK_GRAVITY = 4.0;
-        const DOWN_ATTACK_INITIAL_SPEED = -3.0;
+        const DOWN_ATTACK_INITIAL_SPEED = -1.0;
         const DOWN_ATTACK_FRICTION = 0.35;
 
         if (!this.progress.hasItem(ItemType.Sword))
@@ -290,7 +292,6 @@ export class Player extends CollisionObject {
         
         const JUMP_TIME = 14.0;
         const DOUBLE_JUMP_TIME = 8.0;
-        const SLIDE_TIME = 20;
         const WALL_JUMP_BONUS = -2.0;
         const FLAP_SPEED = 0.5;
 
@@ -341,7 +342,7 @@ export class Player extends CollisionObject {
             if (this.jumpTimer > 0)
                 this.jumpTimer = 0.0;
 
-            else if (this.slideTimer > 0)
+            else if (this.slideTimer > 0 && !this.forceSlide)
                 this.slideTimer = 0.0;
 
             this.jumpReleased = true;
@@ -445,14 +446,15 @@ export class Player extends CollisionObject {
         const BASE_FRICTION_X = 0.1;
         const BASE_FRICTION_Y = 0.15;
         const WALL_RIDE_REDUCE_GRAVITY = 0.25;
-        const BOOTS_BONUS = 1.25;
+        const BOOTS_BONUS = 1.20;
 
         this.dir = this.flip == Flip.None ? 1 : -1;
 
         this.handleSpecialAttack(ev);
 
         if (this.attackTimer > 0 || 
-            this.downAttack)
+            this.downAttack ||
+            this.forceSlide)
             return;
 
             this.target.y = BASE_GRAVITY;
@@ -781,6 +783,7 @@ export class Player extends CollisionObject {
         this.touchWall = false;
         this.showArrow = false;
         this.obtainedItem = null;
+        this.forceSlide = false;
     }
 
 
@@ -1214,7 +1217,7 @@ export class Player extends CollisionObject {
 
     bounce() {
 
-        const BOUNCE_TIME = 8.0;
+        const BOUNCE_TIME = 4.0;
 
         if (this.downAttack) {
 
@@ -1312,5 +1315,22 @@ export class Player extends CollisionObject {
 
        this.forceWaitTimer -= ev.step; 
        return true;
+    }
+
+
+    holeCollision(x, y, w, h) {
+
+        const NEW_SLIDE_TIME = 5;
+
+        if ((this.jumpMargin > 0 || this.canJump) && 
+            this.slideTimer > 0 &&
+            this.overlay(x, y, w, h)) {
+
+            this.slideTimer = NEW_SLIDE_TIME;
+            this.forceSlide = true;
+            return true;
+        }
+
+        return false;
     }
 }

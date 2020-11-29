@@ -731,6 +731,16 @@ export class Stage {
                 o.ladderCollision(x*16, y*16+8, 16, 8, ev, 4);
 
             break;
+
+        // "Hole"
+        case 32:
+
+            if (o.holeCollision == undefined || !o.holeCollision(x*16, y*16, 16, 16)) {
+
+                this.checkBaseTileCollision(o, 14, x, y, ev);
+            }
+
+            break;
         
         default:
             break;

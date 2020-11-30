@@ -1476,7 +1476,7 @@ export class Spook extends Enemy {
 	
 	init(x, y) {
 
-		this.waveTimer = 0;
+		this.waveTimer = Math.random() * Math.PI * 2;
 
 		this.disableCollisions = true;
 	}
@@ -1558,11 +1558,10 @@ export class Imp extends Enemy {
 	
 	init(x, y) {
 
-		this.waveTimer = 0;
+		this.waveTimer = Math.random() * Math.PI * 2;
 		this.waitTimer = 0;
 
 		this.moveDir = (((y / 16) | 0)  % 2) == 0 ? 1 : -1;
-		this.waveTimer = 0.0;
 		this.horizontalWaveTimer = 0.0;
 
 		this.shootTimer = BAT_SHOOT_TIME - 

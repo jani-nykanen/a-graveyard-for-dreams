@@ -263,8 +263,7 @@ export class Game extends Scene {
         let bmp = c.bitmaps["font"];
 
         // Coins
-
-        let str = this.genItemString(this.progress.keys, 6);
+        let str = this.genItemString(this.progress.coins, 6);
         c.drawText(bmp, str, c.width - str.length*8 -2, 2, 0, 0, false);
 
         if (coinOnly) return;

@@ -300,7 +300,7 @@ export class Enemy extends CollisionObject {
 			this.health = this.maxHealth;
 			this.hurtTimer = 0;
 			
-			if (!cam.isMoving) {
+			if (!cam.moving) {
 				
 				this.deactivated = true;
 				this.disableCollisions = true;
@@ -310,13 +310,13 @@ export class Enemy extends CollisionObject {
 		// Collisions with the left and right sides of the
 		// camera
 		let x, y;
-		if (!cam.isMoving && this.inCamera) {
+		if (!cam.moving && this.inCamera) {
 			
 			x = cam.rpos.x * cam.width;
 			y = cam.rpos.y * cam.height;
 
             this.wallCollision(x, y, cam.height, -1, ev, true);
-            this.wallCollision(x + cam.width, y, cam.height, 1, ev, true);    
+			this.wallCollision(x + cam.width, y, cam.height, 1, ev, true);
 				
 			if (this.takeExtraCollisions) {
 

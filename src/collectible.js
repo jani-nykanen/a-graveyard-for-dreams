@@ -109,7 +109,7 @@ export class Collectible extends CollisionObject {
             return;
         }
 
-        if (!cam.isMoving) {
+        if (!cam.moving) {
 			
             this.wallCollision(cam.rpos.x * cam.width, 
                 cam.rpos.y * cam.height, cam.height, -1, ev);

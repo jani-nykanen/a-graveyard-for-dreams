@@ -363,9 +363,12 @@ export class Stage {
             return;
         }
 
-        let cloudRenderPos = negMod(
-            this.cloudPos + (cam.rpos.x * 16),
-            96);
+        // I'm not sure if this things does a shit
+        //let cloudRenderPos = negMod(
+        //    this.cloudPos + negMod(cam.rpos.x, 1) * 16,
+        //    96);
+        let cloudRenderPos = negMod(this.cloudPos, 96);
+
 
         c.clear(85, 170, 255);
 
@@ -752,6 +755,7 @@ export class Stage {
     objectCollision(o, objm, ev) {
 
         const MARGIN = 2;
+        const CLOUD_TOP = 20;
 
         if (!o.exist || !o.inCamera || o.dying) return;
 
@@ -787,6 +791,8 @@ export class Stage {
                 }
             }
         }
+
+        o.ceilingCollision(-256, CLOUD_TOP, 512 + this.width*16, ev, true);
     }
 
 

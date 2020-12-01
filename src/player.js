@@ -178,7 +178,7 @@ export class Player extends CollisionObject {
         const EPS = 0.1;
 
         const DOWN_ATTACK_GRAVITY = 4.0;
-        const DOWN_ATTACK_INITIAL_SPEED = -1.0;
+        const DOWN_ATTACK_INITIAL_SPEED = -2.0;
         const DOWN_ATTACK_FRICTION = 0.35;
 
         if (!this.progress.hasItem(ItemType.Sword))
@@ -681,6 +681,7 @@ export class Player extends CollisionObject {
                 this.progress.hasItem(ItemType.Flippers)) {
 
                 this.speed.y *= SWIMMING_MOD_Y;
+                this.target.y *= SWIMMING_MOD_Y;
             }
 
             this.jumpTimer -= (this.progress.hasItem(ItemType.JumpBoots) ? 1 : 2) * ev.step;
@@ -764,6 +765,8 @@ export class Player extends CollisionObject {
 
     updateLogic(ev) {
 
+        const EPS = 0.01;
+
         if (this.climbingBegun && !this.climbing) {
 
             this.climbingBegun = false;
@@ -779,6 +782,7 @@ export class Player extends CollisionObject {
 
         this.climbing = false;
         this.swimming = false;
+        this.disableCollisions = this.downAttack && this.speed.y < -EPS;
     }
 
 
@@ -976,7 +980,6 @@ export class Player extends CollisionObject {
 
     ladderCollision(x, y, w, h, ev, yjump) {
 
-        const EPS = 0.25;
         const MINUS_MARGIN = 8;
 
         // ...this looks a bit... ugly?
@@ -1071,7 +1074,8 @@ export class Player extends CollisionObject {
         }
         else {
 
-            if (this.knockBackTimer <= 0) {
+            if (this.knockBackTimer <= 0 &&
+                !this.disableCollisions) {
 
                 if (this.speed.x > 0 &&
                     this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)

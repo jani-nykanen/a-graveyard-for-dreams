@@ -41,6 +41,7 @@ export class Game extends Scene {
         this.progress = new GameProgress(
             this.cam.screenCountX, 
             this.cam.screenCountY);
+        this.progress.isIntro = this.isIntro;
         this.message = new MessageBox(ev);
         this.shop = new Shop(this.progress, this.message, ev);
        
@@ -116,6 +117,8 @@ export class Game extends Scene {
                 (this.stage.height/ROOM_HEIGHT) | 0,
                 true);    
             this.reset(ev, true);
+
+            this.progress.isIntro = false;
         }
         else {
 

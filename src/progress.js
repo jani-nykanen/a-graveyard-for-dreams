@@ -62,6 +62,9 @@ export class GameProgress {
         this.visitedRooms = (new Array(roomCountX * roomCountY)).fill(false),
         this.roomCountX = roomCountX;
         this.roomCountY = roomCountY;
+
+        // Only needed for the map
+        this.isIntro = false;
     }
 
 
@@ -212,6 +215,8 @@ export class GameProgress {
 
 
     markRoomVisited(x, y) {
+
+        if (this.isIntro) return;
 
         this.visitedRooms[y * this.roomCountX + x] = true;
     }

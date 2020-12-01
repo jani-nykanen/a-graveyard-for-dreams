@@ -1391,21 +1391,19 @@ export class ManEater extends Enemy {
 
 	init(x, y) {
 
-		const BASE_GRAVITY = 4.0;
-
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 
 		this.target.x = this.dir * MAN_EATER_BASE_SPEED;
 		this.speed.x = this.target.x;
-
-		this.target.y = BASE_GRAVITY;
 	}
 
 
 	updateAI(ev) {
 
+		const BASE_GRAVITY = 4.0;
 
-        this.target.x = MAN_EATER_BASE_SPEED * this.dir;
+		this.target.x = MAN_EATER_BASE_SPEED * this.dir;
+		this.target.y = BASE_GRAVITY;
 	}
 	
 	

@@ -87,7 +87,7 @@ export class Application {
         this.oldTime = ts;
 
         let refreshCount = (this.timeSum / FRAME_WAIT) | 0;
-        let firstFrame = true;
+        // let firstFrame = true;
 
         let assetsLoaded = this.assets.hasLoaded();
         // Do not initialize the initial scene until all the
@@ -106,7 +106,10 @@ export class Application {
             this.canvas.update(this.ev);
             this.tr.update(this.ev);
 
-            if (firstFrame)
+            // TODO: Check if "firstFrame" needed when using
+            // a gamepad and framerate below 60 (that is
+            // play the game on your laptop with a controller!)
+            //if (firstFrame)
                 this.ev.input.preUpdate();
 
             if (assetsLoaded) 
@@ -114,11 +117,11 @@ export class Application {
             
             // TODO: We could call this each frame as well,
             // (see how "update" works) I think? Check this
-            if (firstFrame) {
+            //if (firstFrame) {
                 
                 this.ev.input.postUpdate();
-                firstFrame = false;
-            }
+            //  firstFrame = false;
+            //}
 
             this.timeSum -= FRAME_WAIT;
         } 

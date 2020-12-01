@@ -84,10 +84,11 @@ export class InputManager {
     
     keyPressed(key) {
 
-        this.anyKeyPressed = true;
+        if (this.keyStates[key] != State.Down) {
 
-        if (this.keyStates[key] != State.Down) 
+            this.anyKeyPressed = true;
             this.keyStates[key] = State.Pressed;
+        }
 
         return this.prevent[key];
     }

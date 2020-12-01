@@ -32,11 +32,11 @@ export class GameMap {
         this.camPos = new Vector2(0, 0);
         this.flickerTimer = 0;
 
-        this.visitedRooms = null;
+        this.visitedRooms = new Array();
 
         this.roomCountX = (width / ROOM_WIDTH) | 0;
         this.roomCountY = (height / ROOM_HEIGHT) | 0;
-
+        
         this.openTimer = 0;
         this.openPhase = 0;
 

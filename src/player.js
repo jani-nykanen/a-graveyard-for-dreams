@@ -677,8 +677,11 @@ export class Player extends CollisionObject {
         if (this.jumpTimer > 0) {
 
             this.speed.y = JUMP_SPEED;
-            if (this.swimming)
+            if (this.swimming &&
+                this.progress.hasItem(ItemType.Flippers)) {
+
                 this.speed.y *= SWIMMING_MOD_Y;
+            }
 
             this.jumpTimer -= (this.progress.hasItem(ItemType.JumpBoots) ? 1 : 2) * ev.step;
         }

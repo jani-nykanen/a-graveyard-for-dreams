@@ -52,20 +52,20 @@ export class Turtle extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_GRAVITY = 2.0;
-		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
 		this.target.x = TURTLE_BASE_SPEED;
 		this.speed.x = this.target.x;
-		this.target.y = BASE_GRAVITY;
 	}
 	
 	
 	updateAI(ev) {
 		
+		const BASE_GRAVITY = 2.0;
+
 		this.target.x = TURTLE_BASE_SPEED * this.dir;
+		this.target.y = BASE_GRAVITY;
 
         // If going to move off the ledge, change direction
         // (unless hurt, then fall, to make it look like the
@@ -146,10 +146,6 @@ export class Fungus extends Enemy {
 
 	init(x, y) {
 
-		const BASE_GRAVITY = 2.0;
-
-		this.target.y = BASE_GRAVITY;
-
 		this.jumpTimer = FUNGUS_JUMP_TIME_BASE - 
 			(((x / 16) | 0) % 2) * (FUNGUS_JUMP_TIME_BASE/2);
 	}
@@ -157,7 +153,10 @@ export class Fungus extends Enemy {
 
 	updateAI(ev) {
 		
+		const BASE_GRAVITY = 2.0;
 		const JUMP_HEIGHT = -1.75;
+
+		this.target.y = BASE_GRAVITY;
 		
 		if (this.canJump) {
 
@@ -220,20 +219,19 @@ export class Caterpillar extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_GRAVITY = 2.0;
-		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
-		
-		this.target.y = BASE_GRAVITY;
 	}
 	
 	
 	updateAI(ev) {
-        
+		
+		const BASE_GRAVITY = 2.0;
         const BASE_SPEED = 0.60;
 
-        this.target.x = 0.0;
+		this.target.x = 0.0;
+		this.target.y = BASE_GRAVITY;
+
         if (this.spr.frame % 2 != 0) {
 
             this.target.x = this.dir * BASE_SPEED;
@@ -335,16 +333,17 @@ export class Bunny extends Enemy {
 
 	init(x, y) {
 
-		const BASE_GRAVITY = 4.0;
-
-		this.target.y = BASE_GRAVITY;
+		// ...
 	}
 
 
 	updateAI(ev) {
 		
+		const BASE_GRAVITY = 4.0;
         const JUMP_HEIGHT = -2.5;
-        const FORWARD_SPEED = 0.5;
+		const FORWARD_SPEED = 0.5;
+		
+		this.target.y = BASE_GRAVITY;
 		
 		if (this.canJump) {
 
@@ -452,12 +451,8 @@ export class SandEgg extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_GRAVITY = 3.0;
-		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
-		
-		this.target.y = BASE_GRAVITY;
 
 		this.waitTimer = SAND_EGG_WAIT;
 		this.waiting = true;
@@ -466,7 +461,10 @@ export class SandEgg extends Enemy {
 	
 	updateAI(ev) {
 
+		const BASE_GRAVITY = 3.0;
 		const BASE_SPEED = 0.5;
+				
+		this.target.y = BASE_GRAVITY;
 
 		let prev = this.fcurrent;
 
@@ -860,10 +858,6 @@ export class Star extends Enemy {
 
 	init(x, y) {
 
-		const BASE_GRAVITY = 2.0;
-
-		this.target.y = BASE_GRAVITY;
-
 		this.waitTimer = STAR_WAIT_TIME - 
 			(((x / 16) | 0) % 2) * (STAR_WAIT_TIME/2);
 	}
@@ -882,7 +876,10 @@ export class Star extends Enemy {
 
 	updateAI(ev) {
 		
+		const BASE_GRAVITY = 2.0;
 		const JUMP_ESP = this.target.y / 3;
+
+		this.target.y = BASE_GRAVITY;
 
 		if (this.canJump) {
 
@@ -950,9 +947,7 @@ export class SimpleShooter extends Enemy {
 
 	init(x, y) {
 
-		const BASE_GRAVITY = 2.0;
-
-		this.target.y = BASE_GRAVITY;
+		// ...
 	}
 
 
@@ -960,6 +955,10 @@ export class SimpleShooter extends Enemy {
 
 
 	updateAI(ev) {
+
+		const BASE_GRAVITY = 2.0;
+
+		this.target.y = BASE_GRAVITY;
 		
 		if (!this.shooting) {
 
@@ -1087,12 +1086,8 @@ export class Rock extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_GRAVITY = 4.0;
-		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
-		
-		this.target.y = BASE_GRAVITY;
 	}
 	
 
@@ -1109,9 +1104,11 @@ export class Rock extends Enemy {
 	
 	updateAI(ev) {
 
+		const BASE_GRAVITY = 4.0;
 		const BASE_SPEED = 0.33;
 
 		this.target.x = BASE_SPEED * this.dir;
+		this.target.y = BASE_GRAVITY;
 
 		if (!this.canJump && this.couldJump &&
 			this.speed.x / this.dir > 0 &&
@@ -1697,20 +1694,18 @@ export class Bomb extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_GRAVITY = 4.0;
-		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
-		
-		this.target.y = BASE_GRAVITY;
 	}
 
 	
 	updateAI(ev) {
 
+		const BASE_GRAVITY = 4.0;
 		const BASE_SPEED = 1.0;
 
 		this.target.x = BASE_SPEED * this.dir;
+		this.target.y = BASE_GRAVITY;
 	}
 	
 	
@@ -1910,16 +1905,12 @@ export class Undying extends Enemy {
 	
 	init(x, y) {
 		
-		const BASE_GRAVITY = 4.0;
-
 		this.shootActive = false;
 		this.shootTimer = UNDYING_SHOOT_WAIT -
 			(((x / 16) | 0) % 2) * UNDYING_SHOOT_WAIT / 2;
 		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
-		
-		this.target.y = BASE_GRAVITY;
 	}
 
 
@@ -1941,9 +1932,11 @@ export class Undying extends Enemy {
 	
 	updateAI(ev) {
         
-        const BASE_SPEED = 0.5;
+		const BASE_SPEED = 0.5;
+		const BASE_GRAVITY = 4.0;
 
-        this.target.x = this.dir * BASE_SPEED;
+		this.target.x = this.dir * BASE_SPEED;
+		this.target.y = BASE_GRAVITY;
         
 		if (!this.canFall &&
 			this.oldCanJump && !this.canJump &&

@@ -169,7 +169,7 @@ export class Player extends CollisionObject {
         this.setSwordHitbox(
             this.pos.x + 14*this.dir,
             this.pos.y + 2, 
-            16, special ? 14 : 8);
+            16, special ? 10 : 8);
     }
 
 
@@ -351,6 +351,7 @@ export class Player extends CollisionObject {
     
         // Flapping
         this.flapping = 
+            !this.canJump &&
             this.progress.hasItem(ItemType.TinyWings) &&
             this.jumpReleased &&
             (!this.progress.hasItem(ItemType.Beans) || this.doubleJump) &&

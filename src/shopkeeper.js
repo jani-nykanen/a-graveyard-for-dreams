@@ -23,6 +23,8 @@ export class Shopkeeper extends InteractableObject {
         this.hitbox = new Vector2(12, 16);
         this.spr.frame = (Math.random() * 4) | 0;
 
+        this.spr.setFrame(0, id);
+
         this.id = id;
 
         this.shop = shop;

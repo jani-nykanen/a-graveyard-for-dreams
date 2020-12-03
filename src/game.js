@@ -267,9 +267,12 @@ export class Game extends Scene {
 
         let bmp = c.bitmaps["font"];
 
+        c.setColor(0, 0, 0, 0.33);
+        c.fillRect(0, 0, c.width, 10);
+
         // Coins
         let str = this.genItemString(this.progress.coins, 6);
-        c.drawText(bmp, str, c.width - str.length*8 -2, 2, 0, 0, false);
+        c.drawText(bmp, str, c.width - str.length*8 -1, 1, 0, 0, false);
 
         if (coinOnly) return;
 
@@ -283,28 +286,35 @@ export class Game extends Scene {
             if (i % 2 == 0) {
 
                 c.drawBitmapRegion(bmp, 40, 0, 8, 8,
-                    1 + x + SIDE_OFFSET, 2);
+                    1 + x + SIDE_OFFSET, 1);
             }
 
             // Red
             if (this.progress.health > i) {
 
                 c.drawBitmapRegion(bmp, 32 + (i % 2)*4, 0, 4, 8,
-                    1 + x + SIDE_OFFSET + (i % 2) * 4, 2);
+                    1 + x + SIDE_OFFSET + (i % 2) * 4, 1);
             }
+        }
+
+        if (this.progress.keys > 0 || this.progress.orbs > 0) {
+
+            c.fillRect(0, c.height-10, c.width, 10);
         }
 
         // Other items
         if (this.progress.keys > 0) {
 
             c.drawText(bmp, this.genItemString(this.progress.keys, 7), 
-                2,  c.height-10, 1, 0, false);
+                SIDE_OFFSET, c.height-9, 
+                1, 0, false);
         }
         if (this.progress.orbs > 0) {
             
             str = this.genItemString(this.progress.orbs, 8);
             c.drawText(bmp, str, 
-            c.width - str.length*8 -2, c.height-10, 1, 0, false);
+                c.width - str.length*8 -SIDE_OFFSET, c.height-9, 
+                1, 0, false);
         }      
     }
 

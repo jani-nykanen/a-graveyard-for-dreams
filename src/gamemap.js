@@ -8,6 +8,7 @@ import { Flip } from "./core/canvas.js";
 import { Vector2 } from "./core/vector.js";
 import { ROOM_WIDTH, ROOM_HEIGHT } from "./camera.js";
 import { State } from "./core/input.js";
+import { ItemType } from "./progress.js";
 
 
 const OPEN_TIME = 30;
@@ -41,6 +42,8 @@ export class GameMap {
         this.openPhase = 0;
 
         this.loc = ev.assets.localization["en"];
+
+        this.chests = new Array();
     }
 
 
@@ -71,6 +74,18 @@ export class GameMap {
         }
 
         this.visitedRooms = Array.from(progress.visitedRooms);
+    }
+
+
+    updateChests(objects) {
+
+        for (let o of objects) {
+
+            if (o.isOpened != undefined && !o.isOpened()) {
+
+                this.chests.push(new Vector2((o.pos.x/16) | 0, (o.pos.y/16) | 0));
+            }
+        }
     }
 
 
@@ -111,7 +126,7 @@ export class GameMap {
     }
 
 
-    activate(data, plPos, cam, progress) {
+    activate(data, plPos, cam, progress, objects) {
 
         this.active = true;
         this.updateCanvas(data, progress);
@@ -125,6 +140,12 @@ export class GameMap {
         this.flickerTimer = 0;
         this.openTimer = OPEN_TIME;
         this.openPhase = 0;
+
+        this.chests = new Array();
+        if (progress.hasItem(ItemType.TreasureTracker)) {
+
+            this.updateChests(objects);
+        }
     }
 
 
@@ -166,6 +187,20 @@ export class GameMap {
             c.drawBitmapRegion(bmp, 10, 18, 10, 9,
                 dx + x*10, dy + h, Flip.None);    
         }
+    }
+
+
+    drawChests(c, dx, dy) {
+        
+        c.move(dx, dy);
+
+        c.setColor(85, 255, 255);
+        for (let o of this.chests) {
+
+            c.fillRect(o.x-1, o.y-1, 3, 3);
+        }
+
+        c.move(-dx, -dy);
     }
 
 
@@ -226,6 +261,13 @@ export class GameMap {
                         ROOM_WIDTH, ROOM_HEIGHT);
                 }
             }
+        }
+
+        // Chests
+        if (this.chests.length > 0 &&
+            this.flickerTimer < 30) {
+
+            this.drawChests(c, dx, dy);
         }
 
         // Header

@@ -208,4 +208,10 @@ export class Chest extends InteractableObject {
         }
     }
 
+
+    isOpened() {
+
+        return this.opened && !this.opening;
+    }
+
 }

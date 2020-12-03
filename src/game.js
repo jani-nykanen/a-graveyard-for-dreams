@@ -99,6 +99,7 @@ export class Game extends Scene {
         this.progress.reset();
 
         this.shop.constructMenu(this.objects.player, ev);
+        this.shop.disableButtons();
 
         ev.audio.playMusic(
             ev.assets.samples[this.isIntro ? "intro" : "mainTheme"],
@@ -160,7 +161,8 @@ export class Game extends Scene {
         if (this.progress.hasItem(ItemType.DreamMap)) {
 
             this.gameMap.activate(this.stage.generateMapData(), 
-                this.objects.player.pos, this.cam, this.progress);
+                this.objects.player.pos, this.cam, this.progress,
+                this.objects.interactableObjects);
 
             // Sound effect
             if (playSound)

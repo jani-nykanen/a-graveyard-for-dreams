@@ -209,7 +209,7 @@ export class Shop {
 
         const Y_OFFSET = -12;
         const MENU_X = 60;
-        const MENU_RIGHT = 148;
+        const MENU_RIGHT = 152;
         const BOTTOM_BOX_TOP_OFFSET = -4;
         const BOTTOM_BOX_HEIGHT = 40;
 
@@ -285,7 +285,7 @@ export class Shop {
 
             str = this.loc["shopItemDesc"][this.id][this.menu[this.id].cpos];
             c.drawText(c.bitmaps["font"], str, 
-                MENU_X - (this.menu[this.id].width-8)/2 - 2, bottomElementY -2, 0, 1, 
+                8, bottomElementY -2, 0, 1, 
                 false);
         }
         

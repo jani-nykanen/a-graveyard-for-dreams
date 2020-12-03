@@ -300,7 +300,7 @@ export class Game extends Scene {
         }
         if (this.progress.orbs > 0) {
             
-            str = this.genItemString(this.progress.keys, 8);
+            str = this.genItemString(this.progress.orbs, 8);
             c.drawText(bmp, str, 
             c.width - str.length*8 -2, c.height-10, 1, 0, false);
         }      

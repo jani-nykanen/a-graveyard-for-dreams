@@ -115,13 +115,14 @@ export class Shop {
                                         
                                     this.progress.addCoins(-PRICES[k]);
 
-                                    this.deactivate();
                                     addItemDescription(this.loc, this.globalMessage, 
                                         ITEM_TYPES[k], ITEM_IDS[k]);
                                     this.itemWaitTime = ITEM_WAIT;
 
                                     pl.setObtainItemPose(ITEM_TYPES[k], // This was i before for some reason
                                         ITEM_TYPES[k] == ChestType.Item ? ITEM_IDS[k] : 0);
+
+                                    this.deactivate();
 
                                     // Sound effect
                                     ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
@@ -156,7 +157,7 @@ export class Shop {
         }
 
         return buttons;
-    }
+    }  
 
 
     disableButtons() {

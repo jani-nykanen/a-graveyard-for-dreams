@@ -29,6 +29,13 @@ export const ItemType = {
 
     DreamMap: 16,
     RunningBoots: 17,
+    Chestplate: 18,
+    Pills: 19,
+    TreasureTracker: 20,
+    
+    Dummy: 21,
+    GoldenSword: 22,
+    GoldenBoomerang: 23,
 };
 
 
@@ -104,12 +111,17 @@ export class GameProgress {
         this.health = 6;
         if (this.hasItem(ItemType.FairyDust)) {
 
-            this.health = Math.max(this.maxHealth, 12);
+            this.health = Math.min(this.maxHealth, 12);
         }
     }
 
 
     reduceHealth(amount) {
+
+        if (this.hasItem(ItemType.Chestplate)) {
+
+            amount = Math.max(1, amount-1);
+        }
 
         this.health = Math.max(0, this.health - amount);
     }
@@ -134,6 +146,11 @@ export class GameProgress {
 
 
     addHealth(amount) {
+
+        if (this.hasItem(ItemType.Pills)) {
+
+            amount *= 2;
+        }
 
         this.health = Math.min(this.maxHealth, this.health + amount);
     }

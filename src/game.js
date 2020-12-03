@@ -98,6 +98,8 @@ export class Game extends Scene {
         this.objects.initialCheck(this.cam);
         this.progress.reset();
 
+        this.shop.constructMenu(this.objects.player, ev);
+
         ev.audio.playMusic(
             ev.assets.samples[this.isIntro ? "intro" : "mainTheme"],
             MAIN_THEME_VOLUME);

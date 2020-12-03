@@ -63,6 +63,7 @@ export class Shop {
 
         let buttons = this.constructMenuButtons(pl, ev);
 
+        this.menu = new Array();
         for (let j = 0; j < buttons.length; ++ j) {
 
             this.menu[j] = new Menu(12, true, buttons[j]);
@@ -76,8 +77,6 @@ export class Shop {
         let names = loc["shopItemNames"];
 
         let buttons = new Array();
-
-        let k;
 
         for (let j = 0; j < names.length; ++ j) {
 
@@ -117,15 +116,17 @@ export class Shop {
 
                                     addItemDescription(this.loc, this.globalMessage, 
                                         ITEM_TYPES[k], ITEM_IDS[k]);
-                                    this.itemWaitTime = ITEM_WAIT;
 
-                                    pl.setObtainItemPose(ITEM_TYPES[k], // This was i before for some reason
-                                        ITEM_TYPES[k] == ChestType.Item ? ITEM_IDS[k] : 0);
-
-                                    this.deactivate();
+                                    // this.deactivate();
 
                                     // Sound effect
                                     ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
+
+                                    this.itemWaitTime = ITEM_WAIT;
+                                    this.deactivate();
+            
+                                    pl.setObtainItemPose(ITEM_TYPES[k],
+                                        ITEM_TYPES[k] == ChestType.Item ? ITEM_IDS[k] : 0);
 
                                     ev.audio.pauseMusic();
                                     this.globalMessage.addStartCondition((ev) => {
@@ -304,6 +305,8 @@ export class Shop {
 
         this.active = true;
         this.menu[this.id].activate(this.menu[this.id].buttons.length-1);
+
+        this.itemWaitTime = 0;
     }
 
 

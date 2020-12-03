@@ -101,6 +101,8 @@ export class Player extends CollisionObject {
 
         this.forceWaitTimer = 0.0;
 
+        this.skipFrame = false;
+
         this.markRoomVisited();
     }
 
@@ -500,6 +502,8 @@ export class Player extends CollisionObject {
         let oldFrame = this.spr.frame;
         let oldRow = this.spr.row;
 
+        if (this.skipFrame) return;
+
         // Hurt
         if (this.knockBackTimer > 0) {
 
@@ -768,6 +772,8 @@ export class Player extends CollisionObject {
 
         const EPS = 0.01;
 
+        if (this.skipFrame) return;
+
         if (this.climbingBegun && !this.climbing) {
 
             this.climbingBegun = false;
@@ -788,6 +794,12 @@ export class Player extends CollisionObject {
 
 
     postUpdate(ev) {
+
+        if (this.skipFrame) {
+
+            this.skipFrame = false;
+            return;
+        }
 
         this.canJump = false;
         this.touchWall = false;
@@ -1306,6 +1318,7 @@ export class Player extends CollisionObject {
         this.obtainedItem = new Vector2(id, type);
 
         this.hurtTimer = 0;
+        this.skipFrame = true;
     }
 
 

@@ -34,8 +34,9 @@ export const ItemType = {
     TreasureTracker: 20,
     
     Dummy: 21,
-    GoldenSword: 22,
-    GoldenBoomerang: 23,
+    LifePotion: 22,
+    GoldenSword: 23,
+    GoldenBoomerang: 24,
 };
 
 
@@ -222,6 +223,12 @@ export class GameProgress {
 
             this.addCoins(GEM_COIN_BONUS);
         }
+    }
+
+
+    removeItem(id) {
+
+        this.obtainedItems[id] = false;
     }
 
 

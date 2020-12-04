@@ -165,6 +165,19 @@
         ["There was an\norb in that\nchest. I\nthought it was\nedible, so I\nate it.",
         "You can have\nit back if\nyou pay me\n30 coins."],
         ["I am the world-\nfamous collector\nof useless\njunk.",
-        "If you have\nsomething use-\nless, I can\ntrade it for\nsomething\nuseful!"]
+        "If you have\nsomething use-\nless, I can\ntrade it for\nsomething\nuseful!"],
+        ["I feel a bit\nsick..."]
+    ],
+
+    "specialQuestion": [
+        "Pay 30 coins\nfor the orb?",
+        "Trade DUMMY\nITEM for\nsomething\ncool?",
+        "Give him a\nLIFE POTION?"
+    ],
+
+    "specialReply": [
+        "Thanks mate,\nhere's the\norb!",
+        "Ooh, a dummy\nitem! I have\nalways wanted\none. Here,\ntake this!",
+        "Ooh, thanks!\nPlease, take\nthis!"
     ]
 }

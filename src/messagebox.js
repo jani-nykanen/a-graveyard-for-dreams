@@ -51,6 +51,8 @@ export class MessageBox {
         );
         this.confirm = false;
         this.finished = false;
+
+        this.doNotDeactivate = false;
     }
 
 
@@ -98,7 +100,7 @@ export class MessageBox {
 
 
 
-    activate(acceptCb, confirm) {
+    activate(acceptCb, confirm, doNotDeactivate) {
 
         this.active = true;
         this.charTimer = 0;
@@ -113,6 +115,8 @@ export class MessageBox {
         this.finished = false;
 
         this.confirmationMenu.activate(1);
+
+        this.doNotDeactivate = Boolean(doNotDeactivate);
     }
 
 
@@ -184,7 +188,9 @@ export class MessageBox {
 
                             this.acceptCb(ev);
                         }
-                        this.deactivate();
+
+                        if(!this.doNotDeactivate)
+                            this.deactivate();
                     }
 
                 }

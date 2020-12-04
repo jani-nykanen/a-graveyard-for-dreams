@@ -159,5 +159,12 @@
         ["Welcome to the\nWorld of Dream,\nstranger.",
         "I see that you\njust came from\nthe graveyard.\nYou do look\npretty dead,\nif you ask me.",
         "If you want to\ngo back, you\nneed to find\na way to\nactivate that\nportal."]
+    ],
+
+    "specialNPC": [
+        ["There was an\norb in that\nchest. I\nthought it was\nedible, so I\nate it.",
+        "You can have\nit back if\nyou pay me\n30 coins."],
+        ["I am the world-\nfamous collector\nof useless\njunk.",
+        "If you have\nsomething use-\nless, I can\ntrade it for\nsomething\nuseful!"]
     ]
 }

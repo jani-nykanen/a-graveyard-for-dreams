@@ -33,6 +33,7 @@
         {"name": "clouds",  "path": "clouds.png"},
         {"name": "introBackground",  "path": "intro_background.png"},
         {"name": "portal",  "path": "portal.png"},
+        {"name": "specialNPC",  "path": "special_npc.png"},
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

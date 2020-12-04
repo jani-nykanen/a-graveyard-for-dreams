@@ -17,6 +17,7 @@ import { Player } from "./player.js";
 import { Portal } from "./portal.js";
 import { Savepoint } from "./savepoint.js";
 import { Shopkeeper } from "./shopkeeper.js";
+import { SpecialNPC } from "./specialnpc.js";
 
 
 export class ObjectManager {
@@ -126,6 +127,12 @@ export class ObjectManager {
                 case 41:
 
                     this.interactableObjects.push(new Portal(x*16+8, y*16-4, id, portalCb));
+                    break;
+
+                // Special NPC
+                case 43:
+
+                    this.interactableObjects.push(new SpecialNPC(x*16, y*16+4, this.progress, id));
                     break;
 
                 default:

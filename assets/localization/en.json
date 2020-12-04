@@ -88,7 +88,8 @@
     "keyDesc": ["It can be\nused to unlock\na door."],
 
     "orbName": "a\nDREAM ORB!",
-    "orbDesc": ["It's smooth and\nmysterious! Just\nlike Uranus!"],
+    "orbDesc": ["Only % more\nto go!"],
+    "orbHasAll": ["You have\nthem all!"],
 
     "potionName": "a\nHEALTH POTION!",
     "potionDesc": ["It restores\nyour health"],
@@ -179,5 +180,11 @@
         "Thanks mate,\nhere's the\norb!",
         "Ooh, a dummy\nitem! I have\nalways wanted\none. Here,\ntake this!",
         "Ooh, thanks!\nPlease, take\nthis!"
+    ],
+
+    "specialResult": [
+        ["You obtain a\nDREAM ORB!", "Only % more\nto go!"],
+        ["You obtain the\nSWORD OF\nUNBELIEVABLE\nMAGNIFICENCE!", "It's slighty\nmore powerful\nthan your\nrusty sword"],
+        ["You obtain a...\nBANANA?!", "I wonder what\nit does..."]
     ]
 }

@@ -4,6 +4,7 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { applyItemEvent } from "./chest.js";
 import { Flip } from "./core/canvas.js";
 import { Sprite } from "./core/sprite.js";
 import { Vector2 } from "./core/vector.js";
@@ -29,6 +30,8 @@ export class SpecialNPC extends InteractableObject {
         this.id = id;
 
         this.progress = progress;
+
+        this.itemWaitTime = 0;
     }
 
 
@@ -79,8 +82,7 @@ export class SpecialNPC extends InteractableObject {
             this.progress.addCoins(-30);
             this.progress.addOrbs(1);
 
-            break;
-    
+            return [0, 3];
         case 1:
 
             this.progress.removeItem(ItemType.Dummy);
@@ -88,7 +90,7 @@ export class SpecialNPC extends InteractableObject {
 
             this.deactivated = true;
 
-            break;
+            return [ItemType.GoldenSword, 1];
 
         case 2:
 
@@ -97,16 +99,18 @@ export class SpecialNPC extends InteractableObject {
 
             this.deactivated = true;
 
-            break;
+            return [ItemType.GoldenBoomerang, 1];
     
         default:
-            break;
+            return [-1, -1];
         }
     }
 
     
     triggerEvent(message, pl, cam, ev) {
         
+        const WAIT_TIME = 60;
+
         let loc = ev.assets.localization["en"];
 
         for (let m of loc["specialNPC"][this.id]) {
@@ -121,16 +125,41 @@ export class SpecialNPC extends InteractableObject {
             message.addMessage(loc["specialQuestion"][this.id])
                 .activate((ev) => {
 
-                    this.payEvent();
                     message.addMessage(loc["specialReply"][this.id])
                         .activate((ev) => {
+
+                        let poseInfo = this.payEvent();
+
+                        // Sound effect
+                        ev.audio.playSample(ev.assets.samples["treasure"], 0.50);
+                        ev.audio.pauseMusic();
+
+                        pl.setObtainItemPose(poseInfo[1], poseInfo[0]);
+
+                        this.itemWaitTime = WAIT_TIME;
+
+                        message.addStartCondition((ev) => {
+
+                            return (this.itemWaitTime -= ev.step) <= 0;
+                        })
+                        for (let m of loc["specialResult"][this.id]) {
+
+                            message.addMessage(m);
+                        }
+                        message.activate((ev) => {
 
                             if (this.id == 0)
                                 this.id = 2;
 
+                            applyItemEvent(poseInfo[1], poseInfo[0], pl);
+
+                            ev.audio.resumeMusic();
+
                         }, false);
 
-                }, true, true);
+                    }, false);
+
+                }, true);
 
         }, false);
 

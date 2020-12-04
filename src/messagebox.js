@@ -51,8 +51,6 @@ export class MessageBox {
         );
         this.confirm = false;
         this.finished = false;
-
-        this.doNotDeactivate = false;
     }
 
 
@@ -100,7 +98,7 @@ export class MessageBox {
 
 
 
-    activate(acceptCb, confirm, doNotDeactivate) {
+    activate(acceptCb, confirm) {
 
         this.active = true;
         this.charTimer = 0;
@@ -115,8 +113,6 @@ export class MessageBox {
         this.finished = false;
 
         this.confirmationMenu.activate(1);
-
-        this.doNotDeactivate = Boolean(doNotDeactivate);
     }
 
 
@@ -184,13 +180,12 @@ export class MessageBox {
 
                     if (this.queue.length == 0) {
 
+                        this.deactivate();
                         if (this.acceptCb != null) {
 
                             this.acceptCb(ev);
                         }
-
-                        if(!this.doNotDeactivate)
-                            this.deactivate();
+                        // this.deactivate();
                     }
 
                 }

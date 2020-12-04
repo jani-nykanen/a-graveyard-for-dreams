@@ -288,14 +288,14 @@ export class Game extends Scene {
             if (i % 2 == 0) {
 
                 c.drawBitmapRegion(bmp, 40, 0, 8, 8,
-                    1 + x + SIDE_OFFSET, 1);
+                    x + SIDE_OFFSET, 1);
             }
 
             // Red
             if (this.progress.health > i) {
 
                 c.drawBitmapRegion(bmp, 32 + (i % 2)*4, 0, 4, 8,
-                    1 + x + SIDE_OFFSET + (i % 2) * 4, 1);
+                    x + SIDE_OFFSET + (i % 2) * 4, 1);
             }
         }
 
@@ -315,7 +315,7 @@ export class Game extends Scene {
             
             str = this.genItemString(this.progress.orbs, 8);
             c.drawText(bmp, str, 
-                c.width - str.length*8 -SIDE_OFFSET, c.height-9, 
+                c.width - str.length*8 -SIDE_OFFSET -1, c.height-9, 
                 1, 0, false);
         }      
     }

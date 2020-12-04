@@ -10,6 +10,7 @@ import { State } from "./core/input.js";
 import { Menu, MenuButton } from "./menu.js";
 import { MessageBox } from "./messagebox.js";
 import { drawBoxWithOutlines } from "./misc.js";
+import { ItemType } from "./progress.js";
 
 
 /*
@@ -307,6 +308,13 @@ export class Shop {
         this.menu[this.id].activate(this.menu[this.id].buttons.length-1);
 
         this.itemWaitTime = 0;
+
+        if (!this.progress.hasItem(ItemType.LifePotion) &&
+            id == 1) {
+
+            this.menu[this.id].toggleButton(4, true);
+            this.progress.setItemBoughtStatus(9, false);
+        }
     }
 
 

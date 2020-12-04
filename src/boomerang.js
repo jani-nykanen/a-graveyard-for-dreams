@@ -56,7 +56,7 @@ class Flame {
         let frame = 5 + clamp(Math.round((1.0-this.timer) * 5), 0, 4);
         
         c.drawBitmapRegion(c.bitmaps["figure"],
-            frame*16, 80, 16, 16,
+            frame*16,80, 16, 16,
             Math.round(this.pos.x-8),
             Math.round(this.pos.y-8), Flip.None);
 
@@ -98,10 +98,12 @@ export class Boomerang extends CollisionObject {
         this.hasFlames = false;
 
         this.ignoreFence = true;
+        
+        this.isBanana = false;
     }
 
 
-    spawn(x, y, sx, sy, returnTime, returnObject, hasFlames) {
+    spawn(x, y, sx, sy, returnTime, returnObject, hasFlames, isBanana) {
 
         this.pos = new Vector2(x, y);
 
@@ -124,6 +126,7 @@ export class Boomerang extends CollisionObject {
         ++ this.hitId;
 
         this.hasFlames = hasFlames;
+        this.isBanana = isBanana;
     }
 
 
@@ -198,7 +201,7 @@ export class Boomerang extends CollisionObject {
         }
 
         // Animate
-        this.spr.animate(5, 1, 4, ANIM_SPEED, ev.step);
+        this.spr.animate(this.isBanana ? 10 : 5, 1, 4, ANIM_SPEED, ev.step);
 
         this.disableCollisions = this.returning && this.directionChanged;
     }

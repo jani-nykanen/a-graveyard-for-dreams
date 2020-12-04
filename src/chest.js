@@ -33,10 +33,12 @@ export function applyItemEvent(type, id, pl) {
             break;
 
         case ChestType.Key:
+
             pl.progress.addKeys(1);
             break;
 
         case ChestType.Orb:
+
             pl.progress.addOrbs(1);
             break;
 

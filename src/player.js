@@ -392,7 +392,8 @@ export class Player extends CollisionObject {
             this.boomerang.spawn(
                 this.pos.x+4*this.dir, this.pos.y+2,
                 THROW_SPEED*this.dir, 0, RETURN_TIME,
-                this, this.progress.hasItem(ItemType.FireBall));
+                this, this.progress.hasItem(ItemType.FireBall),
+                this.progress.hasItem(ItemType.GoldenBoomerang));
 
             // Required for collisions, when throwing the boomerang
             // next to a wall
@@ -519,15 +520,17 @@ export class Player extends CollisionObject {
             return;
         }
 
+        let attackFrame = this.progress.hasItem(ItemType.GoldenSword) ? 9 : 4;
+
         // Attacking, obviously
         if (this.attackTimer > 0) {
 
             this.spr.setFrame(0, 4);
             if (this.specialAttack)
-                this.swordSpr.animate(4, 7, 8,
+                this.swordSpr.animate(attackFrame, 7, 8,
                      SWORD_SPC_SPEED, ev.step);
             else
-                this.swordSpr.setFrame(2, 4);
+                this.swordSpr.setFrame(2, attackFrame);
 
             return;
         }
@@ -1218,11 +1221,11 @@ export class Player extends CollisionObject {
 
     getAttackDamage() {
 
-        let dmg = 2;
+        let dmg = this.progress.hasItem(ItemType.GoldenSword) ? 3 : 2;
         if (this.downAttack)
             ++ dmg;
         else if (this.specialAttack)
-            dmg += 2;
+            dmg *= 2;
 
         return dmg;
     }
@@ -1266,8 +1269,7 @@ export class Player extends CollisionObject {
 
     getBoomerangPower() {
 
-        // ...
-        return 1;
+        return this.progress.hasItem(ItemType.GoldenBoomerang) ? 2 : 1;
     }
 
 
@@ -1370,4 +1372,5 @@ export class Player extends CollisionObject {
 
         return false;
     }
+
 }

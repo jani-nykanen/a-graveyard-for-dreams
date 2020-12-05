@@ -45,7 +45,7 @@ export class Game extends Scene {
         this.message = new MessageBox(ev);
         this.shop = new Shop(this.progress, this.message, ev);
        
-        this.objects = new ObjectManager(this.progress, this.shop); 
+        this.objects = new ObjectManager(this.progress, this.shop, this.message); 
         this.stage.parseObjects(this.objects, (ev) => this.portalCallback(ev));
         this.objects.positionCamera(this.cam);
 

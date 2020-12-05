@@ -25,7 +25,7 @@ const SLIDE_TIME = 20;
 export class Player extends CollisionObject {
 
 
-    constructor(x, y, progress) {
+    constructor(x, y, progress, message) {
 
         super(x, y);
 
@@ -49,6 +49,7 @@ export class Player extends CollisionObject {
         this.jumpMargin = 0;
 
         this.climbing = false;
+        this.oldClimbing = false;
         this.climbingBegun = false;
     
         this.swimming = false;
@@ -85,6 +86,7 @@ export class Player extends CollisionObject {
         this.knockBackTimer = 0;
 
         this.progress = progress;
+        this.message = message;
 
         // hahah f(l)apping
         this.flapping = false;
@@ -95,6 +97,7 @@ export class Player extends CollisionObject {
         this.deathTimer = 0;
 
         this.showArrow = false;
+        this.arrowType = 0;
         this.showArrowTimer = 0.0;
 
         this.obtainedItem = null;
@@ -758,7 +761,22 @@ export class Player extends CollisionObject {
     }
 
 
-    kill(ev) {
+    kill(ev, force) {
+
+        if (!force && this.progress.hasItem(ItemType.LifePotion)) {
+
+            this.progress.restoreHealth();
+            this.dying = false;
+
+            ev.audio.playSample(ev.assets.samples["heal"], 0.60);
+
+            this.message.addMessage(ev.assets.localization["en"]["lifePotionUsed"])
+                .activate((ev) => {
+
+                    this.progress.removeItem(ItemType.LifePotion);
+                }, false);
+            return;
+        }
 
         this.dying = true;
         this.spr.setFrame(0, 7);
@@ -790,6 +808,7 @@ export class Player extends CollisionObject {
         this.boomerang.preUpdate(ev);
         this.boomerang.update(ev);
 
+        this.oldClimbing = this.climbing;
         this.climbing = false;
         this.swimming = false;
         this.disableCollisions = this.downAttack && this.speed.y < -EPS;
@@ -897,7 +916,7 @@ export class Player extends CollisionObject {
         if (this.showArrow) {
 
             this.spr.drawFrame(c, c.bitmaps["figure"],
-                3 + Math.floor(this.showArrowTimer/0.5),
+                3 + this.arrowType*2 + Math.floor(this.showArrowTimer/0.5),
                 7, px, py - 16, Flip.None);
         }
 
@@ -1002,6 +1021,15 @@ export class Player extends CollisionObject {
         if (!this.overlay(x+MINUS_MARGIN/2, y, w-MINUS_MARGIN, h)) {
             
             return false;
+        }
+
+        if (!this.showArrow && !this.oldClimbing) {
+
+            this.showInteractionArrow(1);
+        }
+        else if (this.oldClimbing && this.arrowType == 1) {
+
+            this.disableArrow();
         }
         
         if (this.climbingBegun) {
@@ -1286,9 +1314,10 @@ export class Player extends CollisionObject {
     }
 
 
-    showInteractionArrow() {
+    showInteractionArrow(type) {
 
         this.showArrow = true;
+        this.arrowType = type;
         // this.showArrowTimer = 0.0;
     }
 

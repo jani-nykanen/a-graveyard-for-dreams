@@ -186,5 +186,7 @@
         ["You obtain a\nDREAM ORB!", "Only % more\nto go!"],
         ["You obtain the\nSWORD OF\nUNBELIEVABLE\nMAGNIFICENCE!", "It's slighty\nmore powerful\nthan your\nrusty sword"],
         ["You obtain a...\nBANANA?!", "I wonder what\nit does..."]
-    ]
+    ],
+
+    "lifePotionUsed": "You use the\nLIFE POTION\nto restore\nyour health."
 }

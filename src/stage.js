@@ -582,8 +582,8 @@ export class Stage {
         const SPIKE_COLLISION_Y = [8, 2, 0, 2];
         const SPIKE_COLLISION_WIDTH = [12, 8, 12, 8];
         const SPIKE_COLLISION_HEIGHT = [8, 12, 8, 12];
-        const SPIKE_DAMAGE = 2;
-        const ELECTIRICTY_DAMAGE = 2;
+        const SPIKE_DAMAGE = 3;
+        const ELECTIRICTY_DAMAGE = 3;
         const BARREL_SPEED = 1;
         
         const BREAK_X_MARGIN = 2;

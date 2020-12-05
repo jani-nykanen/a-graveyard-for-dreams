@@ -23,7 +23,7 @@ import { SpecialNPC } from "./specialnpc.js";
 export class ObjectManager {
 
 
-    constructor(progress, shop) {
+    constructor(progress, shop, message) {
 
         this.player = null;
         this.enemies = new Array();
@@ -33,8 +33,8 @@ export class ObjectManager {
         this.interactableObjects = new Array();
 
         this.progress = progress;
-
         this.shop = shop;
+        this.message = message;
     }
 
 
@@ -86,7 +86,7 @@ export class ObjectManager {
                     this.interactableObjects.push(new Portal(x*16+8, y*16-4, 1, portalCb));
                 case 0:
 
-                    this.player = new Player(x*16+8, y*16+8, this.progress);
+                    this.player = new Player(x*16+8, y*16+8, this.progress, this.message);
                     break;
 
                 // Savepoint
@@ -391,6 +391,6 @@ export class ObjectManager {
         if (this.player.dying || !this.player.exist)
             return;
 
-        this.player.kill(ev);
+        this.player.kill(ev, true);
     }
 }

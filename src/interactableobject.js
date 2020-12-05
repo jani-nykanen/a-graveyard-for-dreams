@@ -57,7 +57,7 @@ export class InteractableObject {
 
             if (pl.canJump) {
 
-                pl.showInteractionArrow();
+                pl.showInteractionArrow(0);
 
                 if (ev.input.upPress()) {
 

@@ -352,7 +352,7 @@ export class Stage {
     }
 
 
-    drawBackground(c, cam) {
+    drawBackground(c, cam, isNight) {
 
         const CLOUD_BASE_Y = 96;
         const CLOUD_BOTTOM_HEIGHT = 16;
@@ -363,6 +363,17 @@ export class Stage {
             return;
         }
 
+        let jump = isNight ? 80 : 0;
+
+        if (isNight) {
+
+            c.drawBitmap(c.bitmaps["titlebg"], 0, -16, Flip.None);
+        }
+        else {
+
+            c.clear(85, 170, 255);
+        }
+
         // I'm not sure if this things does a shit
         //let cloudRenderPos = negMod(
         //    this.cloudPos + negMod(cam.rpos.x, 1) * 16,
@@ -370,11 +381,9 @@ export class Stage {
         let cloudRenderPos = negMod(this.cloudPos, 96);
 
 
-        c.clear(85, 170, 255);
-
         // Moon
         c.drawBitmapRegion(c.bitmaps["background"],
-                16, 32, 48, 48, 96, 16, Flip.None);
+                16, jump + 32, 64, 48, 96, 16, Flip.None);
 
         let moveY = (cam.rpos.y * 16) | 0;        
         c.move(0, -moveY);
@@ -383,11 +392,17 @@ export class Stage {
         for (let i = 0; i < 3; ++ i) {
 
             c.drawBitmapRegion(c.bitmaps["background"],
-                0, 0, 96, 32,
+                0, jump, 96, 32,
                 Math.round(-cloudRenderPos + i*96), CLOUD_BASE_Y, 
                 Flip.None);
         } 
-        c.setColor(255, 255, 255);
+
+        // Because Closure does not seem to like ...someArray
+        // for reasons
+        if (isNight)
+            c.setColor(255, 170, 255);
+        else
+            c.setColor(255, 255, 255);
         c.fillRect(0, CLOUD_BASE_Y+32, c.width, CLOUD_BOTTOM_HEIGHT);
 
         // Water
@@ -395,9 +410,13 @@ export class Stage {
         for (let x = 0; x < (c.width/16) | 0; ++ x) {
 
             c.drawBitmapRegion(c.bitmaps["background"],
-                0, 32, 16, 32, x * 16, waterY, Flip.None);
+                0, jump + 32, 16, 32, x * 16, waterY, Flip.None);
         }
-        c.setColor(0, 85, 170);
+        
+        if (isNight)
+            c.setColor(85, 0, 85);
+        else
+            c.setColor(255, 170, 255);
         c.fillRect(0, waterY+32, c.width, 
             Math.max(0, c.height+moveY - (waterY+32)));
         
@@ -405,7 +424,7 @@ export class Stage {
     }
 
 
-    draw(c, cam) {
+    draw(c, cam, isNight) {
 
         const MARGIN = 1;
 

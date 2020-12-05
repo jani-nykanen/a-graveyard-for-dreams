@@ -6,7 +6,9 @@
 
 import { Flip } from "./core/canvas.js";
 import { Sprite } from "./core/sprite.js";
-import { Vector2 } from "./core/vector.js";
+import { TransitionType } from "./core/transition.js";
+import { RGB, Vector2 } from "./core/vector.js";
+import { MAIN_THEME_VOLUME } from "./game.js";
 import { InteractableObject } from "./interactableobject.js";
 
 
@@ -21,6 +23,7 @@ export class NightOrb extends InteractableObject {
 
         // The first sprite is for the camera check only
         this.spr = new Sprite(32, 32);
+        this.spr.setFrame(0, 1);
         this.sprOrb = new Sprite(24, 24);
         this.hitbox = new Vector2(12, 16);
 
@@ -28,6 +31,7 @@ export class NightOrb extends InteractableObject {
         this.orbCount = -1;
 
         this.activated = progress.nightOrbActivated;
+        this.destroyed = progress.isNight;
 
         this.floatTimer = Math.PI/2;
         this.floatPhase = 0;
@@ -48,7 +52,7 @@ export class NightOrb extends InteractableObject {
         const AMPLITUDE = [4, 2];
         const FLOAT_SPEED = 0.05;
 
-        if (!this.inCamera) return;
+        if (!this.inCamera || this.destroyed) return;
 
         if (this.activated) {
 
@@ -73,6 +77,14 @@ export class NightOrb extends InteractableObject {
 
         if (!this.inCamera) return;
 
+        if (this.destroyed) {
+
+            this.spr.draw(c, c.bitmaps["nightOrb"],
+                this.pos.x-16, this.pos.y-20 +1,
+                false);
+            return;
+        }
+
         this.sprOrb.draw(c, c.bitmaps["nightOrb"],
             this.pos.x-12, this.animPosY-12 +1,
             false);
@@ -95,9 +107,26 @@ export class NightOrb extends InteractableObject {
         message.addMessage(loc[this.activated ? "nightOrbOverdrive" : "nightOrbActivate"])
             .activate((ev) => {
             
-            this.activated = true;
-            this.progress.orbs = 0;
-            this.progress.nightOrbActivated = true;
+            if (!this.activated) {
+
+                this.activated = true;
+                this.progress.orbs = 0;
+                this.progress.nightOrbActivated = true;
+            }
+            else {
+
+                ev.audio.stopMusic();
+                ev.tr.activate(true, TransitionType.HorizontalWaves, 1.0/120.0,
+                    (ev) => {
+
+                    this.destroyed = true;
+                    this.progress.isNight = true;
+
+                    // Change the music
+                    ev.audio.playMusic(ev.assets.samples["theme1"], MAIN_THEME_VOLUME);
+
+                }, new Vector2(80,4));
+            }
 
         }, true);
 
@@ -108,8 +137,8 @@ export class NightOrb extends InteractableObject {
 
         this.activated = this.progress.nightOrbActivated;
 
-        this.deactivated = !this.activated &&
-            this.progress.orbs < this.orbCount;
+        this.deactivated = this.destroyed || (!this.activated &&
+            this.progress.orbs < this.orbCount);
     }
 
 }

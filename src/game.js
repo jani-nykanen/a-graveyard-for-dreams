@@ -88,8 +88,12 @@ export class Game extends Scene {
 
     playMainTheme(ev) {
 
+        // Work of art
         ev.audio.playMusic(
-            ev.assets.samples[this.isIntro ? "intro" : "theme2"],
+            ev.assets.samples[
+                this.isIntro ? "intro" : 
+                (this.progress.isNight ? "theme1" : "theme2")
+            ],
             MAIN_THEME_VOLUME);
     }
 
@@ -329,13 +333,13 @@ export class Game extends Scene {
 
         c.moveTo(0, 0);
         
-        this.stage.drawBackground(c, this.cam);
+        this.stage.drawBackground(c, this.cam, this.progress.isNight);
 
         this.cam.use(c);
         if (!this.paused)
             c.applyShake();
 
-        this.stage.draw(c, this.cam);
+        this.stage.draw(c, this.cam, this.progress.isNight);
         this.objects.draw(c, this.cam);
 
         this.cam.use(c);

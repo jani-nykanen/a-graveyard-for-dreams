@@ -75,6 +75,7 @@ export class GameProgress {
         this.isIntro = false;
     
         this.nightOrbActivated = false;
+        this.isNight = false;
     }
 
 
@@ -84,6 +85,7 @@ export class GameProgress {
         this.health = obj["health"];
 
         this.nightOrbActivated = obj["nightOrbActivated"];
+        this.isNight = obj["isNight"];
 
         this.gems = obj["gems"];
         this.coins = obj["coins"];

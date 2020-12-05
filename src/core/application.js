@@ -125,6 +125,7 @@ export class Application {
 
         if (this.assets.hasLoaded()) {
 
+            this.tr.preDraw(this.canvas);
             this.activeScene.redraw(this.canvas);
             this.tr.draw(this.canvas);
         }

@@ -5,6 +5,7 @@
  */
 
 
+import { Flip } from "./canvas.js";
 import { RGB, Vector2 } from "./vector.js";
 
 
@@ -14,6 +15,7 @@ export const TransitionType = {
     Fade: 0,
     CircleOutside: 1,
     VerticalBar: 2,
+    HorizontalWaves: 3,
 }
 
 
@@ -32,6 +34,15 @@ export class Transition {
         this.param = 0;
 
         this.center = new Vector2(80, 72);
+
+        this.canvasCopied = false;
+        this.canvasCopy = document.createElement("canvas");
+        this.canvasCopy.getContext("2d").imageSmoothingEnabled = false;
+        
+        // Temp
+        this.copyCanvas.width = 160;
+        this.copyCanvas.height = 144;
+        
     }
 
 
@@ -55,6 +66,7 @@ export class Transition {
         this.mode = mode;
 
         this.active = true;
+        this.canvasCopied = false;
     }
 
 
@@ -70,10 +82,14 @@ export class Transition {
 
         if ((this.timer -= this.speed * ev.step) <= 0) {
 
+            // Why did I write it this way...
+            // but I'm afraid to touch it!
             if ((this.fadeIn = !this.fadeIn) == false) {
 
                 this.timer += 1.0;
                 this.cb(ev);
+
+                this.canvasCopied = false;
             }
             else {
 
@@ -88,6 +104,13 @@ export class Transition {
 
         if (!this.active || this.mode == -1) 
             return;
+
+        if (!this.canvasCopied && this.active &&
+            this.mode == TransitionType.HorizontalWaves &&
+            !this.fadeIn) {
+
+            this.copyCanvas(c);
+        }
 
         c.moveTo(0, 0);
 
@@ -139,6 +162,22 @@ export class Transition {
 
             break;
 
+        case TransitionType.HorizontalWaves:
+
+            c.clear(0, 0, 0);
+
+            //c.setColor(255, 0, 0);
+            for (let y = 0; y < this.copyCanvas.height; ++ y) {
+
+                r = Math.sin((y / this.canvasCopy.height) * this.param.y * Math.PI*2) * this.param.x * t;
+                c.drawBitmapRegion(this.canvasCopy, 0, y, this.canvasCopy.width, 1,
+                    -r, y, Flip.None);
+
+                //c.fillRect(-r, y, 160, 1);
+            }
+
+            break;
+
         default:
             break;
         }
@@ -150,5 +189,28 @@ export class Transition {
     deactivate() {
 
         this.active = false;
+    }
+
+
+    copyCanvas(c) {
+
+        this.canvasCopy.width = c.width;
+        this.canvasCopy.height = c.height;
+
+        this.canvasCopy.getContext("2d").drawImage(c.canvas,
+            0, 0);
+
+        this.canvasCopied = true;
+    }
+
+
+    preDraw(c) {
+
+        if (!this.canvasCopied && this.active &&
+            this.mode == TransitionType.HorizontalWaves &&
+            this.fadeIn) {
+
+            this.copyCanvas(c);
+        }
     }
 }

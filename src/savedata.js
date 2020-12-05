@@ -24,6 +24,7 @@ let copyProgress = (progress) => {
         "obtainedItems": progress.obtainedItems,
         "visitedRooms": progress.visitedRooms,
         "nightOrbActivated": progress.nightOrbActivated,
+        "isNight": progress.isNight,
     };
 };
 

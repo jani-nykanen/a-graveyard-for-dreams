@@ -65,9 +65,7 @@ export class Game extends Scene {
             },
             ev);
 
-        ev.audio.playMusic(
-            ev.assets.samples[this.isIntro ? "intro" : "mainTheme"], 
-            MAIN_THEME_VOLUME);
+        this.playMainTheme(ev);
 
         ev.tr.activate(false, TransitionType.CircleOutside, 
             this.isIntro ? 1.0/60.0 : 1.0/30.0, 
@@ -88,6 +86,14 @@ export class Game extends Scene {
     }
 
 
+    playMainTheme(ev) {
+
+        ev.audio.playMusic(
+            ev.assets.samples[this.isIntro ? "intro" : "theme2"],
+            MAIN_THEME_VOLUME);
+    }
+
+
     reset(ev, doNotGoToCheckpoint) {
 
         this.stage.reset();
@@ -101,9 +107,7 @@ export class Game extends Scene {
         this.shop.constructMenu(this.objects.player, ev);
         this.shop.disableButtons();
 
-        ev.audio.playMusic(
-            ev.assets.samples[this.isIntro ? "intro" : "mainTheme"],
-            MAIN_THEME_VOLUME);
+        this.playMainTheme(ev);
     }
 
 

@@ -79,7 +79,8 @@
         {"name": "open",  "path": "open.wav"},
         {"name": "teleport",  "path": "teleport.wav"},
 
-        {"name": "mainTheme",  "path": "main_theme.ogg"},
+        {"name": "theme1",  "path": "theme1.ogg"},
+        {"name": "theme2",  "path": "theme2.ogg"},
         {"name": "intro",  "path": "intro.ogg"}
     ],
 

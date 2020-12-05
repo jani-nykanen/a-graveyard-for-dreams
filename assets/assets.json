@@ -36,7 +36,9 @@
         {"name": "specialNPC",  "path": "special_npc.png"},
         {"name": "nightOrb",  "path": "night_orb.png"},
 
-        {"name": "tileset",  "path": "tileset.png"}
+        {"name": "tileset",  "path": "tileset.png"}, 
+        {"name": "tilesetNight",  "path": "tileset_night.png"}
+
     ],
 
 

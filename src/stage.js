@@ -437,7 +437,7 @@ export class Stage {
         // Draw layers
         for (let i = 0; i < this.tmap.layers.length-1; ++ i) {
 
-            this.drawLayer(c, c.bitmaps["tileset"],
+            this.drawLayer(c, c.bitmaps[isNight ? "tilesetNight" : "tileset"],
                 i, startx, starty, w, h);
         }
 

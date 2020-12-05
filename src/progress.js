@@ -73,6 +73,8 @@ export class GameProgress {
 
         // Only needed for the map
         this.isIntro = false;
+    
+        this.nightOrbActivated = false;
     }
 
 
@@ -80,6 +82,8 @@ export class GameProgress {
 
         this.maxHealth = obj["maxHealth"];
         this.health = obj["health"];
+
+        this.nightOrbActivated = obj["nightOrbActivated"];
 
         this.gems = obj["gems"];
         this.coins = obj["coins"];

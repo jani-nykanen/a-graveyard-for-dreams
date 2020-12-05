@@ -12,6 +12,7 @@ import { clamp, nextObject } from "./core/util.js";
 import { Door } from "./door.js";
 import { getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
+import { NightOrb } from "./nightorb.js";
 import { NPC } from "./npc.js";
 import { Player } from "./player.js";
 import { Portal } from "./portal.js";
@@ -66,6 +67,9 @@ export class ObjectManager {
         let tid = 0;
         let id;
 
+        let orbCount = 0;
+        let nightOrb = null;
+
         for (let y = 0; y < h; ++ y) {
 
             for (let x = 0; x < w; ++ x) {
@@ -102,6 +106,9 @@ export class ObjectManager {
                 case 36:
 
                     this.interactableObjects.push(new Chest(x*16+8, y*16+8, tid-33, id));
+                    if (tid == 36) 
+                        ++ orbCount;
+
                     break;
 
                 // NPC
@@ -135,6 +142,13 @@ export class ObjectManager {
                     this.interactableObjects.push(new SpecialNPC(x*16, y*16+4, this.progress, id));
                     break;
 
+                // Night orb
+                case 44:
+
+                    // Beautiful
+                    this.interactableObjects.push(nightOrb = new NightOrb(x*16, y*16+4, this.progress));
+                    break;
+
                 default:
                     break;
                 }
@@ -160,6 +174,8 @@ export class ObjectManager {
             }
         }
 
+        // console.log(orbCount+1);
+        nightOrb.setOrbCount(orbCount+1);
         this.linkDoors();
     }
 

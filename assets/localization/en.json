@@ -159,7 +159,10 @@
     "npc": [
         ["Welcome to the\nWorld of Dream,\nstranger.",
         "I see that you\njust came from\nthe graveyard.\nYou do look\npretty dead,\nif you ask me.",
-        "If you want to\ngo back, you\nneed to find\na way to\nactivate that\nportal."]
+        "If you want to\ngo back, you\nneed to find\na way to\nactivate that\nportal."],
+
+        ["See that orb?\nWe call it\nthe night orb.",
+         "If you can\nactivate it,\nyou probably\ncould bring the\nnight back."]
     ],
 
     "specialNPC": [
@@ -188,5 +191,8 @@
         ["You obtain a...\nBANANA?!", "I wonder what\nit does..."]
     ],
 
-    "lifePotionUsed": "You use the\nLIFE POTION\nto restore\nyour health."
+    "lifePotionUsed": "You use the\nLIFE POTION\nto restore\nyour health.",
+
+    "nightOrbActivate": "Use DREAM ORBS\nto activate the\nnight orb?",
+    "nightOrbOverdrive": "Touch the\nnight orb?"
 }

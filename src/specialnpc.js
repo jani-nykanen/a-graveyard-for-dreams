@@ -82,7 +82,7 @@ export class SpecialNPC extends InteractableObject {
             this.progress.addCoins(-30);
             this.progress.addOrbs(1);
 
-            return [0, 3];
+            return [16, 3];
         case 1:
 
             this.progress.removeItem(ItemType.Dummy);

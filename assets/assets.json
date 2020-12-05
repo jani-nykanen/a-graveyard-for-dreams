@@ -34,6 +34,8 @@
         {"name": "introBackground",  "path": "intro_background.png"},
         {"name": "portal",  "path": "portal.png"},
         {"name": "specialNPC",  "path": "special_npc.png"},
+        {"name": "nightOrb",  "path": "night_orb.png"},
+
         {"name": "tileset",  "path": "tileset.png"}
     ],
 

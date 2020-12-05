@@ -23,6 +23,7 @@ let copyProgress = (progress) => {
         "boughtItems": progress.boughtItems,
         "obtainedItems": progress.obtainedItems,
         "visitedRooms": progress.visitedRooms,
+        "nightOrbActivated": progress.nightOrbActivated,
     };
 };
 

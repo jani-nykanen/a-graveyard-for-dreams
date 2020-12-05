@@ -92,7 +92,7 @@ export class NightOrb extends InteractableObject {
         
         let loc = ev.assets.localization["en"];
 
-        message.addMessage(loc["nightOrbActivate"])
+        message.addMessage(loc[this.activated ? "nightOrbOverdrive" : "nightOrbActivate"])
             .activate((ev) => {
             
             this.activated = true;
@@ -105,6 +105,8 @@ export class NightOrb extends InteractableObject {
 
 
     playerEvent(pl, ev) {
+
+        this.activated = this.progress.nightOrbActivated;
 
         this.deactivated = !this.activated &&
             this.progress.orbs < this.orbCount;

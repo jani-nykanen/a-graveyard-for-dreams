@@ -41,7 +41,7 @@ export class Shopkeeper extends InteractableObject {
     }
 
 
-    draw(c) {
+    drawInstance(c) {
 
         if (!this.inCamera) return;
 

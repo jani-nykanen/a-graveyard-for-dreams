@@ -53,7 +53,7 @@ export function applyItemEvent(type, id, pl) {
 }
 
 
-export function addItemDescription(loc, message, type, id) {
+export function addItemDescription(loc, message, type, id, currentOrbs, maxOrbs) {
 
     const TYPE_NAMES = ["heart", "item", "key", "orb", "potion"];
 
@@ -74,11 +74,27 @@ export function addItemDescription(loc, message, type, id) {
         resDescStrs = loc[descStr];
     }
 
+    let dif = -1;
+    if (currentOrbs != undefined &&
+        maxOrbs != undefined) {
+
+        dif = maxOrbs - currentOrbs;
+    }
+
     // Add obtain text and description to the message queue
     message.addMessage(resNameStr);
+    let msg = "";
     for (let m of resDescStrs) {
 
-        message.addMessage(m);
+        if (dif >= 0) {
+
+            msg = m.replace("%", String(dif));
+        }
+        else {
+
+            msg = m;
+        }
+        message.addMessage(msg);
     }
 }
 
@@ -104,6 +120,14 @@ export class Chest extends InteractableObject {
         this.itemWaitTime = 0;
 
         this.hitbox = new Vector2(12, 16);
+
+        this.orbCount = 0;
+    }
+
+
+    setOrbCount(count) {
+
+        this.orbCount = count;
     }
 
 
@@ -121,7 +145,7 @@ export class Chest extends InteractableObject {
     }
 
 
-    draw(c) {
+    drawInstance(c) {
 
         if (!this.inCamera) return;
 
@@ -149,7 +173,9 @@ export class Chest extends InteractableObject {
 
         ev.audio.pauseMusic();
 
-        addItemDescription(loc, message, this.type, this.id);
+        addItemDescription(loc, message, this.type, this.id, 
+            this.type == ChestType.Orb ? pl.progress.orbs : null,
+            this.type == ChestType.Orb ? this.orbCount : null);
 
         message.addStartCondition((ev) => {
 

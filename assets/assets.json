@@ -84,6 +84,7 @@
         {"name": "open",  "path": "open.wav"},
         {"name": "teleport",  "path": "teleport.wav"},
         {"name": "night",  "path": "night.wav"},
+        {"name": "activateOrb",  "path": "activate_orb.wav"},
 
         {"name": "theme1",  "path": "theme1.ogg"},
         {"name": "theme2",  "path": "theme2.ogg"},

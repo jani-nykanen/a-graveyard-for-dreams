@@ -45,7 +45,7 @@ export class SpecialNPC extends InteractableObject {
     }
 
 
-    draw(c) {
+    drawInstance(c) {
 
         if (!this.inCamera) return;
 
@@ -53,6 +53,7 @@ export class SpecialNPC extends InteractableObject {
             this.pos.x-12, this.pos.y-12,
             this.flip);
     }
+    
 
     payCondition() {
 

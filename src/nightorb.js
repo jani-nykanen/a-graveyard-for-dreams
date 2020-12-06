@@ -85,7 +85,7 @@ export class NightOrb extends InteractableObject {
     }
 
 
-    draw(c) {
+    drawInstance(c) {
 
         if (!this.inCamera) return;
 
@@ -129,6 +129,8 @@ export class NightOrb extends InteractableObject {
 
                 pl.forceWait(90);
                 pl.setDoorPose(false);
+
+                ev.audio.playSample(ev.assets.samples["activateOrb"], 0.70);
                 
             }
             else {

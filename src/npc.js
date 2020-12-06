@@ -38,7 +38,7 @@ export class NPC extends InteractableObject {
     }
 
 
-    draw(c) {
+    drawInstance(c) {
 
         if (!this.inCamera) return;
 

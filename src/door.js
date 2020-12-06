@@ -55,7 +55,7 @@ export class Door extends InteractableObject {
     }
 
 
-    draw(c) {
+    drawInstance(c) {
 
         if (!this.inCamera || this.opened) return;
 

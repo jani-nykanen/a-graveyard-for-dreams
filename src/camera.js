@@ -35,6 +35,7 @@ export class Camera {
         this.loopx = loopx;
 
         this.isLooping = false;
+        this.loopDir = 0;
 
         this.jumpForced = false;
     }
@@ -81,6 +82,7 @@ export class Camera {
             this.target.x += this.screenCountX;
 
             this.isLooping = true;
+            this.loopDir = -1;
 
             return 1;
         }
@@ -90,6 +92,7 @@ export class Camera {
             this.target.x -= this.screenCountX;
 
             this.isLooping = true;
+            this.loopDir = 1;
 
             return -1;
         }

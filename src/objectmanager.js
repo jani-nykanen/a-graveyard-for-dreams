@@ -178,6 +178,15 @@ export class ObjectManager {
 
         if (nightOrb != null)
             nightOrb.setOrbCount(orbCount+1);
+
+        for (let o of this.interactableObjects) {
+
+            if (o.setOrbCount != undefined) {
+
+                o.setOrbCount(orbCount+1);
+            }
+        }
+
         this.linkDoors();
     }
 
@@ -284,7 +293,7 @@ export class ObjectManager {
 
         for (let o of this.interactableObjects) {
 
-            o.draw(c);
+            o.draw(c, cam);
         }
 
         for (let e of this.enemies) {

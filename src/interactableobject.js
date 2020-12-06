@@ -31,7 +31,9 @@ export class InteractableObject {
 
     checkIfInCamera(cam) {
 
-        this.inCamera = cam.isObjectInside(this);
+        this.inCamera = 
+            (this.inCamera && cam.isLooping && cam.moving) ||
+            cam.isObjectInside(this);
     }
 
 
@@ -74,5 +76,31 @@ export class InteractableObject {
             return true;
         }   
         return false;     
+    }
+
+
+    drawInstance(c) {}
+
+
+    draw(c, cam) {
+
+        if (!this.inCamera) return;
+
+        let dx = cam.screenCountX * cam.width;
+        let start = 0;
+        let end = 0;
+        
+        if (cam.moving && cam.isLooping) {
+
+            start = -1;
+            end = 1;
+        }
+        
+        for (let i = start; i <= end; ++ i) {
+
+            c.move(i * dx, 0);
+            this.drawInstance(c);
+            c.move(-i * dx, 0);
+        }
     }
 }

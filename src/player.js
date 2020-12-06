@@ -1361,6 +1361,13 @@ export class Player extends CollisionObject {
     }
 
 
+    setTouchPose() {
+
+        this.spr.setFrame(3, 8);
+        this.flip = Flip.None;
+    }
+
+
     moveTo(p, cam) {
 
         this.pos = p.clone();

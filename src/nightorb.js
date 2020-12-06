@@ -15,7 +15,7 @@ import { InteractableObject } from "./interactableobject.js";
 export class NightOrb extends InteractableObject {
 
 
-    constructor(x, y, progress) {
+    constructor(x, y, progress, resetCb) {
 
         super(x, y);
 
@@ -36,6 +36,11 @@ export class NightOrb extends InteractableObject {
         this.floatTimer = Math.PI/2;
         this.floatPhase = 0;
         this.animPosY = this.pos.y;
+
+        this.resetCb = resetCb;
+
+        this.transitionNextScene = false;
+        this.transitionCb = (ev) => {};
     }
 
 
@@ -51,6 +56,13 @@ export class NightOrb extends InteractableObject {
         const ANIM_SPEED = 8;
         const AMPLITUDE = [4, 2];
         const FLOAT_SPEED = 0.05;
+        
+        if (this.transitionNextScene) {
+
+            this.transitionCb(ev);
+            this.transitionNextScene = false;
+            return;
+        }
 
         if (!this.inCamera || this.destroyed) return;
 
@@ -107,25 +119,41 @@ export class NightOrb extends InteractableObject {
         message.addMessage(loc[this.activated ? "nightOrbOverdrive" : "nightOrbActivate"])
             .activate((ev) => {
             
+            pl.pos.x = this.pos.x;
+
             if (!this.activated) {
 
                 this.activated = true;
                 this.progress.orbs = 0;
                 this.progress.nightOrbActivated = true;
+
+                pl.forceWait(90);
+                pl.setDoorPose(false);
+                
             }
             else {
 
+                pl.forceWait(60); // Any number is fine
+                pl.setTouchPose();
+
                 ev.audio.stopMusic();
-                ev.tr.activate(true, TransitionType.HorizontalWaves, 1.0/120.0,
-                    (ev) => {
+                ev.audio.playSample(ev.assets.samples["night"], 0.60);
 
-                    this.destroyed = true;
-                    this.progress.isNight = true;
+                this.transitionNextScene = true;
+                this.transitionCb = (ev) => {
 
-                    // Change the music
-                    ev.audio.playMusic(ev.assets.samples["theme1"], MAIN_THEME_VOLUME);
+                    ev.tr.activate(true, TransitionType.HorizontalWaves, 1.0/120.0,
+                        (ev) => {
+    
+                        pl.checkpoint = new Vector2(this.pos.x, this.pos.y+4);
+    
+                        this.destroyed = true;
+                        this.progress.isNight = true;
 
-                }, new Vector2(80,4));
+                        this.resetCb(ev);
+    
+                    }, new Vector2(80,4));
+                };
             }
 
         }, true);
@@ -138,7 +166,8 @@ export class NightOrb extends InteractableObject {
         this.activated = this.progress.nightOrbActivated;
 
         this.deactivated = this.destroyed || (!this.activated &&
-            this.progress.orbs < this.orbCount);
+            this.progress.orbs < this.orbCount) ||
+            (this.activated && this.floatPhase == 0);
     }
 
 }

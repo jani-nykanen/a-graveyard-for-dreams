@@ -169,7 +169,7 @@ export class Transition {
             //c.setColor(255, 0, 0);
             for (let y = 0; y < this.copyCanvas.height; ++ y) {
 
-                r = Math.sin((y / this.canvasCopy.height) * this.param.y * Math.PI*2) * this.param.x * t;
+                r = Math.sin(((y / this.canvasCopy.height) * this.param.y + t) * Math.PI*2) * this.param.x * t;
                 c.drawBitmapRegion(this.canvasCopy, 0, y, this.canvasCopy.width, 1,
                     -r, y, Flip.None);
 

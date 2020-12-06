@@ -367,7 +367,8 @@ export class Stage {
 
         if (isNight) {
 
-            c.drawBitmap(c.bitmaps["titlebg"], 0, -16, Flip.None);
+            c.clear(0, 0, 0);
+            c.drawBitmap(c.bitmaps["nightBg"], 0, 0, Flip.None);
         }
         else {
 
@@ -414,9 +415,9 @@ export class Stage {
         }
         
         if (isNight)
-            c.setColor(85, 0, 85);
+            c.setColor(85, 0, 170);
         else
-            c.setColor(255, 170, 255);
+            c.setColor(0, 85, 170);
         c.fillRect(0, waterY+32, c.width, 
             Math.max(0, c.height+moveY - (waterY+32)));
         
@@ -512,11 +513,11 @@ export class Stage {
     }
 
 
-    parseObjects(objects, portalCb) {
+    parseObjects(objects, portalCb, resetCb) {
 
         objects.parseObjectLayer(
             this.tmap.layers[this.tmap.layers.length-1], 
-            this.width, this.height, portalCb);
+            this.width, this.height, portalCb, resetCb);
     }
 
 

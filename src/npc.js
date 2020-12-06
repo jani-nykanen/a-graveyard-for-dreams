@@ -12,15 +12,17 @@ import { InteractableObject } from "./interactableobject.js";
 export class NPC extends InteractableObject {
 
 
-    constructor(x, y, messageId) {
+    constructor(x, y, messageId, isCat) {
 
         super(x, y);
 
         this.messageId = messageId;
 
-        this.spr.setFrame((((x / 16) | 0) + ((y / 16) | 0)) % 4, 0);
+        this.spr.setFrame((((x / 16) | 0) + ((y / 16) | 0)) % 4, 
+            isCat ? 1 : 0);
 
         this.hitbox = new Vector2(10, 16);
+        this.isCat = isCat;
     }
 
 
@@ -30,7 +32,7 @@ export class NPC extends InteractableObject {
 
         const ANIM_SPEED = 10;
 
-        this.spr.animate(0, 
+        this.spr.animate(this.spr.row, 
             0, 3, ANIM_SPEED, ev.step);
         
     }
@@ -50,7 +52,7 @@ export class NPC extends InteractableObject {
 
         let loc = ev.assets.localization["en"];
 
-        let msg = loc["npc"][this.messageId];
+        let msg = this.isCat ? loc["meow"] : loc["npc"][this.messageId];
 
         for (let m of msg) {
 

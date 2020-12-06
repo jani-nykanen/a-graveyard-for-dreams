@@ -194,5 +194,7 @@
     "lifePotionUsed": "You use the\nLIFE POTION\nto restore\nyour health.",
 
     "nightOrbActivate": "Use DREAM ORBS\nto activate the\nnight orb?",
-    "nightOrbOverdrive": "Touch the\nnight orb?"
+    "nightOrbOverdrive": "Touch the\nnight orb?",
+
+    "meow": ["MEOW!"]
 }

@@ -46,7 +46,9 @@ export class Game extends Scene {
         this.shop = new Shop(this.progress, this.message, ev);
        
         this.objects = new ObjectManager(this.progress, this.shop, this.message); 
-        this.stage.parseObjects(this.objects, (ev) => this.portalCallback(ev));
+        this.stage.parseObjects(this.objects, 
+            (ev) => this.portalCallback(ev),
+            (ev) => this.resetCallback(ev));
         this.objects.positionCamera(this.cam);
 
         this.shop.constructMenu(this.objects.player, ev);
@@ -101,7 +103,10 @@ export class Game extends Scene {
     reset(ev, doNotGoToCheckpoint) {
 
         this.stage.reset();
-        this.objects.reset(this.stage, (ev) => this.portalCallback(ev), doNotGoToCheckpoint);
+        this.objects.reset(this.stage, 
+            (ev) => this.portalCallback(ev), 
+            (ev) => this.resetCallback(ev),
+            doNotGoToCheckpoint);
         this.cam.reset();
         this.objects.positionCamera(this.cam);
         this.objects.centerTransition(ev.tr);
@@ -135,6 +140,12 @@ export class Game extends Scene {
 
             // ... ?
         }
+    }
+
+
+    resetCallback(ev) {
+
+        this.reset(ev, false);
     }
 
 

@@ -35,6 +35,7 @@
         {"name": "portal",  "path": "portal.png"},
         {"name": "specialNPC",  "path": "special_npc.png"},
         {"name": "nightOrb",  "path": "night_orb.png"},
+        {"name": "nightBg",  "path": "night_bg.png"},
 
         {"name": "tileset",  "path": "tileset.png"}, 
         {"name": "tilesetNight",  "path": "tileset_night.png"}
@@ -82,6 +83,7 @@
         {"name": "door",  "path": "door.wav"},
         {"name": "open",  "path": "open.wav"},
         {"name": "teleport",  "path": "teleport.wav"},
+        {"name": "night",  "path": "night.wav"},
 
         {"name": "theme1",  "path": "theme1.ogg"},
         {"name": "theme2",  "path": "theme2.ogg"},

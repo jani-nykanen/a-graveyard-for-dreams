@@ -59,7 +59,7 @@ export class ObjectManager {
     }
 
 
-    parseObjectLayer(data, w, h, portalCb) {
+    parseObjectLayer(data, w, h, portalCb, resetCb) {
 
         const MAX_ENEMY_INDEX = 31;
 
@@ -69,6 +69,8 @@ export class ObjectManager {
 
         let orbCount = 0;
         let nightOrb = null;
+
+        let isNight = this.progress.isNight;
 
         for (let y = 0; y < h; ++ y) {
 
@@ -114,7 +116,7 @@ export class ObjectManager {
                 // NPC
                 case 37:
 
-                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, id));
+                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, id, isNight));
                     break;
 
                 // Door
@@ -146,7 +148,7 @@ export class ObjectManager {
                 case 44:
 
                     // Beautiful
-                    this.interactableObjects.push(nightOrb = new NightOrb(x*16, y*16+4, this.progress));
+                    this.interactableObjects.push(nightOrb = new NightOrb(x*16, y*16+4, this.progress, resetCb));
                     break;
 
                 default:
@@ -174,8 +176,8 @@ export class ObjectManager {
             }
         }
 
-        // console.log(orbCount+1);
-        nightOrb.setOrbCount(orbCount+1);
+        if (nightOrb != null)
+            nightOrb.setOrbCount(orbCount+1);
         this.linkDoors();
     }
 
@@ -188,7 +190,7 @@ export class ObjectManager {
     }
 
 
-    reset(stage, portalCb, doNotGoToCheckpoint) {
+    reset(stage, portalCb, resetCb, doNotGoToCheckpoint) {
 
         let checkpoint = this.player.checkpoint.clone();
 
@@ -198,7 +200,7 @@ export class ObjectManager {
         this.bullets = new Array();
         this.interactableObjects = new Array();
 
-        stage.parseObjects(this, portalCb);
+        stage.parseObjects(this, portalCb, resetCb);
         if (!doNotGoToCheckpoint)
             this.player.respawnToCheckpoint(checkpoint);
     }

@@ -29,6 +29,30 @@ let copyProgress = (progress) => {
 };
 
 
+export class LoadedData {
+
+
+    constructor(progress, savePoint) {
+
+        this.progress = progress;
+        this.savePoint = savePoint
+    }
+
+
+    applyProgress(progress) {
+
+        if (this.progress != undefined)
+            progress.parseObject(this.progress);
+    }
+
+
+    applySavePoint(player) {
+
+        player.respawnToCheckpoint(this.savePoint.clone());
+    }
+}
+
+
 export function saveData(player) {
 
     let data = {};
@@ -52,7 +76,7 @@ export function saveData(player) {
 }
 
 
-export function loadData(player) {
+export function loadData() {
 
     let dataStr = null;
 
@@ -63,21 +87,18 @@ export function loadData(player) {
     catch(e) {
 
         console.log("SAVE ERROR: " + e);
-        return false;
+        return null;
     }
 
     if (dataStr == null) {
 
-        return false;
+        return null;
     }
 
     let obj = JSON.parse(dataStr);
 
-    if (obj["progress"] != undefined) 
-        player.progress.parseObject(obj.progress);
-
-    if (obj["savePoint"] != undefined) 
-        player.respawnToCheckpoint(new Vector2(obj["savePoint"]["x"], obj["savePoint"]["y"]));
-
-    return true;
+    return new LoadedData(
+            obj["progress"], 
+            new Vector2(obj["savePoint"]["x"], obj["savePoint"]["y"])
+        );
 }

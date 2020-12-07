@@ -10,7 +10,7 @@ import { Chest } from "./chest.js";
 import { Collectible } from "./collectible.js";
 import { clamp, nextObject } from "./core/util.js";
 import { Door } from "./door.js";
-import { getEnemyType } from "./enemytypes.js";
+import { Flame, getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
 import { NightOrb } from "./nightorb.js";
 import { NPC } from "./npc.js";
@@ -157,7 +157,7 @@ export class ObjectManager {
 
                 // Enemy
                 if (tid >= 1 && tid <= MAX_ENEMY_INDEX) {
-                    
+
                     index = this.enemies.length;
                     for (let i = 0; i < this.enemies.length; ++ i) {
 
@@ -167,7 +167,9 @@ export class ObjectManager {
                             break;
                         }
                     }
-                    this.enemies[index] = new (getEnemyType(tid-1).prototype.constructor) (x*16+8, y*16+8);
+                    this.enemies[index] = new (
+                        (this.progress.isNight ? Flame : getEnemyType(tid-1))
+                            .prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
                     this.enemies[index].setBulletCallback(
                         (x, y, sx, sy, row, takeGravity, dmg) => this.spawnBullet(x, y, sx, sy, row, takeGravity, dmg)

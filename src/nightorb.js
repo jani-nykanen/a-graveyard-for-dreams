@@ -12,6 +12,9 @@ import { MAIN_THEME_VOLUME } from "./game.js";
 import { InteractableObject } from "./interactableobject.js";
 
 
+const FLOAT_AMPLITUDE = [4, 2];
+
+
 export class NightOrb extends InteractableObject {
 
 
@@ -25,6 +28,7 @@ export class NightOrb extends InteractableObject {
         this.spr = new Sprite(32, 32);
         this.spr.setFrame(0, 1);
         this.sprOrb = new Sprite(24, 24);
+        this.sprOrb.setFrame(progress.nightOrbActivated ? 1 : 0, 0);
         this.hitbox = new Vector2(12, 16);
 
         this.progress = progress;
@@ -33,9 +37,9 @@ export class NightOrb extends InteractableObject {
         this.activated = progress.nightOrbActivated;
         this.destroyed = progress.isNight;
 
-        this.floatTimer = Math.PI/2;
-        this.floatPhase = 0;
-        this.animPosY = this.pos.y;
+        this.floatTimer = this.activated ? 0 : Math.PI/2;
+        this.floatPhase = this.activated ? 1 : 0;
+        this.animPosY = this.activated ? this.pos.y - FLOAT_AMPLITUDE[0] : this.pos.y;
 
         this.resetCb = resetCb;
 
@@ -54,7 +58,6 @@ export class NightOrb extends InteractableObject {
 
         const WAIT_SPEED = 30;
         const ANIM_SPEED = 8;
-        const AMPLITUDE = [4, 2];
         const FLOAT_SPEED = 0.05;
         
         if (this.transitionNextScene) {
@@ -80,8 +83,8 @@ export class NightOrb extends InteractableObject {
             this.floatTimer %= Math.PI * 2;
         }
 
-        this.animPosY = this.pos.y - AMPLITUDE[0] + 
-            Math.round(Math.sin(this.floatTimer) * AMPLITUDE[this.floatPhase]);
+        this.animPosY = this.pos.y - FLOAT_AMPLITUDE[0] + 
+            Math.round(Math.sin(this.floatTimer) * FLOAT_AMPLITUDE[this.floatPhase]);
     }
 
 

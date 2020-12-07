@@ -30,6 +30,12 @@ export class Game extends Scene {
 
         super(ev, param);
 
+        let loadedData = null;
+        if (param === true) {
+
+            loadedData = loadData();        
+        }
+
         this.isIntro = param !== true;
 
         this.stage = new Stage(ev.assets, this.isIntro);
@@ -41,6 +47,12 @@ export class Game extends Scene {
         this.progress = new GameProgress(
             this.cam.screenCountX, 
             this.cam.screenCountY);
+
+        if (loadedData != null) {
+
+            loadedData.applyProgress(this.progress);
+        }
+
         this.progress.isIntro = this.isIntro;
         this.message = new MessageBox(ev);
         this.shop = new Shop(this.progress, this.message, ev);
@@ -77,9 +89,9 @@ export class Game extends Scene {
 
         // If I write "param == null" someone will come here
         // to say that "== true" is useless. But param can be null!
-        if (param === true) {
+        if (loadedData != null) {
 
-            loadData(this.objects.player);        
+            loadedData.applySavePoint(this.objects.player);       
             this.objects.positionCamera(this.cam);
         }
         this.shop.disableButtons();

@@ -766,14 +766,22 @@ class WaveEnemy extends Enemy {
 	}
 
 
+	specialInit(x, y) {}
+
+
 	init(x, y) {
 		
 		this.dir = 1 - 2 * (((x / 16) | 0) % 2);
 		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
 		
-		this.waveTimer = (this.pos.x + this.pos.y) % (Math.PI*2);
+		this.waveTimer = 0.0; // (this.pos.x + this.pos.y) % (Math.PI*2);
+
+		this.specialInit(x, y);
 	}
 	
+
+	specialAI(ev) {}
+
 
 	updateAI(ev) {
 
@@ -783,6 +791,8 @@ class WaveEnemy extends Enemy {
 
 		this.pos.y = this.startPos.y + 
 			Math.round(Math.sin(this.waveTimer) * this.amplitude);
+
+		this.specialAI(ev);
 	}
 
 
@@ -2137,5 +2147,65 @@ export class Crystal extends Enemy {
 				pl.pos.y - this.pos.y))
 			.normalize(true);
 		
+	}
+}
+
+
+export class Flame extends WaveEnemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 21, 1, 4, 16.0 + (x % 8), 
+			0.025 + (0.0025) * (y % 4), 
+			0.0);
+
+		this.friction.x = 0.005;
+		this.mass = 0.5;
+
+		this.horizontalWave = 0.0;
+
+		this.disableCollisions = true;
+	}
+
+
+	specialInit(x, y) {
+
+		this.horizontalWave = (1 + Math.sin(x + y)) * Math.PI;
+
+		this.disableCollisions = true;
+	}
+
+
+	specialAI(ev) {
+
+		const H_WAVE_SPEED = 0.0125;
+		const BASE_TARGET_X = 0.5;
+
+		this.horizontalWave = (this.horizontalWave + 
+			H_WAVE_SPEED * Math.cos(this.waveTimer) * ev.step) 
+			% (Math.PI * 2);
+
+		this.target.x = Math.sin(this.horizontalWave) * BASE_TARGET_X;
+	}
+	
+	
+	animate(ev) {
+		
+		const ANIM_SPEED = 5;
+
+		this.flip = this.speed.x > 0 ? Flip.Horizontal : Flip.None;
+
+		this.spr.animate(this.spr.row, 0, 3, ANIM_SPEED, ev.step);
+	}
+	
+
+	wallCollisionEvent(x, y, h, dir, ev) {
+
+		if (this.target.x * dir > 0) {
+
+			this.horizontalWave = Math.PI * 2 - this.horizontalWave;
+		}
+		this.speed.x *= -1;
 	}
 }

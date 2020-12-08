@@ -87,7 +87,8 @@ export class Enemy extends CollisionObject {
 		this.deactivated = false;
 		// TODO: Not for all enemies, though
 		this.disableCollisions = false;
-		
+
+		this.pos = this.startPos.clone();
 		this.init(this.startPos.x, this.startPos.y);
 	}
 
@@ -281,11 +282,9 @@ export class Enemy extends CollisionObject {
 				this.exist = false;
 				return;
 			}
-
 			if (this.deactivated) {
-				
+
 				this.activate();
-				return;
 			}
 		}
 		
@@ -300,11 +299,11 @@ export class Enemy extends CollisionObject {
 			this.health = this.maxHealth;
 			this.hurtTimer = 0;
 			
-			if (!cam.moving) {
+			//if (!cam.moving) {
 				
 				this.deactivated = true;
 				this.disableCollisions = true;
-			}
+			//}
 		}
 		
 		// Collisions with the left and right sides of the

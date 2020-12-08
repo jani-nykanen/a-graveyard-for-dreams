@@ -54,7 +54,7 @@ export class Bullet extends CollisionObject {
         this.exist = true;
 
         // Lazy way
-        this.disableCollisions = [2, 3, 5].includes(row);
+        this.disableCollisions = [2, 3, 5, 6].includes(row);
         
     }
 
@@ -123,7 +123,8 @@ export class Bullet extends CollisionObject {
     playerCollision(pl, ev) {
 
         if (!this.exist || !this.inCamera || this.dying || 
-            pl.hurtTimer > 0) return;
+            pl.hurtTimer > 0 || this.dmg <= 0) 
+            return false;
 
         if (pl.overlayObject(this)) {
 

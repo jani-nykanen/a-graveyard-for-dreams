@@ -15,21 +15,19 @@ import { GameObject } from "./gameobject.js";
 export class NightStar extends GameObject {
 
 
-    constructor(x, y, id) {
+    constructor(x, y, id, bulletCb) {
 
         super(x, y);
         
         this.startPos = this.pos.clone();
-
         this.id = id;
-
         this.hitbox = new Vector2(16, 16);
-
-        this.waveTimer = 0.0;
 
         this.exist = true;
         
         this.spr = new Sprite(16, 16);
+    
+        this.bulletCb = bulletCb;
     }
 
 
@@ -51,16 +49,7 @@ export class NightStar extends GameObject {
 
     updateLogic(ev) {
 
-        const WAVE_SPEED = 0.05;
-        const AMPLITUDE = 2;
-
-        this.spr.animate(0, 0, 3, this.spr.frame == 0 ? 30 : 8, ev.step);
-
-        // This, my friend, is the correct way to do things
-        this.pos.y = this.startPos.y + 
-            Math.sin(
-                this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI*2)
-            ) * AMPLITUDE;
+        this.spr.animate(0, 0, 3, 12, ev.step);
     }
 
 
@@ -95,14 +84,36 @@ export class NightStar extends GameObject {
     }
 
 
+    spawnBullets() {
+
+        const BULLET_SPEED = 2.0;
+        const COUNT = 8;
+
+		let angle = 0;
+
+		for (let i = 0; i < COUNT; ++ i) {
+
+			angle = Math.PI * 2 / COUNT * i;
+
+			this.bulletCb(this.pos.x, this.pos.y + this.center.y,
+					Math.cos(angle) * BULLET_SPEED,
+					Math.sin(angle) * BULLET_SPEED,
+					6, false, 0);
+		}
+    }
+
+
     playerCollision(pl, ev) {
 
         if (!this.exist || !this.inCamera || this.dying || pl.dying) return;
         
         if (this.overlayObject(pl)) {
 
+            ev.audio.playSample(ev.assets.samples["star"], 0.60);
+
             pl.progress.markStarCollected(this.id);
 
+            this.spawnBullets();
             this.dying = true;
         }
     }

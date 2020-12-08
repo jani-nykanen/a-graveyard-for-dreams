@@ -269,8 +269,6 @@ export class GameProgress {
 
         this.collectedStars[id] = true;
         ++ this.stars;
-
-        console.log(this.stars);
     }
 
 

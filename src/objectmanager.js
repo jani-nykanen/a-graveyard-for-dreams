@@ -74,6 +74,8 @@ export class ObjectManager {
 
         let isNight = this.progress.isNight;
 
+        let bulletCb = (x, y, sx, sy, row, takeGravity, dmg) => this.spawnBullet(x, y, sx, sy, row, takeGravity, dmg);
+
         for (let y = 0; y < h; ++ y) {
 
             for (let x = 0; x < w; ++ x) {
@@ -157,7 +159,7 @@ export class ObjectManager {
                 case 45:
 
                     if (this.progress.isNight)
-                        this.stars.push(new NightStar(x*16 + 8, y*16 + 8, id));
+                        this.stars.push(new NightStar(x*16 + 8, y*16 + 8, id, bulletCb));
                     break;
 
                 default:
@@ -180,9 +182,7 @@ export class ObjectManager {
                         (this.progress.isNight ? Flame : getEnemyType(tid-1))
                             .prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
-                    this.enemies[index].setBulletCallback(
-                        (x, y, sx, sy, row, takeGravity, dmg) => this.spawnBullet(x, y, sx, sy, row, takeGravity, dmg)
-                    );
+                    this.enemies[index].setBulletCallback(bulletCb);
                 }
             }
         }

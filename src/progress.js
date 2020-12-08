@@ -90,11 +90,11 @@ export class GameProgress {
         this.nightOrbActivated = obj["nightOrbActivated"];
         this.isNight = obj["isNight"];
 
-        this.gems = Number(obj["gems"]);
-        this.coins = Number(obj["coins"]);
-        this.keys = Number(obj["keys"]);
-        this.orbs = Number(obj["orbs"]);
-        this.stars = Number(obj["stars"]);
+        this.gems = Number(obj["gems"]) | 0;
+        this.coins = Number(obj["coins"]) | 0;
+        this.keys = Number(obj["keys"]) | 0;
+        this.orbs = Number(obj["orbs"]) | 0;
+        this.stars = Number(obj["stars"]) | 0;
 
         if (obj["openedChests"] != undefined) {
 
@@ -269,6 +269,8 @@ export class GameProgress {
 
         this.collectedStars[id] = true;
         ++ this.stars;
+
+        console.log(this.stars);
     }
 
 

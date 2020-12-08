@@ -18,7 +18,7 @@ export class NightStar extends GameObject {
     constructor(x, y, id) {
 
         super(x, y);
-
+        
         this.startPos = this.pos.clone();
 
         this.id = id;
@@ -35,9 +35,9 @@ export class NightStar extends GameObject {
 
     die(ev) {
 
-        this.spr.animate(0, 0, 4, 5, ev.step);
+        this.spr.animate(1, 0, 3, 5, ev.step);
 
-        return this.spr.frame == 4;
+        return this.spr.frame == 3;
     }
 
 
@@ -52,7 +52,9 @@ export class NightStar extends GameObject {
     updateLogic(ev) {
 
         const WAVE_SPEED = 0.05;
-        const AMPLITUDE = 4;
+        const AMPLITUDE = 2;
+
+        this.spr.animate(0, 0, 3, this.spr.frame == 0 ? 30 : 8, ev.step);
 
         // This, my friend, is the correct way to do things
         this.pos.y = this.startPos.y + 
@@ -95,7 +97,7 @@ export class NightStar extends GameObject {
 
     playerCollision(pl, ev) {
 
-        if (!this.exist || !this.inCamera || pl.dying) return;
+        if (!this.exist || !this.inCamera || this.dying || pl.dying) return;
         
         if (this.overlayObject(pl)) {
 
@@ -108,6 +110,8 @@ export class NightStar extends GameObject {
 
     initialCheck(progress) {
 
+        if (!this.exist) return;
+        
         if (progress.hasStar(this.id)) {
 
             this.exist = false;

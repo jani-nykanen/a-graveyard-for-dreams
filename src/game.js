@@ -330,7 +330,8 @@ export class Game extends Scene {
             }
         }
 
-        if (this.progress.keys > 0 || this.progress.orbs > 0) {
+        if (this.progress.keys > 0 || this.progress.orbs > 0 ||
+            this.progress.stars > 0) {
 
             c.fillRect(0, c.height-10, c.width, 10);
         }
@@ -342,7 +343,19 @@ export class Game extends Scene {
                 SIDE_OFFSET, c.height-9, 
                 1, 0, false);
         }
-        if (this.progress.orbs > 0) {
+
+        if (this.progress.stars > 0) {
+
+            str = this.genItemString(this.progress.stars, 9);
+            c.drawText(bmp, str, 
+                c.width - str.length*8 -SIDE_OFFSET -1, c.height-9, 
+                1, 0, false);
+        }
+        // This should not happen at the same time, anyway, but
+        // in the case of a bug it is more important to draw the
+        // stars (since when the player can collect them he or she
+        // should not have orbs in the first place)
+        else if (this.progress.orbs > 0) {
             
             str = this.genItemString(this.progress.orbs, 8);
             c.drawText(bmp, str, 

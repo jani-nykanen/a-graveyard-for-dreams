@@ -62,6 +62,9 @@ export class GameProgress {
 
         this.openedDoors = (new Array(16)).fill(false);
 
+        this.collectedStars = (new Array(16)).fill(false);
+        this.stars = 0;
+
         // Approximated size, might need to increase later
         this.boughtItems = (new Array(5*2)).fill(false);
 
@@ -87,10 +90,11 @@ export class GameProgress {
         this.nightOrbActivated = obj["nightOrbActivated"];
         this.isNight = obj["isNight"];
 
-        this.gems = obj["gems"];
-        this.coins = obj["coins"];
-        this.keys = obj["keys"];
-        this.orbs = obj["orbs"];
+        this.gems = Number(obj["gems"]);
+        this.coins = Number(obj["coins"]);
+        this.keys = Number(obj["keys"]);
+        this.orbs = Number(obj["orbs"]);
+        this.stars = Number(obj["stars"]);
 
         if (obj["openedChests"] != undefined) {
 
@@ -110,6 +114,9 @@ export class GameProgress {
 
         if (obj["visitedRooms"] != undefined)
             this.visitedRooms = Array.from(obj["visitedRooms"]);
+
+        if (obj["collectedStars"] != undefined)
+            this.collectedStars = Array.from(obj["collectedStars"]);   
     }
 
 
@@ -256,4 +263,18 @@ export class GameProgress {
 
         return this.visitedRooms[y * this.roomCountX + x];
     }
+
+
+    markStarCollected(id) {
+
+        this.collectedStars[id] = true;
+        ++ this.stars;
+    }
+
+
+    hasStar(id) {
+
+        return this.collectedStars[id];
+    }
+
 }

@@ -54,7 +54,7 @@ export class Bullet extends CollisionObject {
         this.exist = true;
 
         // Lazy way
-        this.disableCollisions = [2, 3].includes(row);
+        this.disableCollisions = [2, 3, 5].includes(row);
         
     }
 

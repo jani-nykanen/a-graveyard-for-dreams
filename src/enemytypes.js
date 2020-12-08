@@ -2171,7 +2171,8 @@ export class Flame extends WaveEnemy {
 
 	specialInit(x, y) {
 
-		this.horizontalWave = (1 + Math.sin(x + y)) * Math.PI;
+		this.horizontalWave = Math.sin(x * y) * Math.PI;
+		this.waveTimer = Math.PI * (x % 2);
 
 		this.disableCollisions = true;
 	}
@@ -2207,5 +2208,23 @@ export class Flame extends WaveEnemy {
 			this.horizontalWave = Math.PI * 2 - this.horizontalWave;
 		}
 		this.speed.x *= -1;
+	}
+
+
+	deathEvent(ev) {
+
+		const BULLET_SPEED = 2.0;
+
+		let angle = 0;
+
+		for (let i = 0; i < 4; ++ i) {
+
+			angle = Math.PI/4 + i * Math.PI/2;
+
+			this.bulletCb(this.pos.x, this.pos.y + this.center.y,
+					Math.cos(angle) * BULLET_SPEED,
+					Math.sin(angle) * BULLET_SPEED,
+					5, false, 4);
+		}
 	}
 }

@@ -243,6 +243,18 @@ export class Boomerang extends CollisionObject {
             ++ this.hitId;
     }
 
+
+    floorCollisionEvent(x, y, w, ev) {
+
+        this.directionChanged = true;
+    }
+
+
+    ceilingCollisionEvent(x, y, w, ev) {
+
+        this.directionChanged = true;
+    }
+
     
     breakCollision(x, y, w, h, ev) {
 

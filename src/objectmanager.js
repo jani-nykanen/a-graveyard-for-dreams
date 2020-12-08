@@ -13,6 +13,7 @@ import { Door } from "./door.js";
 import { Flame, getEnemyType } from "./enemytypes.js";
 import { FlyingText } from "./flyingtext.js";
 import { NightOrb } from "./nightorb.js";
+import { NightStar } from "./nightstar.js";
 import { NPC } from "./npc.js";
 import { Player } from "./player.js";
 import { Portal } from "./portal.js";
@@ -32,6 +33,7 @@ export class ObjectManager {
         this.collectibles = new Array();
         this.bullets = new Array();
         this.interactableObjects = new Array();
+        this.stars = new Array();
 
         this.progress = progress;
         this.shop = shop;
@@ -151,6 +153,13 @@ export class ObjectManager {
                     this.interactableObjects.push(nightOrb = new NightOrb(x*16, y*16+4, this.progress, resetCb));
                     break;
 
+                // Star
+                case 45:
+
+                    if (this.progress.isNight)
+                        this.stars.push(new NightStar(x*16 + 8, y*16 + 8, id));
+                    break;
+
                 default:
                     break;
                 }
@@ -210,6 +219,7 @@ export class ObjectManager {
         this.collectibles = new Array();
         this.bullets = new Array();
         this.interactableObjects = new Array();
+        this.stars = new Array();
 
         stage.parseObjects(this, portalCb, resetCb);
         if (!doNotGoToCheckpoint)
@@ -270,6 +280,13 @@ export class ObjectManager {
             o.playerCollision(message, this.player, cam, ev);
         }
 
+        for (let o of this.stars) {
+
+            o.checkIfInCamera(cam);
+            o.update(ev);
+            o.playerCollision(this.player, ev);
+        }
+
         for (let b of this.bullets) {
 
             b.checkIfInCamera(cam);
@@ -292,6 +309,11 @@ export class ObjectManager {
 
 
     draw(c, cam) {
+
+        for (let o of this.stars) {
+
+            o.draw(c, cam);
+        }
 
         for (let o of this.interactableObjects) {
 
@@ -411,6 +433,12 @@ export class ObjectManager {
 
                 o.initialCheck(this.player.progress);
             }
+        }
+
+        for (let o of this.stars) {
+
+            o.checkIfInCamera(cam);
+            o.initialCheck(this.player.progress);
         }
     }
 

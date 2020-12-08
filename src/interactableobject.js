@@ -26,6 +26,8 @@ export class InteractableObject {
         this.noActivationSound = false;
 
         this.hitbox = new Vector2(16, 16);
+
+        this.exist = true;
     }
 
 
@@ -84,7 +86,7 @@ export class InteractableObject {
 
     draw(c, cam) {
 
-        if (!this.inCamera) return;
+        if (!this.inCamera || !this.exist) return;
 
         let dx = cam.screenCountX * cam.width;
         let start = 0;

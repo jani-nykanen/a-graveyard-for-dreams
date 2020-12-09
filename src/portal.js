@@ -15,7 +15,7 @@ import { ItemType } from "./progress.js";
 export class Portal extends InteractableObject {
 
 
-    constructor(x, y, id, cb) {
+    constructor(x, y, id, cb, progress) {
 
         super(x, y);
 
@@ -29,6 +29,15 @@ export class Portal extends InteractableObject {
         this.noActivationSound = true;
 
         this.cb = cb;
+
+        this.progress = progress;
+        this.starCount = 0;
+    }
+
+
+    setStarCount(count) {
+
+        this.starCount = count;
     }
 
 
@@ -56,6 +65,16 @@ export class Portal extends InteractableObject {
         this.spr.draw(c, c.bitmaps["portal"],
             this.pos.x-16, this.pos.y-20,
             Flip.None);
+
+        // Draw star count
+        let str = "";
+        if (this.id == 1) {
+
+            str = String.fromCharCode(26) + String.fromCharCode(27) +
+                  String(this.progress.stars) + 
+                  "/" + String(this.starCount);
+            c.drawText(c.bitmaps["font"], str, this.pos.x - 4, this.pos.y - 28, -1, 0, true); 
+        }
     }
 
 

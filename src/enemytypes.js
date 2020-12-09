@@ -2156,8 +2156,8 @@ export class Flame extends WaveEnemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 21, 1, 4, 16.0 + (x % 8), 
-			0.025 + (0.0025) * (y % 4), 
+		super(x, y, 21, 1, 4, 16.0 + ( ((x / 16) | 0) % 8), 
+			0.025 + (0.0025) * (((y / 16) | 0) % 4), 
 			0.0);
 
 		this.friction.x = 0.005;
@@ -2171,8 +2171,8 @@ export class Flame extends WaveEnemy {
 
 	specialInit(x, y) {
 
-		this.horizontalWave = Math.sin(x * y) * Math.PI;
-		this.waveTimer = Math.PI * (x % 2);
+		this.horizontalWave = Math.sin( (x * y) / 256 ) * Math.PI;
+		this.waveTimer = Math.PI * ( ((x / 16) | 0) % 2);
 
 		this.disableCollisions = true;
 	}

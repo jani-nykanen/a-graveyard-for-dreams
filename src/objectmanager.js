@@ -70,6 +70,7 @@ export class ObjectManager {
         let id;
 
         let orbCount = 0;
+        let starCount = 0;
         let nightOrb = null;
 
         let isNight = this.progress.isNight;
@@ -93,7 +94,7 @@ export class ObjectManager {
                 // Player
                 case 42:
                     
-                    this.interactableObjects.push(new Portal(x*16+8, y*16-4, 1, portalCb));
+                    this.interactableObjects.push(new Portal(x*16+8, y*16-4, 1, portalCb, this.progress));
                 case 0:
 
                     this.player = new Player(x*16+8, y*16+8, this.progress, this.message);
@@ -139,7 +140,7 @@ export class ObjectManager {
                 // Portal
                 case 41:
 
-                    this.interactableObjects.push(new Portal(x*16+8, y*16-4, id, portalCb));
+                    this.interactableObjects.push(new Portal(x*16+8, y*16-4, id, portalCb, this.progress));
                     break;
 
                 // Special NPC
@@ -158,6 +159,7 @@ export class ObjectManager {
                 // Star
                 case 45:
 
+                    ++ starCount;
                     if (this.progress.isNight)
                         this.stars.push(new NightStar(x*16 + 8, y*16 + 8, id, bulletCb));
                     break;
@@ -195,6 +197,11 @@ export class ObjectManager {
             if (o.setOrbCount != undefined) {
 
                 o.setOrbCount(orbCount+1);
+            }
+
+            if (o.setStarCount != undefined) {
+
+                o.setStarCount(starCount);
             }
         }
 

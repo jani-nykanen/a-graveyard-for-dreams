@@ -20,7 +20,7 @@ import { Shop } from "./shop.js";
 import { GameMap } from "./gamemap.js";
 
 
-export const MAIN_THEME_VOLUME = 0.40;
+export const MAIN_THEME_VOLUME = 0.25;
 
 
 export class Game extends Scene {
@@ -134,24 +134,17 @@ export class Game extends Scene {
 
     portalCallback(ev) {
 
-        if (this.isIntro) {
+        ev.audio.stopMusic();
 
-            ev.audio.stopMusic();
+        this.isIntro = !this.isIntro;
+        this.progress.isIntro = this.isIntro;
 
-            this.isIntro = false;
-            this.stage = new Stage(ev.assets, false);
-            this.cam = new Camera(0, 0, 160, 144,
-                (this.stage.width/ROOM_WIDTH) | 0,
-                (this.stage.height/ROOM_HEIGHT) | 0,
-                true);    
-            this.reset(ev, true);
-
-            this.progress.isIntro = false;
-        }
-        else {
-
-            // ... ?
-        }
+        this.stage = new Stage(ev.assets, this.isIntro);
+        this.cam = new Camera(0, 0, 160, 144,
+            (this.stage.width/ROOM_WIDTH) | 0,
+            (this.stage.height/ROOM_HEIGHT) | 0,
+            true);    
+        this.reset(ev, true);
     }
 
 

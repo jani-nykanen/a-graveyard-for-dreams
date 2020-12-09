@@ -812,7 +812,8 @@ export class Stage {
             }
         }
 
-        o.ceilingCollision(-256, CLOUD_TOP, 512 + this.width*16, ev, true);
+        if (!this.isIntro)
+            o.ceilingCollision(-256, CLOUD_TOP, 512 + this.width*16, ev, true);
     }
 
 

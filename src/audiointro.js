@@ -24,7 +24,7 @@ export class AudioIntro extends Scene {
                     loc["yes"], (ev) => {
 
                         ev.audio.toggle(true);
-                        ev.audio.setGlobalSampleVolume(0.60);   
+                        ev.audio.setGlobalSampleVolume(0.40);   
 
                         ev.changeScene(TitleScreen);
                         

@@ -32,6 +32,10 @@ export class Portal extends InteractableObject {
 
         this.progress = progress;
         this.starCount = 0;
+
+        this.initialCheck(progress);
+        if (this.open)
+            this.spr.frame = 1;
     }
 
 
@@ -44,6 +48,8 @@ export class Portal extends InteractableObject {
     update(ev) {
 
         const ANIM_SPEED = 6;
+
+        this.initialCheck(this.progress);
 
         this.deactivated = !this.open;
 
@@ -73,14 +79,16 @@ export class Portal extends InteractableObject {
             str = String.fromCharCode(26) + String.fromCharCode(27) +
                   String(this.progress.stars) + 
                   "/" + String(this.starCount);
-            c.drawText(c.bitmaps["font"], str, this.pos.x - 4, this.pos.y - 28, -1, 0, true); 
+            c.drawText(c.bitmaps["font"], str, 
+                this.pos.x - 4, this.pos.y - 30, 
+                -1, 0, true); 
         }
     }
 
 
     playerEvent(pl, ev) {
 
-        this.open = this.id == 0 && pl.progress.hasItem(ItemType.Clothes);
+        // ...
     }
 
     
@@ -104,7 +112,8 @@ export class Portal extends InteractableObject {
 
     initialCheck(progress) {
 
-        // this.open = ???
+        this.open = (this.id == 0 && progress.hasItem(ItemType.Clothes)) ||
+            (this.id == 1 && progress.isNight && progress.stars >= this.starCount);
     }
 
 }

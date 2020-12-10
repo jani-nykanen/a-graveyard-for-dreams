@@ -44,7 +44,7 @@ export const ItemType = {
 export class GameProgress {
 
 
-    constructor(roomCountX, roomCountY) {
+    constructor() {
 
         this.maxHealth = 6;
         this.health = this.maxHealth;
@@ -70,15 +70,23 @@ export class GameProgress {
 
         this.obtainedItems = (new Array(32)).fill(false);
 
-        this.visitedRooms = (new Array(roomCountX * roomCountY)).fill(false),
-        this.roomCountX = roomCountX;
-        this.roomCountY = roomCountY;
+        this.visitedRooms = new Array();
+        this.roomCountX = 0;
+        this.roomCountY = 0;
 
-        // Only needed for the map
-        this.isIntro = false;
-    
+        this.isIntro = true;
         this.nightOrbActivated = false;
         this.isNight = false;
+
+        this.isInFinalRoom = false;
+    }
+
+
+    setRoomCount(roomCountX, roomCountY) {
+
+        this.visitedRooms = (new Array(roomCountX * roomCountY)).fill(false);
+        this.roomCountX = roomCountX;
+        this.roomCountY = roomCountY;
     }
 
 
@@ -87,8 +95,9 @@ export class GameProgress {
         this.maxHealth = obj["maxHealth"];
         this.health = obj["health"];
 
-        this.nightOrbActivated = obj["nightOrbActivated"];
-        this.isNight = obj["isNight"];
+        this.nightOrbActivated = Boolean(obj["nightOrbActivated"]);
+        this.isNight = Boolean(obj["isNight"]);
+        this.isIntro = Boolean(obj["isIntro"]);
 
         this.gems = Number(obj["gems"]) | 0;
         this.coins = Number(obj["coins"]) | 0;
@@ -127,6 +136,8 @@ export class GameProgress {
 
             this.health = Math.min(this.maxHealth, 12);
         }
+    
+        this.isInFinalRoom = false;
     }
 
 

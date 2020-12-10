@@ -2156,12 +2156,12 @@ export class Flame extends WaveEnemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 21, 1, 4, 16.0 + ( ((x / 16) | 0) % 8), 
+		super(x, y, 21, 4, 4, 16.0 + ( ((x / 16) | 0) % 8), 
 			0.025 + (0.0025) * (((y / 16) | 0) % 4), 
 			0.0);
 
 		this.friction.x = 0.005;
-		this.mass = 0.5;
+		this.mass = 0.35;
 
 		this.horizontalWave = 0.0;
 

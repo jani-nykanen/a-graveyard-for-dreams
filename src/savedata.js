@@ -27,6 +27,7 @@ let copyProgress = (progress) => {
         "isNight": progress.isNight,
         "collectedStars": progress.collectedStars,
         "stars": progress.stars,
+        "isIntro": progress.isIntro,
     };
 };
 

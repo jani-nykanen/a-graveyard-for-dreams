@@ -36,24 +36,22 @@ export class Game extends Scene {
             loadedData = loadData();        
         }
 
-        this.isIntro = param !== true;
+        this.progress = new GameProgress();
+        if (loadedData != null) {
+
+            loadedData.applyProgress(this.progress);
+        }
+
+        // TODO: Unneeded variable, remove
+        this.isIntro = this.progress.isIntro;
 
         this.stage = new Stage(ev.assets, this.isIntro);
         this.cam = new Camera(0, 0, 160, 144,
             (this.stage.width/ROOM_WIDTH) | 0,
             (this.stage.height/ROOM_HEIGHT) | 0,
             true);
+        this.progress.setRoomCount(this.cam.screenCountX, this.cam.screenCountY);
 
-        this.progress = new GameProgress(
-            this.cam.screenCountX, 
-            this.cam.screenCountY);
-
-        if (loadedData != null) {
-
-            loadedData.applyProgress(this.progress);
-        }
-
-        this.progress.isIntro = this.isIntro;
         this.message = new MessageBox(ev);
         this.shop = new Shop(this.progress, this.message, ev);
        
@@ -134,7 +132,7 @@ export class Game extends Scene {
 
     portalCallback(ev) {
 
-        ev.audio.stopMusic();
+        // ev.audio.stopMusic();
 
         this.isIntro = !this.isIntro;
         this.progress.isIntro = this.isIntro;
@@ -337,7 +335,7 @@ export class Game extends Scene {
                 1, 0, false);
         }
 
-        if (this.progress.stars > 0) {
+        if (!this.isIntro && this.progress.stars > 0) {
 
             str = this.genItemString(this.progress.stars, 9);
             c.drawText(bmp, str, 
@@ -368,11 +366,11 @@ export class Game extends Scene {
         if (!this.paused)
             c.applyShake();
 
-        this.stage.draw(c, this.cam, this.progress.isNight);
+        this.stage.draw(c, this.cam, this.progress.isNight && !this.progress.isIntro);
         this.objects.draw(c, this.cam);
 
         this.cam.use(c);
-        this.stage.postDraw(c, this.cam);
+        this.stage.postDraw(c, this.cam, this.progress.isInFinalRoom);
 
         c.moveTo(0, 0);
 

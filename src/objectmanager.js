@@ -97,7 +97,8 @@ export class ObjectManager {
                     this.interactableObjects.push(new Portal(x*16+8, y*16-4, 1, portalCb, this.progress));
                 case 0:
 
-                    this.player = new Player(x*16+8, y*16+8, this.progress, this.message);
+                    if (tid != 0 || !this.progress.isNight)
+                        this.player = new Player(x*16+8, y*16+8, this.progress, this.message);
                     break;
 
                 // Savepoint
@@ -141,6 +142,12 @@ export class ObjectManager {
                 case 41:
 
                     this.interactableObjects.push(new Portal(x*16+8, y*16-4, id, portalCb, this.progress));
+
+                    if (id == 0 && this.progress.isNight) {
+
+                        this.player = new Player(x*16+8, y*16+8, this.progress, this.message);
+                    }
+
                     break;
 
                 // Special NPC

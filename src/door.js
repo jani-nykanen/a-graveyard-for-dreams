@@ -107,6 +107,11 @@ export class Door extends InteractableObject {
             pl.moveTo(p, cam);
             pl.setDoorPose(true);
 
+            if (pl.progress.isIntro) {
+
+                pl.progress.isInFinalRoom = true;
+            }
+
             ev.tr.setCenter(pl.pos.x % 160, pl.pos.y % 144);
 
         }, null, new RGB(0, 0, 0));
@@ -122,6 +127,20 @@ export class Door extends InteractableObject {
 
 
     initialCheck(progress) {
+
+        if (progress.isIntro) {
+
+            if (this.inside) {
+
+                this.disabled = true;
+                this.deactivated = true;
+                return;
+            }
+
+            this.opened = true;
+            this.open = true;
+            return;
+        }
 
         this.open = progress.isDoorOpened(this.id);
         this.opened = this.open;

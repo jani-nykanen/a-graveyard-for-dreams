@@ -94,6 +94,8 @@ export class Portal extends InteractableObject {
     
     triggerEvent(message, pl, cam, ev) {
 
+        ev.audio.stopMusic();
+
         ev.tr.activate(true, TransitionType.CircleOutside, 1.0/60.0, 
         (ev) => {
 

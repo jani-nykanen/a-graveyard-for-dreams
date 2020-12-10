@@ -486,7 +486,7 @@ export class Stage {
     }
 
 
-    postDraw(c, cam) {
+    postDraw(c, cam, disableAsh) {
 
         const CLOUD_Y = -8;
 
@@ -494,7 +494,9 @@ export class Stage {
 
         if (this.isIntro) {
 
-            this.drawAsh(c, cam);
+            if (!disableAsh)
+                this.drawAsh(c, cam);
+                
             return;
         }
 

@@ -1017,8 +1017,8 @@ export class Player extends CollisionObject {
 
         const MINUS_MARGIN = 8;
 
-        // ...this looks a bit... ugly?
-        if (!this.overlay(x+MINUS_MARGIN/2, y, w-MINUS_MARGIN, h)) {
+        if (this.downAttack ||
+            !this.overlay(x+MINUS_MARGIN/2, y, w-MINUS_MARGIN, h)) {
             
             return false;
         }

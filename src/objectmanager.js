@@ -188,7 +188,7 @@ export class ObjectManager {
                         }
                     }
                     this.enemies[index] = new (
-                        (this.progress.isNight ? Flame : getEnemyType(tid-1))
+                        (this.progress.isNight && !this.progress.isIntro ? Flame : getEnemyType(tid-1))
                             .prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
                     this.enemies[index].setBulletCallback(bulletCb);
@@ -304,10 +304,12 @@ export class ObjectManager {
         for (let b of this.bullets) {
 
             b.checkIfInCamera(cam);
-            b.update(ev);
-            stage.objectCollision(b, this, ev);
+            if (!cam.moving) {
 
-            b.playerCollision(this.player, ev);
+                b.update(ev);
+                stage.objectCollision(b, this, ev);
+                b.playerCollision(this.player, ev);
+            }
         }
 
         for (let c of this.collectibles) {

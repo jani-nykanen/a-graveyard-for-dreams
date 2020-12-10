@@ -21,6 +21,7 @@ export function getEnemyType(index) {
 		Plant, Block, ManEater,
 		Spook, Imp, Bomb,
 		SlimeDrop, Undying, Crystal,
+		Flame, NightmareOrb,
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -2226,5 +2227,127 @@ export class Flame extends WaveEnemy {
 					Math.sin(angle) * BULLET_SPEED,
 					5, false, 4);
 		}
+	}
+}
+
+
+const ORB_SHOOT_TIME = 120;
+
+
+export class NightmareOrb extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 22, 6, 4);
+		
+		this.friction.x = 0.0125;
+		this.friction.y = 0.0125;
+		
+		this.collisionBox = new Vector2(6, 6);
+        // this.hitbox = new Vector2(8, 8);
+
+		this.mass = 0.66;
+
+		this.angleDif = 0.0;
+		this.moveDir = new Vector2(0, 0);
+		this.shootDir = new Vector2(0, 0);
+
+		this.shootTimer = 0;
+
+		this.takeExtraCollisions = true;
+
+		this.bounceX = 1;
+		this.bounceY = 1;
+	}
+
+	
+	init(x, y) {
+
+		this.disableCollisions = true;
+
+		this.angleDif = ((x + y) % 360) * Math.PI / 180.0;
+
+		this.shootTimer = ORB_SHOOT_TIME -
+			(((x / 16) | 0) % 2) * ORB_SHOOT_TIME / 2;
+	}
+	
+
+	shoot(ev) {
+
+		const SHOT_SPEED = 1.0;
+		const ANGLE_DIF = Math.PI/6.0;
+		const KNOCKBACK = -0.75;
+
+		let angle = 0;
+		let baseAngle = Math.atan2(this.shootDir.y, this.shootDir.x);
+		for (let i = -1; i <= 1; ++ i) {
+
+			angle = baseAngle + ANGLE_DIF * i;
+
+			this.bulletCb(
+				this.pos.x, this.pos.y, 
+				Math.cos(angle) * SHOT_SPEED,
+				Math.sin(angle) * SHOT_SPEED, 
+				7, false, 3);
+		}
+
+		this.speed.x = this.shootDir.x * KNOCKBACK;
+		this.speed.y = this.shootDir.y * KNOCKBACK;
+
+		// Sound effect
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+
+		this.spr.setFrame(1, this.spr.row);
+	}
+	
+	
+	updateAI(ev) {
+
+		const MOVE_SPEED = 1.0;
+		const ANGLE_DIF_SPEED = 0.015;
+
+		this.target.x = this.moveDir.x * MOVE_SPEED;
+		this.target.y = this.moveDir.y * MOVE_SPEED;
+
+		this.angleDif = (this.angleDif + ANGLE_DIF_SPEED * ev.step) % 
+			(Math.PI * 2);
+
+		if ( (this.shootTimer -= ev.step) <= 0) {
+
+			this.shoot(ev);
+			this.shootTimer += ORB_SHOOT_TIME;
+		}
+	}
+	
+	
+	animate(ev) {
+		
+		const ANIM_SPEED = 5;
+
+		if (this.spr.frame > 0) {
+
+			this.spr.animate(this.spr.row, 0, 5, ANIM_SPEED, ev.step);
+		}
+	}
+
+
+	playerEvent(pl, ev) {
+
+		const ORBIT_RADIUS = 64.0;
+
+		let px = pl.pos.x + Math.cos(this.angleDif) * ORBIT_RADIUS;
+		let py = pl.pos.y + Math.sin(this.angleDif) * ORBIT_RADIUS;
+
+		this.moveDir = (new Vector2(
+				px - this.pos.x, 
+				py - this.pos.y))
+			.normalize(true);
+
+		this.shootDir = (new Vector2(
+				pl.pos.x - this.pos.x, 
+				pl.pos.y - this.pos.y))
+			.normalize(true);
+		
 	}
 }

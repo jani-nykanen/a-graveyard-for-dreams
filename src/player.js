@@ -515,25 +515,26 @@ export class Player extends CollisionObject {
             return;
         }
 
+
+        let attackRow = this.progress.hasItem(ItemType.GoldenSword) ? 9 : 4;
+
         // Down attack
         if (this.downAttack) {
 
-            this.swordSpr.setFrame(3, 4);
+            this.swordSpr.setFrame(3, attackRow);
             this.spr.setFrame(1, 4);
             return;
         }
-
-        let attackFrame = this.progress.hasItem(ItemType.GoldenSword) ? 9 : 4;
 
         // Attacking, obviously
         if (this.attackTimer > 0) {
 
             this.spr.setFrame(0, 4);
             if (this.specialAttack)
-                this.swordSpr.animate(attackFrame, 7, 8,
+                this.swordSpr.animate(attackRow, 7, 8,
                      SWORD_SPC_SPEED, ev.step);
             else
-                this.swordSpr.setFrame(2, attackFrame);
+                this.swordSpr.setFrame(2, attackRow);
 
             return;
         }

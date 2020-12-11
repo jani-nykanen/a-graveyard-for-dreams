@@ -90,6 +90,7 @@
 
         {"name": "theme1",  "path": "theme1.ogg"},
         {"name": "theme2",  "path": "theme2.ogg"},
+        {"name": "finalboss",  "path": "finalboss.ogg"},
         {"name": "intro",  "path": "intro.ogg"}
     ],
 

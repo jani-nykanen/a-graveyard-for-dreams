@@ -402,7 +402,7 @@ export class ObjectManager {
 
         let healthProb = 0.25 * (1.0 - this.player.progress.getHealthRatio());
 
-        let id = Math.random() < healthProb ? 1 : 0;
+        let id = this.progress.isIntro || Math.random() < healthProb ? 1 : 0;
         if (id != 0) {
 
             minAmount = 1;

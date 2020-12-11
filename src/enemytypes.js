@@ -21,7 +21,7 @@ export function getEnemyType(index) {
 		Plant, Block, ManEater,
 		Spook, Imp, Bomb,
 		SlimeDrop, Undying, Crystal,
-		Flame, NightmareOrb,
+		Flame, NightmareOrb, Zombie
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];
@@ -2157,7 +2157,7 @@ export class Flame extends WaveEnemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 21, 4, 4, 16.0 + ( ((x / 16) | 0) % 8), 
+		super(x, y, 21, 1, 4, 16.0 + ( ((x / 16) | 0) % 8), 
 			0.025 + (0.0025) * (((y / 16) | 0) % 4), 
 			0.0);
 
@@ -2350,4 +2350,120 @@ export class NightmareOrb extends Enemy {
 			.normalize(true);
 		
 	}
+}
+
+
+const ZOMBIE_BASE_SPEED = 0.25;
+
+
+export class Zombie extends Enemy {
+	
+	
+	constructor(x, y) {
+		
+		super(x, y, 23, 6, 4);
+		
+		this.friction.x = 0.025;
+		
+		this.oldCanJump = true;
+		
+		this.center.y = 2;
+		this.collisionBox = new Vector2(4, 12);
+        // this.hitbox = new Vector2(8, 8);
+        this.renderOffset.y = 1;
+
+		this.mass = 0.5;
+		
+		this.appearing = true;
+	}
+	
+	
+	init(x, y) {
+		
+		this.dir = -1;
+		this.flip = Flip.None;
+		
+		this.target.x = 0.0; // ZOMBIE_BASE_SPEED;
+		this.speed.x = this.target.x;
+
+		this.appearing = true;
+
+		this.spr.frame = 4;
+	}
+	
+	
+	updateAI(ev) {
+		
+		const BASE_GRAVITY = 2.0;
+
+		if (this.appearing) return;
+
+		this.target.x = ZOMBIE_BASE_SPEED * this.dir;
+		this.target.y = BASE_GRAVITY;
+
+        // If going to move off the ledge, change direction
+        // (unless hurt, then fall, to make it look like the
+        // player attack sent you flying!)
+        if (this.oldCanJump && !this.canJump &&
+            this.hurtTimer <= 0) {
+			
+			this.dir *= -1;
+			this.speed.x *= -1;
+			this.target.x *= -1;
+			
+			this.pos.x += this.speed.x * ev.step;
+		}
+		
+        this.oldCanJump = this.canJump;
+	}
+	
+	
+	animate(ev) {
+		
+		const WALK_ANIM_SPEED = 10.0;
+		const APPEAR_SPEED = 7.0;
+
+		if (this.appearing) {
+
+			this.spr.animate(this.spr.row, 4, 9, APPEAR_SPEED, ev.step);
+			if (this.spr.frame == 9) {
+
+				this.appearing = false;
+			}
+			else {
+
+				return;
+			}
+		}
+
+		this.flip = this.dir > 0 ? Flip.Horizontal : Flip.None;
+		
+		if (this.canJump) {
+			
+			this.spr.animate(this.spr.row, 0, 3, WALK_ANIM_SPEED, ev.step);
+		}
+	}
+	
+	
+	wallCollisionEvent(x, y, h, dir, ev) {
+		
+		this.speed.x *= -1;
+		this.target.x *= -1;
+		
+		this.dir *= -1;
+	}
+
+
+	enemyCollisionEvent(e) {
+
+		if ((this.speed.x > 0 && e.pos.x > this.pos.x) ||
+			(this.speed.x < 0 && e.pos.x < this.pos.x )) {
+
+			this.target.x *= -1;
+			this.speed.x *= -1;
+
+			this.dir *= -1;
+		}
+	}
+
 }

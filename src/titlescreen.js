@@ -32,12 +32,16 @@ export class TitleScreen extends Scene {
                 new MenuButton(
                     this.loc["newgame"], (ev) => {
 
+                        ev.audio.stopMusic();
+
                         this.load = false;
                         this.gotoGame(ev);
                         
                     }, false),
                 new MenuButton(
                     this.loc["continue"], (ev) => {
+
+                        ev.audio.stopMusic();
 
                         let exist = false;
                         try {
@@ -68,6 +72,8 @@ export class TitleScreen extends Scene {
         this.load = false;
     
         this.message = new MessageBox(ev);
+
+        ev.audio.playMusic(ev.assets.samples["titleScreen"], 0.20);
     }
 
 

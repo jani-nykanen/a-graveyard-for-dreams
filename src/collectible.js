@@ -8,6 +8,7 @@ import { Sprite } from "./core/sprite.js";
 import { Vector2 } from "./core/vector.js";
 import { CollisionObject } from "./collisionobject.js";
 import { Flip } from "./core/canvas.js";
+import { ItemType } from "./progress.js";
 
 
 export class Collectible extends CollisionObject {
@@ -124,7 +125,15 @@ export class Collectible extends CollisionObject {
 
         if (!this.exist) return false;
 
+        let count = 1;
+
         if (pl.overlayObject(this)) {
+
+            if (this.id == 1 &&
+                pl.progress.hasItem(ItemType.Pills)) {
+
+                count = 2;
+            }
 
             pl.addCollectible(this.id);
             this.exist = false;
@@ -132,7 +141,7 @@ export class Collectible extends CollisionObject {
             // Sound effect
             ev.audio.playSample(ev.assets.samples[["coin", "heal"][this.id]], 0.60);
 
-            objm.spawnItemText(1, this.id, pl.pos.x, 
+            objm.spawnItemText(count, this.id, pl.pos.x, 
                 pl.pos.y + pl.center.y - pl.spr.height/2);
 
             return true;

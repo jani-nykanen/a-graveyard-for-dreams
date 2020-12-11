@@ -4,11 +4,9 @@
  * (c) 2020 Jani Nykänen
  */
 
-import { Flip } from "./core/canvas.js";
 import { Sprite } from "./core/sprite.js";
 import { TransitionType } from "./core/transition.js";
-import { RGB, Vector2 } from "./core/vector.js";
-import { MAIN_THEME_VOLUME } from "./game.js";
+import { Vector2 } from "./core/vector.js";
 import { InteractableObject } from "./interactableobject.js";
 
 

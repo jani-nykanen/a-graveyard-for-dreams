@@ -162,7 +162,48 @@
         "If you want to\ngo back, you\nneed to find\na way to\nactivate that\nportal."],
 
         ["See that orb?\nWe call it\nthe night orb.",
-         "If you can\nactivate it,\nyou probably\ncould bring the\nnight back."]
+         "If you can\nactivate it,\nyou probably\ncould bring the\nnight back."],
+
+        ["Who are we,\nyou ask? That\nis... a good\nquestion.",
+         "Are we dreams\nor are we\njust dead?\nMaybe both."   
+        ],
+
+        ["Every living\ncreature has\na world of\ndreams of\ntheir own.",
+         "I guess they\nalso have a\npersonal grave-\nyard for dead\ndreams, too."],
+
+        ["There used to\nbe a flying\npalace in\nthe sky.",
+         "I wonder what\nhappened to\nit."],
+
+        ["The nightmare\nthat got loose?\nWe call it\nThe Eye.",
+        "No on knows\nwhere The Eye\ncame from,\nthough."],
+
+        ["Are you dead\nor just\ndreaming, we\ndon't know.",
+         "Maybe this is\nnot even your\nown dream."],
+
+        ["You can die\nin your own\ndream as many\ntimes as you\nwant.",
+         "Normally you\nwould wake up,\nbut now you\njust... respawn.",
+        "Whatever that\nmeans..."],
+
+        ["What happens\nif you kill\nThe Eye? Does\nthe dream end?",
+        "But... why\nwould it end?"],
+
+        ["I don't have\nanything to\nsay."],
+
+        ["Time does not\nreally exist\nhere.",
+        "For that reason\nthere is\nhardly any\nnarrative."],
+
+        ["The flying\npalace was\nsupposed to\nbe gone for\ngood.",
+        "They lied\nto use. I\nthink."],
+
+        ["See those dark\nclouds? The world\ncannot loop\nvertically, so\nthey put some\nclouds there."],
+
+        ["They say you\ncan find stars\nif you bring\nthe night back."],
+
+        ["This guy next\nto me? I think\nhe is - was -\na robot.",
+        "There are a lot\nof dead robots\nlying around."],
+
+        ["There was\nsupposed to\nbe a secret\ntreasure here.",
+        "But there was\nno treasure left."]
     ],
 
     "specialNPC": [

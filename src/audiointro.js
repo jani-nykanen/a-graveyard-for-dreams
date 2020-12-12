@@ -17,6 +17,7 @@ export class AudioIntro extends Scene {
 
         super(ev, param);
 
+        let startScene = TitleScreen; // Intro
         let loc = ev.assets.localization["en"];
 
         this.menu = new Menu(12, true,
@@ -27,14 +28,14 @@ export class AudioIntro extends Scene {
                         ev.audio.toggle(true);
                         ev.audio.setGlobalSampleVolume(0.40);   
 
-                        ev.changeScene(Intro);
+                        ev.changeScene(startScene);
                         
                     }, false),
                 new MenuButton(
                     loc["no"], (ev) => {
 
                         ev.audio.toggle(false);
-                        ev.changeScene(Intro);
+                        ev.changeScene(startScene);
                     }, true)
             ]);
 

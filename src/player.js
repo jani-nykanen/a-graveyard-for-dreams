@@ -1362,6 +1362,7 @@ export class Player extends CollisionObject {
         this.spr.setFrame(inside ? 1 : 2, 8);
     
         this.hurtTimer = 0;
+        this.knockBackTimer = 0;
     }
 
 

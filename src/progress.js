@@ -126,6 +126,9 @@ export class GameProgress {
 
         if (obj["collectedStars"] != undefined)
             this.collectedStars = Array.from(obj["collectedStars"]);   
+
+        this.stars = 15;
+        this.collectedStars[7] = false;
     }
 
 

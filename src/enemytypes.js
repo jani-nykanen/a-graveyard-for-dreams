@@ -9,6 +9,7 @@ import { Flip } from "./core/canvas.js";
 import { clamp } from "./core/util.js";
 import { Vector2 } from "./core/vector.js";
 import { Enemy } from "./enemy.js";
+import { FinalBoss } from "./finalboss.js";
 
 
 export function getEnemyType(index) {
@@ -21,7 +22,8 @@ export function getEnemyType(index) {
 		Plant, Block, ManEater,
 		Spook, Imp, Bomb,
 		SlimeDrop, Undying, Crystal,
-		Flame, NightmareOrb, Zombie
+		Flame, NightmareOrb, Zombie,
+		FinalBoss
 	];
     
     return TYPES[clamp(index, 0, TYPES.length-1) | 0];

@@ -138,7 +138,7 @@
 
     "mapHeader": "Dream Map",
     "map": "Show Map",
-    "noMap" : ["You do not\nhave a map\nyet!"],
+    "noMap" : ["You do not\nhave a map\nof this area."],
 
     "storyIntro": [
         "When dreams die,\nthey are buried\nin an unnamed\ngraveyard beyond\nthe world of\ndreams.",

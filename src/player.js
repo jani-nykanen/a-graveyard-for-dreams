@@ -12,8 +12,6 @@ import { State } from "./core/input.js";
 import { Boomerang } from "./boomerang.js";
 import { overlay } from "./core/util.js";
 import { ItemType } from "./progress.js";
-import { ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
-
 
 const ATTACK_TIME = 16;
 // TODO: Make sure the number below is sufficient
@@ -105,17 +103,12 @@ export class Player extends CollisionObject {
         this.forceWaitTimer = 0.0;
 
         this.skipFrame = false;
-
-        this.markRoomVisited();
     }
 
 
-    markRoomVisited() {
+    markRoomVisited(x, y) {
 
-        let x = (((this.pos.x / 16) | 0) / ROOM_WIDTH) | 0;
-        let y = (((this.pos.y / 16) | 0) / ROOM_HEIGHT) | 0;
-
-        this.progress.markRoomVisited(x, y);
+        this.progress.markRoomVisited(x | 0, y | 0);
     }
 
 
@@ -1119,21 +1112,32 @@ export class Player extends CollisionObject {
         }
         else {
 
-            if (this.knockBackTimer <= 0 &&
-                !this.disableCollisions) {
+            // Not the best idea to call this every frame,
+            // but for some reason the other option did not work
+            // properly
+            this.markRoomVisited(cam.pos.x, cam.pos.y);
 
-                if (this.speed.x > 0 &&
-                    this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)
-                    mx = 1;
-                else if (this.speed.x < 0 &&
-                    this.pos.x+this.center.x-this.hitbox.x/2 < cx)
-                    mx = -1;
-                else if (this.speed.y > 0 &&
-                    this.pos.y+this.center.y+MARGIN_Y/2 > cy+cam.height)
-                    my = 1;
-                else if (this.speed.y < 0 &&
-                    this.pos.y+this.center.y-MARGIN_Y/2 < cy)
-                    my = -1;
+            if (!this.disableCollisions) {
+
+                if (this.knockBackTimer <= 0) {
+
+                    if (this.speed.x > 0 &&
+                        this.pos.x+this.center.x+this.hitbox.x/2 > cx+cam.width)
+                        mx = 1;
+                    else if (this.speed.x < 0 &&
+                        this.pos.x+this.center.x-this.hitbox.x/2 < cx)
+                        mx = -1;
+                }
+                
+                if (mx == 0) {
+
+                    if (this.speed.y > 0 &&
+                        this.pos.y+this.center.y+MARGIN_Y/2 > cy+cam.height)
+                        my = 1;
+                    else if (this.speed.y < 0 &&
+                        this.pos.y+this.center.y-MARGIN_Y/2 < cy)
+                        my = -1;
+                }
 
                 if (mx != 0 || my != 0) {
 
@@ -1142,12 +1146,11 @@ export class Player extends CollisionObject {
                         // Loop
                         this.pos.x += dir * cam.width * cam.screenCountX;
                     }
-
-                    this.markRoomVisited();
                 }
 
             }
-            else  {
+            
+            if (this.knockBackTimer > 0)  {
 
                 this.wallCollision(cam.rpos.x * cam.width, 
                     cam.rpos.y * cam.height, cam.height, -1, ev);

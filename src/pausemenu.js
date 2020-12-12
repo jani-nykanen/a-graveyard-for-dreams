@@ -57,7 +57,8 @@ export class PauseMenu {
         this.active = true;
         this.menu.activate(0);
 
-        this.menu.toggleButton(2, progress.hasItem(ItemType.DreamMap));
+        this.menu.toggleButton(2, 
+            !progress.isIntro && progress.hasItem(ItemType.DreamMap));
     }
 
 

@@ -180,7 +180,8 @@ export class Game extends Scene {
 
         let loc = ev.assets.localization["en"];
 
-        if (this.progress.hasItem(ItemType.DreamMap)) {
+        if (!this.progress.isIntro &&
+            this.progress.hasItem(ItemType.DreamMap)) {
 
             this.gameMap.activate(this.stage.generateMapData(), 
                 this.objects.player.pos, this.cam, this.progress,

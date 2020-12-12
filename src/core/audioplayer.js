@@ -34,6 +34,12 @@ export class AudioPlayer {
 
     playMusic(sample, vol) {
 
+        this.fadeInMusic(sample, vol, null);
+    }
+
+
+    fadeInMusic(sample, vol, fadeTime) {
+
         if (!this.enabled) return;
 
         if (this.musicTrack != null) {
@@ -42,7 +48,8 @@ export class AudioPlayer {
             this.musicTrack = null;
         }
 
-        sample.play(this.ctx, this.globalMusicVol*vol, true, 0);
+        let v = this.globalMusicVol*vol;
+        sample.fadeIn(this.ctx, fadeTime == null ? v : 0.01, v, true, 0, fadeTime);
         this.musicTrack = sample;
     }
 

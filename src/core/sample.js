@@ -27,6 +27,13 @@ export class AudioSample {
 
     play(ctx, vol, loop, startTime) {
 
+        this.fadeIn(ctx, vol, vol, loop, startTime);
+    }
+
+
+    fadeIn(ctx, initial, end, loop, startTime, fadeTime) {
+
+
         if (this.activeBuffer != null) {
 
             this.activeBuffer.disconnect();
@@ -37,16 +44,31 @@ export class AudioSample {
         bufferSource.buffer = this.data;
         bufferSource.loop = Boolean(loop);
 
-        vol = clamp(vol, 0.0, 1.0);
-        this.gain.gain.value = vol;
+        initial = clamp(initial, 0.0, 1.0);
+        end = clamp(end, 0.0, 1.0);
+
+        // Not sure if these have any difference
+        if (fadeTime != null) {
+
+            this.gain.gain.setValueAtTime(initial, startTime);
+        }
+        else {
+
+            this.gain.gain.value = initial;
+        }
 
         this.startTime = ctx.currentTime - startTime;
         this.pauseTime = 0;
-        this.playVol = vol;
+        this.playVol = initial;
         this.loop = loop;
 
         bufferSource.connect(this.gain).connect(ctx.destination);
         bufferSource.start(0, startTime);
+
+        if (fadeTime != null) {
+
+            this.gain.gain.exponentialRampToValueAtTime(end, startTime + fadeTime/1000.0);
+        }
 
         this.activeBuffer = bufferSource;
     }

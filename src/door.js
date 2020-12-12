@@ -68,7 +68,7 @@ export class Door extends InteractableObject {
     triggerEvent(message, pl, cam, ev) {
 
         const WAIT_TIME = 32;
-        const FINAL_THEME_VOLUME = 0.35;
+        const FINAL_THEME_VOLUME = 0.30;
 
         let loc = ev.assets.localization["en"];
 
@@ -116,8 +116,8 @@ export class Door extends InteractableObject {
             if (pl.progress.isIntro) {
 
                 pl.progress.isInFinalRoom = true;
-                
-                ev.audio.playMusic(ev.assets.samples["finalboss"], FINAL_THEME_VOLUME);
+
+                ev.audio.fadeInMusic(ev.assets.samples["finalboss"], FINAL_THEME_VOLUME, 2000);
             }
 
             ev.tr.setCenter(pl.pos.x % 160, pl.pos.y % 144);

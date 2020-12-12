@@ -73,7 +73,7 @@ export class TitleScreen extends Scene {
     
         this.message = new MessageBox(ev);
 
-        ev.audio.playMusic(ev.assets.samples["titleScreen"], 0.20);
+        ev.audio.fadeInMusic(ev.assets.samples["titleScreen"], 0.20, 2000);
     }
 
 

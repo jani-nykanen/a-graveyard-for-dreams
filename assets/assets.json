@@ -7,6 +7,9 @@
         {"name": "fontGray",  "path": "font_gray.png"},
         {"name": "spcfont",  "path": "spcfont.png"},
 
+        {"name": "creator",  "path": "creator.png"},
+        {"name": "musicBy",  "path": "musicby.png"},
+
         {"name": "logo",  "path": "logo.png"},
         {"name": "titlebg",  "path": "titlebg.png"},
 

@@ -7,6 +7,7 @@
 import { Menu, MenuButton } from "./menu.js";
 import { Scene } from "./core/scene.js";
 import { TitleScreen } from "./titlescreen.js";
+import { Intro } from "./intro.js";
 
 
 export class AudioIntro extends Scene {
@@ -26,14 +27,14 @@ export class AudioIntro extends Scene {
                         ev.audio.toggle(true);
                         ev.audio.setGlobalSampleVolume(0.40);   
 
-                        ev.changeScene(TitleScreen);
+                        ev.changeScene(Intro);
                         
                     }, false),
                 new MenuButton(
                     loc["no"], (ev) => {
 
                         ev.audio.toggle(false);
-                        ev.changeScene(TitleScreen);
+                        ev.changeScene(Intro);
                     }, true)
             ]);
 

@@ -122,7 +122,7 @@ export class ObjectManager {
                 // NPC
                 case 37:
 
-                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, id, isNight));
+                    this.interactableObjects.push(new NPC(x*16+8, y*16+8, id, isNight && !this.progress.isIntro));
                     break;
 
                 // Door

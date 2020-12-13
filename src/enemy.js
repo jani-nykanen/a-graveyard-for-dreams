@@ -51,6 +51,7 @@ export class Enemy extends CollisionObject {
 		this.isStatic = false;
 		this.invincible = false;
 		this.harmless = false;
+		this.friendly = false;
 
 		this.takeExtraCollisions = false;
 		this.ignoreEnemyCollisions = false;
@@ -160,7 +161,8 @@ export class Enemy extends CollisionObject {
 	
 	playerCollision(pl, objm, ev) {
 		
-        if (!this.exist || this.dying || !this.inCamera ||
+		if (!this.exist || this.dying || !this.inCamera ||
+			this.friendly ||
             this.deactivated) 
 			return false;
 	

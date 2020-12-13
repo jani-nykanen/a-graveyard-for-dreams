@@ -17,6 +17,7 @@ const DISAPPEAR_TIME = 180;
 
 
 const AttackMode = {
+    None: -1,
     Other: 0,
     Shoot: 1,
 };
@@ -45,10 +46,13 @@ export class FinalBoss extends Enemy {
 
         // Mode: what move category to perform
         // Type: what specific move to perform
-        this.attackMode = 0;
+        this.attackMode = AttackMode.None;
         this.attackType = 0;
 
         this.targetPos = new Vector2();
+
+        this.friction.x = 0.01;
+        this.friction.y = 0.01;
 
         this.healthBarValue = 1.0;
     }
@@ -86,6 +90,11 @@ export class FinalBoss extends Enemy {
         this.attackType = Math.floor(Math.random() * 3);
 
         this.spr.row = this.attackMode == AttackMode.Shoot ? 1 : 2;
+
+        // Reset friction to default
+        this.friction.x = 0.01;
+        this.friction.y = 0.01;
+        this.isStatic = true;
     }
 
 
@@ -172,6 +181,29 @@ export class FinalBoss extends Enemy {
     }
 
 
+    rush(ev) {
+
+        const RUSH_SPEED = 1.5;
+
+        let dir = (new Vector2(this.targetPos.x - this.pos.x, 
+                        this.targetPos.y - this.pos.y))
+                    .normalize();
+
+        this.speed.x = dir.x * RUSH_SPEED;
+        this.speed.y = dir.y * RUSH_SPEED;
+
+        this.friction.x = 0.005;
+        this.friction.y = 0.005;
+        this.isStatic = false;
+    }
+
+
+    otherAttack(ev) {
+
+        this.rush(ev);
+    }
+
+
     updateAI(ev) {
 
         const HEALTH_BAR_SPEED = 0.005;
@@ -182,6 +214,8 @@ export class FinalBoss extends Enemy {
         if (this.disappearing || this.appearing) return;
 
         if ((this.disappearTimer -= ev.step) <= 0) {
+
+            this.stopMovement();
 
             this.disappearing = true;
             this.spr.row = this.spr.frame == 0 ? 1 : 2;
@@ -221,6 +255,12 @@ export class FinalBoss extends Enemy {
 
                 this.appearing = false;
                 this.spr.setFrame(this.spr.row == 1 ? 0 : 3, 0);
+
+                if (this.attackMode == AttackMode.Other) {
+
+                    this.otherAttack(ev);
+                }
+
                 return;
             }
         }
@@ -296,7 +336,7 @@ export class FinalBoss extends Enemy {
                 c.setColor(255, 85, 0);
                 c.fillRect(x, y, w, 1);
 
-                if (this.health > 0 && this.health < this.maxHealth) {
+                if (this.healthBarValue > 0 && this.healthBarValue < 1.0) {
 
                     c.setColor(0, 0, 0);
                     c.fillRect(x + w, y, 1, HEIGHT);

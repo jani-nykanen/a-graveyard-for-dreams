@@ -12,7 +12,7 @@ import { Vector2 } from "./core/vector.js";
 import { Enemy } from "./enemy.js";
 
 
-const BOSS_HEALTH = 100;
+const BOSS_HEALTH = 64;
 const DISAPPEAR_TIME = 180;
 
 
@@ -32,7 +32,7 @@ export class FinalBoss extends Enemy {
 
         this.spr = new Sprite(64, 32); 
         this.hitbox = new Vector2(32, 16);
-        this.collisionBox = new Vector2(48, 16);
+        this.collisionBox = new Vector2(56, 30);
 
         this.appearing = true;
         this.disappearing = false;
@@ -53,8 +53,14 @@ export class FinalBoss extends Enemy {
 
         this.friction.x = 0.01;
         this.friction.y = 0.01;
+        this.mass = 0.5;
 
         this.healthBarValue = 1.0;
+
+        this.causeQuake = false;
+        this.following = false;
+
+        this.initialSoundPlayed = false;
     }
 
 
@@ -95,6 +101,20 @@ export class FinalBoss extends Enemy {
         this.friction.x = 0.01;
         this.friction.y = 0.01;
         this.isStatic = true;
+        this.following = false;
+
+        if (this.attackMode == AttackMode.Other) {
+
+            switch(this.attackType) {
+
+            case 1:
+                this.pos.y = this.spr.height/2;
+                break;
+
+            default:
+                break;
+            }
+        }
     }
 
 
@@ -116,7 +136,7 @@ export class FinalBoss extends Enemy {
 		}
 
 		// Sound effect
-		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.60);
     }
 
 
@@ -140,7 +160,7 @@ export class FinalBoss extends Enemy {
 		}
 
 		// Sound effect
-		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.60);
     }
 
 
@@ -169,7 +189,7 @@ export class FinalBoss extends Enemy {
 		}
 
 		// Sound effect
-		ev.audio.playSample(ev.assets.samples["snowball"], 0.50);
+		ev.audio.playSample(ev.assets.samples["snowball"], 0.60);
     }
 
 
@@ -198,15 +218,66 @@ export class FinalBoss extends Enemy {
     }
 
 
+    stomp(ev) {
+
+        const GRAVITY = 6.0;
+        const SPEED = 0.5;
+
+        this.speed.x = Math.sign(this.targetPos.x - this.pos.x) * SPEED;
+
+        // this.target.x = this.speed.x;
+        this.target.y = GRAVITY;
+        
+        this.friction.y = 0.10;
+        this.friction.x = 0;
+
+        this.isStatic = false;
+    }
+
+
+    startFollowing(ev) {
+
+        this.following = true;
+
+        this.friction.x = 0.02;
+        this.friction.y = 0.02;
+
+        this.isStatic = false;
+    }
+
+
+    follow(ev) {
+
+        const FOLLOW_TARGET_SPEED = 1.5;
+
+        let dir = (new Vector2(this.targetPos.x - this.pos.x, 
+            this.targetPos.y - this.pos.y))
+            .normalize();
+
+        this.target.x = dir.x * FOLLOW_TARGET_SPEED;
+        this.target.y = dir.y * FOLLOW_TARGET_SPEED;
+    }
+
+
     otherAttack(ev) {
 
-        this.rush(ev);
+        ([ev => this.rush(ev),
+         ev => this.stomp(ev),
+         ev => this.startFollowing(ev)] [this.attackType]) (ev);
     }
 
 
     updateAI(ev) {
 
         const HEALTH_BAR_SPEED = 0.005;
+
+        if (!this.initialSoundPlayed) {
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["appear"], 0.60);
+
+            this.initialSoundPlayed = true;
+        }
 
         this.invincible = this.appearing || this.disappearing;
         this.friendly = this.invincible;
@@ -219,6 +290,13 @@ export class FinalBoss extends Enemy {
 
             this.disappearing = true;
             this.spr.row = this.spr.frame == 0 ? 1 : 2;
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["disappear"], 0.60);
+        }
+        else if (this.following) {
+
+            this.follow(ev);
         }
 
         let targetValue = this.health / this.maxHealth;
@@ -228,6 +306,7 @@ export class FinalBoss extends Enemy {
             if (this.healthBarValue < targetValue)
                 this.healthBarValue = targetValue;
         }
+        
     }
 
 
@@ -245,6 +324,10 @@ export class FinalBoss extends Enemy {
             if (this.spr.frame == -2) {
 
                 this.reappear(ev);
+
+                // Sound effect
+                ev.audio.playSample(ev.assets.samples["appear"], 0.60);
+
                 return;
             }
         }
@@ -282,6 +365,12 @@ export class FinalBoss extends Enemy {
 
 
     draw(c, cam) {
+
+        if (this.causeQuake) {
+
+            c.shake(60, 2, 2);
+            this.causeQuake = false;
+        }
 
         if (this.spr.frame < 0 ||
             (this.hurtTimer > 0 && Math.floor(this.hurtTimer/4) % 2 == 0)) return;
@@ -351,4 +440,16 @@ export class FinalBoss extends Enemy {
         this.targetPos = pl.pos.clone();
     }
 
+
+    floorCollisionEvent(x, y, w, ev) {
+
+        if (this.attackType == 1 && 
+            this.attackMode == AttackMode.Other) {
+
+			// Sound effect
+            ev.audio.playSample(ev.assets.samples["quake"], 0.40);
+            
+            this.causeQuake = true;
+        }
+    }
 }

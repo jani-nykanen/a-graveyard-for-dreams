@@ -374,11 +374,10 @@ export class Game extends Scene {
         this.stage.postDraw(c, this.cam, this.progress.isInFinalRoom);
 
         c.moveTo(0, 0);
-
-        // TEMP
-        // c.drawText(c.bitmaps["fontGray"], "Test Map", 2, c.height-10, 0, 0, false);
-
         this.drawHUD(c, false);
+        
+        c.moveTo(0, 0);
+        this.objects.postDraw(c);
 
         if (this.message.active) {
 

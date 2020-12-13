@@ -40,8 +40,8 @@ export class FinalBoss extends Enemy {
         this.bounceX = 1;
         this.bounceY = 1;
 
-        this.cornerX = Math.floor(x / ROOM_WIDTH) * ROOM_WIDTH;
-        this.cornerY = Math.floor(y / ROOM_HEIGHT) * ROOM_HEIGHT;
+        this.cornerX = Math.floor(x / (ROOM_WIDTH*16)) * ROOM_WIDTH * 16;
+        this.cornerY = Math.floor(y / (ROOM_HEIGHT*16)) * ROOM_HEIGHT * 16;
 
         // Mode: what move category to perform
         // Type: what specific move to perform
@@ -49,6 +49,8 @@ export class FinalBoss extends Enemy {
         this.attackType = 0;
 
         this.targetPos = new Vector2();
+
+        this.healthBarValue = 1.0;
     }
 
 
@@ -60,13 +62,15 @@ export class FinalBoss extends Enemy {
         this.disappearing = false;
 
         this.disappearTimer = DISAPPEAR_TIME;
+
+        this.isStatic = true;
     }
 
 
     reappear(ev) {
 
-        let width = ROOM_WIDTH - this.spr.width;
-        let height = ROOM_HEIGHT - 26 - this.spr.height;
+        let width = (ROOM_WIDTH*16) - this.spr.width;
+        let height = (ROOM_HEIGHT*16) - 26 - this.spr.height;
 
         let x = this.cornerX + this.spr.width/2 + ((Math.random() * width) | 0);
         let y = this.cornerY + 10 + this.spr.height/2 + ((Math.random() * height) | 0);
@@ -88,7 +92,7 @@ export class FinalBoss extends Enemy {
     shootType1(ev) {
 
         const COUNT = 8;
-        const SHOT_SPEED = 0.5;
+        const SHOT_SPEED = 0.75;
 
 		let angle = 0;
 		for (let i = 0; i < COUNT; ++ i) {
@@ -170,9 +174,10 @@ export class FinalBoss extends Enemy {
 
     updateAI(ev) {
 
-        this.isStatic = this.appearing || this.disappearing;
-        this.invincible = this.isStatic;
-        this.friendly = this.isStatic;
+        const HEALTH_BAR_SPEED = 0.005;
+
+        this.invincible = this.appearing || this.disappearing;
+        this.friendly = this.invincible;
 
         if (this.disappearing || this.appearing) return;
 
@@ -180,6 +185,14 @@ export class FinalBoss extends Enemy {
 
             this.disappearing = true;
             this.spr.row = this.spr.frame == 0 ? 1 : 2;
+        }
+
+        let targetValue = this.health / this.maxHealth;
+        if (this.healthBarValue > targetValue) {
+
+            this.healthBarValue -= HEALTH_BAR_SPEED * ev.step;
+            if (this.healthBarValue < targetValue)
+                this.healthBarValue = targetValue;
         }
     }
 
@@ -243,7 +256,53 @@ export class FinalBoss extends Enemy {
 
     postDraw(c) {
 
-        // TODO: Draw health bar
+        const WIDTH = 64;
+        const HEIGHT = 3;
+        const Y_OFF = 7;
+
+        if (!this.inCamera || !this.exist) return;
+
+        let t = this.healthBarValue;
+        let w = Math.round(WIDTH * t);
+
+        let x = c.width/2 - WIDTH/2;
+        let y = c.height - Y_OFF;
+
+        for (let i = 2; i >= 0; -- i) {
+
+            // Because Closure compiler has problems
+            // with ...[] syntax
+            switch(i) {
+            case 2:
+                c.setColor(255, 255, 255);
+                break;
+            case 1:
+                c.setColor(0, 0, 0);
+                break;
+            case 0:
+                c.setColor(85, 85, 85);
+                break;
+            default: 
+                break;
+            }
+            
+            c.fillRect(x-i, y-i, WIDTH + i*2, HEIGHT+i*2);
+
+            if (i == 0) {
+
+                c.setColor(170, 0, 0);
+                c.fillRect(x, y, w, HEIGHT);
+
+                c.setColor(255, 85, 0);
+                c.fillRect(x, y, w, 1);
+
+                if (this.health > 0 && this.health < this.maxHealth) {
+
+                    c.setColor(0, 0, 0);
+                    c.fillRect(x + w, y, 1, HEIGHT);
+                }
+            }
+        }
     }
 
 

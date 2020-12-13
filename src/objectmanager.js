@@ -360,6 +360,24 @@ export class ObjectManager {
     }
 
 
+    // We only need this to draw the health bar for
+    // the final boss. Waste of cycles or something,
+    // no?
+    postDraw(c) {
+
+        if (this.progress.isIntro && this.progress.isNight) {
+
+            for (let e of this.enemies) {
+
+                if (e.postDraw != undefined) {
+
+                    e.postDraw(c);
+                }
+            }
+        }
+    }
+
+
     spawnDamageText(dmg, x, y) {
 
         const DEFAULT_SPEED = 1;

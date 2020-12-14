@@ -61,6 +61,8 @@ export class FinalBoss extends Enemy {
         this.following = false;
 
         this.initialSoundPlayed = false;
+
+        this.speedMod = 1.0;
     }
 
 
@@ -130,8 +132,8 @@ export class FinalBoss extends Enemy {
 
 			this.bulletCb(
 				this.pos.x, this.pos.y, 
-				Math.cos(angle) * SHOT_SPEED,
-				Math.sin(angle) * SHOT_SPEED, 
+				Math.cos(angle) * SHOT_SPEED * this.speedMod,
+				Math.sin(angle) * SHOT_SPEED * this.speedMod, 
 				3, false, 3);
 		}
 
@@ -154,8 +156,8 @@ export class FinalBoss extends Enemy {
 
 			this.bulletCb(
 				this.pos.x, this.pos.y, 
-				-Math.cos(angle) * SPEED_X,
-				Math.sin(angle) * SPEED_Y, 
+				-Math.cos(angle) * SPEED_X * this.speedMod,
+				Math.sin(angle) * SPEED_Y * this.speedMod, 
 				5, true, 3);
 		}
 
@@ -179,7 +181,7 @@ export class FinalBoss extends Enemy {
 		for (let i = -COUNT; i <= COUNT; ++ i) {
 
             angle = baseAngle + ANGLE_STEP * i;
-            speed = SHOT_SPEED[negMod(i, 2)];
+            speed = SHOT_SPEED[negMod(i, 2)] * this.speedMod;
 
 			this.bulletCb(
 				this.pos.x, this.pos.y, 
@@ -209,8 +211,8 @@ export class FinalBoss extends Enemy {
                         this.targetPos.y - this.pos.y))
                     .normalize();
 
-        this.speed.x = dir.x * RUSH_SPEED;
-        this.speed.y = dir.y * RUSH_SPEED;
+        this.speed.x = dir.x * RUSH_SPEED * this.speedMod;
+        this.speed.y = dir.y * RUSH_SPEED * this.speedMod;
 
         this.friction.x = 0.005;
         this.friction.y = 0.005;
@@ -220,15 +222,15 @@ export class FinalBoss extends Enemy {
 
     stomp(ev) {
 
-        const GRAVITY = 6.0;
-        const SPEED = 0.5;
+        const GRAVITY = 4.0;
+        const SPEED = 0.33;
 
-        this.speed.x = Math.sign(this.targetPos.x - this.pos.x) * SPEED;
+        this.speed.x = Math.sign(this.targetPos.x - this.pos.x) * SPEED * this.speedMod;
 
         // this.target.x = this.speed.x;
-        this.target.y = GRAVITY;
+        this.target.y = GRAVITY * this.speedMod;
         
-        this.friction.y = 0.10;
+        this.friction.y = 0.125 * this.speedMod;
         this.friction.x = 0;
 
         this.isStatic = false;
@@ -239,8 +241,8 @@ export class FinalBoss extends Enemy {
 
         this.following = true;
 
-        this.friction.x = 0.02;
-        this.friction.y = 0.02;
+        this.friction.x = 0.02 * this.speedMod;
+        this.friction.y = 0.02 * this.speedMod;
 
         this.isStatic = false;
     }
@@ -254,8 +256,8 @@ export class FinalBoss extends Enemy {
             this.targetPos.y - this.pos.y))
             .normalize();
 
-        this.target.x = dir.x * FOLLOW_TARGET_SPEED;
-        this.target.y = dir.y * FOLLOW_TARGET_SPEED;
+        this.target.x = dir.x * FOLLOW_TARGET_SPEED * this.speedMod;
+        this.target.y = dir.y * FOLLOW_TARGET_SPEED * this.speedMod;
     }
 
 
@@ -271,6 +273,8 @@ export class FinalBoss extends Enemy {
 
         const HEALTH_BAR_SPEED = 0.005;
 
+        this.speedMod = 1.0 + 0.5 * (1.0 - this.health / this.maxHealth);
+
         if (!this.initialSoundPlayed) {
 
             // Sound effect
@@ -284,7 +288,7 @@ export class FinalBoss extends Enemy {
 
         if (this.disappearing || this.appearing) return;
 
-        if ((this.disappearTimer -= ev.step) <= 0) {
+        if ((this.disappearTimer -= this.speedMod * ev.step) <= 0) {
 
             this.stopMovement();
 

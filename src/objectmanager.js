@@ -61,6 +61,12 @@ export class ObjectManager {
     }
 
 
+    spawnFlame(x, y, sx, phase) {
+
+
+    }
+
+
     parseObjectLayer(data, w, h, portalCb, resetCb) {
 
         const MAX_ENEMY_INDEX = 31;

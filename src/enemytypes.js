@@ -2172,6 +2172,15 @@ export class Flame extends WaveEnemy {
 	}
 
 
+	respawn(x, y, sx) {
+
+		this.pos = new Vector2(x, y);
+		this.startPos = this.pos.clone();
+
+		this.horizontalWave = Math.sign(sx) * Math.PI;
+	}
+
+
 	specialInit(x, y) {
 
 		this.horizontalWave = Math.sin( (x * y) / 256 ) * Math.PI;

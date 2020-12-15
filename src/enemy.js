@@ -73,6 +73,9 @@ export class Enemy extends CollisionObject {
 		this.bulletCb = cb;
 	}
 
+
+	setFlameGeneratorCallback(cb) { }
+
 	
 	die(ev) {
 		

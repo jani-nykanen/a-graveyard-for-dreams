@@ -61,9 +61,31 @@ export class ObjectManager {
     }
 
 
-    spawnFlame(x, y, sx, phase) {
+    spawnFlame(x, y, sx) {
 
+        let index = -1;
+        for (let i = 0; i < this.enemies.length; ++ i) {
 
+            if (!this.enemies[i].exist) {
+
+                index = i;
+                break;
+            }
+        }
+
+        let o = new Flame(0, 0);
+        if (index == -1) {
+
+            this.enemies.push(o);
+        }
+        else {
+
+            this.enemies[index] = o;
+        }
+        o.setBulletCallback(
+            (x, y, sx, sy, row, takeGravity, dmg) => this.spawnBullet(x, y, sx, sy, row, takeGravity, dmg)
+        );
+        o.spawn(x, y, sx);
     }
 
 
@@ -198,6 +220,9 @@ export class ObjectManager {
                             .prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
                     this.enemies[index].setBulletCallback(bulletCb);
+                    this.enemies[index].setFlameGeneratorCallback(
+                        (x, y, sx) => this.spawnFlame(x, y, sx)
+                    );
                 }
             }
         }

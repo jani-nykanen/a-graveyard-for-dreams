@@ -2169,15 +2169,29 @@ export class Flame extends WaveEnemy {
 		this.horizontalWave = 0.0;
 
 		this.disableCollisions = true;
+		this.ignoreEnemyCollisions = true;
+
+		this.isSpecial = false;
 	}
 
 
-	respawn(x, y, sx) {
+	spawn(x, y, sx) {
 
 		this.pos = new Vector2(x, y);
+		this.oldPos = this.pos.clone();
 		this.startPos = this.pos.clone();
 
-		this.horizontalWave = Math.sign(sx) * Math.PI;
+		this.speed.x = sx;
+
+		this.horizontalWave = sx > 0 ? 0 : Math.PI;
+
+		this.exist = true;
+		this.dying = false;
+		this.inCamera = true;
+
+		this.specialInit(x, y);
+
+		this.spr.setFrame(0, this.spr.row);
 	}
 
 

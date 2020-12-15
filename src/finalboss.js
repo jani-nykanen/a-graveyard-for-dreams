@@ -23,6 +23,9 @@ const AttackMode = {
 };
 
 
+const FLAME_TIME = 600;
+
+
 export class FinalBoss extends Enemy {
 
 
@@ -63,6 +66,9 @@ export class FinalBoss extends Enemy {
         this.initialSoundPlayed = false;
 
         this.speedMod = 1.0;
+
+        this.flameCb = null;
+        this.flameTimer = FLAME_TIME;
     }
 
 
@@ -76,6 +82,12 @@ export class FinalBoss extends Enemy {
         this.disappearTimer = DISAPPEAR_TIME;
 
         this.isStatic = true;
+    }
+
+
+    setFlameGeneratorCallback(cb) { 
+
+        this.flameCb = cb;
     }
 
 
@@ -269,6 +281,22 @@ export class FinalBoss extends Enemy {
     }
 
 
+
+    spawnFlame() {
+
+        const BASE_SPEED = 1.0;
+
+        let dir = (this.targetPos.x > (this.cornerX + 80)) ? 1 : -1;
+
+        let x = this.cornerX + (dir > 0 ? -6 : 166);
+        let y = 32 + Math.floor(Math.random() * 96);
+
+        let sx = dir * BASE_SPEED;
+
+        this.flameCb(x, y, sx);
+    }
+
+
     updateAI(ev) {
 
         const HEALTH_BAR_SPEED = 0.005;
@@ -281,6 +309,12 @@ export class FinalBoss extends Enemy {
             ev.audio.playSample(ev.assets.samples["appear"], 0.60);
 
             this.initialSoundPlayed = true;
+        }
+
+        if ((this.flameTimer -= this.speedMod * ev.step) <= 0) {
+
+            this.flameTimer += FLAME_TIME;
+            this.spawnFlame();
         }
 
         this.invincible = this.appearing || this.disappearing;

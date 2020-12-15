@@ -68,7 +68,7 @@ export class Door extends InteractableObject {
     triggerEvent(message, pl, cam, ev) {
 
         const WAIT_TIME = 32;
-        const FINAL_THEME_VOLUME = 0.33;
+        const FINAL_THEME_VOLUME = 0.375;
 
         let loc = ev.assets.localization["en"];
 

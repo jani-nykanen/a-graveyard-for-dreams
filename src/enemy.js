@@ -123,6 +123,12 @@ export class Enemy extends CollisionObject {
 	kill(ev) {
 
 		this.deathEvent(ev);
+		this.softKill();
+	}
+
+
+
+	softKill() {
 
 		this.hurtTimer = 0;
 

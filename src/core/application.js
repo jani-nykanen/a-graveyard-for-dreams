@@ -21,6 +21,8 @@ export class Application {
         this.oldTime = 0;
         this.timeSum = 0;
 
+        this.waitTimer = 0;
+
         this.audio = new AudioPlayer();
         this.assets = new AssetPack(this.audio);
         this.canvas = new Canvas(canvasWidth, canvasHeight, 
@@ -41,6 +43,7 @@ export class Application {
 
             
             changeScene: scene => this.changeScene(scene),
+            wait: time => {this.waitTimer = time;}
         };
 
         this.activeScene = new Scene(this.ev, null);
@@ -112,8 +115,17 @@ export class Application {
             //if (firstFrame)
                 this.ev.input.preUpdate();
 
-            if (assetsLoaded) 
-                this.activeScene.refresh(this.ev);
+            if (assetsLoaded) {
+
+                if (this.waitTimer <= 0) {
+
+                    this.activeScene.refresh(this.ev);
+                }
+                else {
+
+                    this.waitTimer -= this.ev.step;
+                }
+            }
             
             //if (firstFrame)
                 this.ev.input.postUpdate();

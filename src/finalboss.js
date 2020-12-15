@@ -7,9 +7,11 @@
 import { ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
 import { Flip } from "./core/canvas.js";
 import { Sprite } from "./core/sprite.js";
+import { TransitionType } from "./core/transition.js";
 import { negMod } from "./core/util.js";
-import { Vector2 } from "./core/vector.js";
+import { RGB, Vector2 } from "./core/vector.js";
 import { Enemy } from "./enemy.js";
+import { TitleScreen } from "./titlescreen.js";
 
 
 const BOSS_HEALTH = 64;
@@ -36,6 +38,8 @@ export class FinalBoss extends Enemy {
         this.spr = new Sprite(64, 32); 
         this.hitbox = new Vector2(32, 16);
         this.collisionBox = new Vector2(56, 30);
+
+        this.isFinalBoss = true;
 
         this.appearing = true;
         this.disappearing = false;
@@ -67,8 +71,69 @@ export class FinalBoss extends Enemy {
 
         this.speedMod = 1.0;
 
-        this.flameCb = null;
+        this.flameCb = () => {};
         this.flameTimer = FLAME_TIME;
+
+        this.killEnemiesCb = () => {};
+        this.enemiesKilled = false;
+
+        this.starTimer = 0;
+        this.starCount = 0;
+
+        // TEMP
+        //this.health = 1;
+        //this.flameTimer = 0;
+    }
+
+
+    die(ev) {
+
+        const WAIT_TIME = 60;
+        const STAR_TARGET = 6;
+        const STAR_TIME = 30;
+
+        if (!this.enemiesKilled) {
+
+            ev.audio.stopMusic();
+
+            // Sound effect
+		    ev.audio.playSample(ev.assets.samples["error"], 0.70);
+
+            ev.wait(WAIT_TIME);
+            this.killEnemiesCb();
+            this.enemiesKilled = true;
+
+            return false;
+        }
+
+        if ((this.starTimer -= ev.step) <= 0) {
+
+            this.starTimer += STAR_TIME;
+            ++ this.starCount;
+
+            if (this.starCount < STAR_TARGET) {
+
+                this.causeQuake = true;
+                this.spawnStars(ev);
+            }
+        }
+
+        if (this.starCount >= STAR_TARGET) {
+
+            // Sound effect
+            ev.audio.playSample(ev.assets.samples["destroy"], 0.70);
+            
+            ev.tr.activate(true, TransitionType.CircleInside, 1.0/120.0,
+                (ev) => {
+                    
+                    ev.changeScene(TitleScreen); // TEMP
+
+                }, null, new RGB(255, 255, 255));
+
+            ev.tr.setCenter( (this.pos.x % 160) | 0, (this.pos.y % 144) | 0);
+        }
+
+        return false;
     }
 
 
@@ -88,6 +153,12 @@ export class FinalBoss extends Enemy {
     setFlameGeneratorCallback(cb) { 
 
         this.flameCb = cb;
+    }
+
+
+    setKillEnemiesCallback(cb) {
+
+        this.killEnemiesCb = cb;
     }
 
 
@@ -301,6 +372,14 @@ export class FinalBoss extends Enemy {
 
         const HEALTH_BAR_SPEED = 0.005;
 
+        let targetValue = this.health / this.maxHealth;
+        if (this.healthBarValue > targetValue) {
+
+            this.healthBarValue -= HEALTH_BAR_SPEED * ev.step;
+            if (this.healthBarValue < targetValue)
+                this.healthBarValue = targetValue;
+        }
+
         this.speedMod = 1.0 + 0.5 * (1.0 - this.health / this.maxHealth);
 
         if (!this.initialSoundPlayed) {
@@ -335,14 +414,6 @@ export class FinalBoss extends Enemy {
         else if (this.following) {
 
             this.follow(ev);
-        }
-
-        let targetValue = this.health / this.maxHealth;
-        if (this.healthBarValue > targetValue) {
-
-            this.healthBarValue -= HEALTH_BAR_SPEED * ev.step;
-            if (this.healthBarValue < targetValue)
-                this.healthBarValue = targetValue;
         }
         
     }
@@ -427,7 +498,7 @@ export class FinalBoss extends Enemy {
         const HEIGHT = 3;
         const Y_OFF = 7;
 
-        if (!this.inCamera || !this.exist) return;
+        if (!this.inCamera || !this.exist || this.dying) return;
 
         let t = this.healthBarValue;
         let w = Math.round(WIDTH * t);
@@ -489,5 +560,27 @@ export class FinalBoss extends Enemy {
             
             this.causeQuake = true;
         }
+    }
+
+
+    spawnStars(ev) {
+
+        const BULLET_SPEED = 2.0;
+        const COUNT = 8;
+
+		let angle = 0;
+
+		for (let i = 0; i < COUNT; ++ i) {
+
+			angle = Math.PI * 2 / COUNT * i;
+
+			this.bulletCb(this.pos.x, this.pos.y + this.center.y,
+					Math.cos(angle) * BULLET_SPEED,
+					Math.sin(angle) * BULLET_SPEED,
+					6, false, 0);
+        }
+        
+        // Sound effect
+        ev.audio.playSample(ev.assets.samples["hit"], 0.60);
     }
 }

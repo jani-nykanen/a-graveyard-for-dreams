@@ -89,6 +89,23 @@ export class ObjectManager {
     }
 
 
+    killEnemies() {
+
+        for (let e of this.enemies) {
+
+            if (e.exist && !e.dying && e.isFinalBoss == undefined) {
+
+                e.softKill();
+            }
+        }
+
+        for (let b of this.bullets) {
+
+            b.exist = false;
+        }
+    }
+
+
     parseObjectLayer(data, w, h, portalCb, resetCb) {
 
         const MAX_ENEMY_INDEX = 31;
@@ -220,9 +237,17 @@ export class ObjectManager {
                             .prototype.constructor) (x*16+8, y*16+8);
                     this.enemies[index].init(x*16+8, y*16+8);
                     this.enemies[index].setBulletCallback(bulletCb);
-                    this.enemies[index].setFlameGeneratorCallback(
-                        (x, y, sx) => this.spawnFlame(x, y, sx)
-                    );
+                    
+                    if (this.enemies[index].isFinalBoss != undefined) {
+
+                        this.enemies[index].setFlameGeneratorCallback(
+                            (x, y, sx) => this.spawnFlame(x, y, sx)
+                        );
+
+                        this.enemies[index].setKillEnemiesCallback(
+                            () => this.killEnemies()
+                        );
+                    }
                 }
             }
         }

@@ -16,6 +16,7 @@ export const TransitionType = {
     CircleOutside: 1,
     VerticalBar: 2,
     HorizontalWaves: 3,
+    CircleInside: 4,
 }
 
 
@@ -39,7 +40,7 @@ export class Transition {
         this.canvasCopy = document.createElement("canvas");
         this.canvasCopy.getContext("2d").imageSmoothingEnabled = false;
         
-        // Temp
+        // Temp(?)
         this.copyCanvas.width = 160;
         this.copyCanvas.height = 144;
         
@@ -175,6 +176,22 @@ export class Transition {
 
                 //c.fillRect(-r, y, 160, 1);
             }
+
+            break;
+
+        case TransitionType.CircleInside:
+
+            // TODO: Repeating code, oh noes
+            maxRadius = Math.max(
+                Math.hypot(cx, cy),
+                Math.hypot(c.width-cx, cy),
+                Math.hypot(c.width-cx, c.height-cy),
+                Math.hypot(cx, c.height-cy)
+            );
+            
+            r = t * maxRadius;
+            c.setColor(this.color.r, this.color.g, this.color.b, 1.0);
+            c.fillCircle(r, cx, cy);
 
             break;
 

@@ -156,7 +156,7 @@ export class Game extends Scene {
 
         ev.tr.activate(true, TransitionType.CircleOutside, 
             1.0/30.0, 
-            (ev) => this.reset(ev, false), 
+            (ev) => this.reset(ev, false), null,
             new RGB(0, 0, 0));
         this.objects.centerTransition(ev.tr);
     }

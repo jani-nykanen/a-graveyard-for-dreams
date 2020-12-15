@@ -291,6 +291,34 @@ export class Canvas {
     }
 
 
+    fillCircle(r, cx, cy) {
+
+        if (r <= 0) {
+
+            return;
+        }
+        else if (r*r >= this.width*this.width + this.height*this.height) {
+
+            this.fillRect(0, 0, this.width, this.height);
+            return;
+        }
+
+        let start = Math.max(0, cy - r) | 0;
+        let end = Math.min(this.height, cy + r) | 0;
+
+        // Draw the circle area line by line
+        let dy, w;
+        for (let y = start; y < end; ++ y) {
+
+            dy = y - cy;
+            
+            w = (Math.sqrt(r*r - dy*dy) | 0) * 2;
+
+            this.fillRect(cx-w/2, y, w, 1);
+        }
+    }
+
+
     moveTo(x, y) {
 
         this.translation = new Vector2(x, y);

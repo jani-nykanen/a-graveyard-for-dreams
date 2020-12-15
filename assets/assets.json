@@ -92,6 +92,8 @@
         {"name": "star",  "path": "star.wav"},
         {"name": "appear",  "path": "appear.wav"},
         {"name": "disappear",  "path": "disappear.wav"},
+        {"name": "error",  "path": "error.wav"},
+        {"name": "destroy",  "path": "destroy.wav"},
 
         {"name": "theme1",  "path": "theme1.ogg"},
         {"name": "theme2",  "path": "theme2.ogg"},

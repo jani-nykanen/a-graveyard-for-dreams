@@ -10,8 +10,8 @@ import { Sprite } from "./core/sprite.js";
 import { TransitionType } from "./core/transition.js";
 import { negMod } from "./core/util.js";
 import { RGB, Vector2 } from "./core/vector.js";
+import { Ending } from "./ending.js";
 import { Enemy } from "./enemy.js";
-import { TitleScreen } from "./titlescreen.js";
 
 
 const BOSS_HEALTH = 64;
@@ -81,8 +81,8 @@ export class FinalBoss extends Enemy {
         this.starCount = 0;
 
         // TEMP
-        //this.health = 1;
-        //this.flameTimer = 0;
+        // this.health = 1;
+        // this.flameTimer = 0;
     }
 
 
@@ -126,7 +126,8 @@ export class FinalBoss extends Enemy {
             ev.tr.activate(true, TransitionType.CircleInside, 1.0/120.0,
                 (ev) => {
                     
-                    ev.changeScene(TitleScreen); // TEMP
+                    ev.changeScene(Ending); 
+                    ev.tr.deactivate();
 
                 }, null, new RGB(255, 255, 255));
 

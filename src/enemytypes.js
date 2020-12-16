@@ -2250,7 +2250,7 @@ export class Flame extends WaveEnemy {
 			this.bulletCb(this.pos.x, this.pos.y + this.center.y,
 					Math.cos(angle) * BULLET_SPEED,
 					Math.sin(angle) * BULLET_SPEED,
-					5, false, 4);
+					5, false, 3);
 		}
 	}
 }
@@ -2264,7 +2264,7 @@ export class NightmareOrb extends Enemy {
 	
 	constructor(x, y) {
 		
-		super(x, y, 22, 6, 4);
+		super(x, y, 22, 6, 3);
 		
 		this.friction.x = 0.0125;
 		this.friction.y = 0.0125;
@@ -2314,7 +2314,7 @@ export class NightmareOrb extends Enemy {
 				this.pos.x, this.pos.y, 
 				Math.cos(angle) * SHOT_SPEED,
 				Math.sin(angle) * SHOT_SPEED, 
-				7, false, 3);
+				7, false, 2);
 		}
 
 		this.speed.x = this.shootDir.x * KNOCKBACK;

@@ -54,19 +54,19 @@
         "a\nMAGNIFICENT\nSWORD OF GREAT\nAWESOMENESS!"
     ],
     "itemDesc": [
-        ["It's old and\ndangerous,\njust like you!", "Press X or (X)\nto attack!"],
-        ["They have tiny\nsprings, letting\nyou jump higher."],
-        ["Press C or (B) to\nthrow it. It\nwill come back.\nEventually."],
+        ["Press X or (X)\nto attack!"],
+        ["Now you can\njump higher."],
+        ["Press C or (B) to\nthrow it."],
         ["Now you can\nswim in deep\nwater."],
 
-        ["It lets you\nbreathe under-\nwater. Somehow."],
+        ["It lets you\nbreathe under-\nwater."],
         ["Now you can\nslide by holding\nthe down button\nand pressing the\njump button."],
-        ["Hold down and\npress the attack\nbutton while\non air to\nperform it."],
-        ["It makes you\nfeel powerful.", "Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nrelease it."],
+        ["Hold down the\ndown button (heh)\nand press the\nattack button\non air to\nperform it."],
+        ["Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nrelease it."],
 
-        ["They are so\nsticky you\ncan do a wall\njump!"],
-        ["They are too tiny\nfor flying, but\nyou can flap\nyour arms by\nholding the\njump button."],
-        ["Don't ask how,\nbut with the\nbeans you can\ndo a double jump."],
+        ["You can perform\na wall jump\nnow."],
+        ["Now you can flap\nyour arms by\nholding the\njump button to\nmimic flying."],
+        ["Now you can\nperform a\ndouble jump."],
         ["It sets your\nboomerang on\nfire, making it\nmelt ice blocks\nand go through\nenemies."],
 
         ["When you die,\na bigger portion\nof your health\nis restored."],
@@ -75,9 +75,9 @@
         ["Now it only\nfeels like you\nwere wearing\nnothing at all."],
 
         ["It automatically\ncharts the\nrooms you have\nvisited.", "Press L.Shift or\neither shoulder\nbutton to open\nit."],
-        ["Now you can\nrun a bit\nfaster. Gotta\ngo fa... no."],
+        ["Now you can\nrun a bit\nfaster."],
         ["It reduces the\ndamage you take."],
-        ["They taste weird.\nAll the hearts\nyou collect will\nheal you more."],
+        ["nAll the hearts\nyou collect will\nheal you more."],
 
         ["It shows all the\ntreasure you\nhave not yet\nfound in the\nmap."],
         ["A test item.\nIt cannot\npossess any\nreal value,\nright?"],

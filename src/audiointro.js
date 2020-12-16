@@ -6,7 +6,6 @@
 
 import { Menu, MenuButton } from "./menu.js";
 import { Scene } from "./core/scene.js";
-import { TitleScreen } from "./titlescreen.js";
 import { Intro } from "./intro.js";
 
 
@@ -17,7 +16,7 @@ export class AudioIntro extends Scene {
 
         super(ev, param);
 
-        let startScene = TitleScreen; // Intro
+        let startScene = Intro;
         let loc = ev.assets.localization["en"];
 
         this.menu = new Menu(12, true,

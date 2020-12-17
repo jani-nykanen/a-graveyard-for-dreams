@@ -32,6 +32,17 @@ export class SpecialNPC extends InteractableObject {
         this.progress = progress;
 
         this.itemWaitTime = 0;
+
+        if (this.id == 0 &&
+            this.progress.isChestOpened(3, 16)) {
+
+            this.id = 2;
+        }
+
+        if (this.disableCondition()) {
+
+            this.disabled = true;
+        }
     }
 
 
@@ -52,6 +63,22 @@ export class SpecialNPC extends InteractableObject {
         this.spr.draw(c, c.bitmaps["specialNPC"],
             this.pos.x-12, this.pos.y-12,
             this.flip);
+    }
+
+
+    disableCondition() {
+
+        switch(this.id) {
+
+            case 1:
+                return this.progress.hasItem(ItemType.GoldenSword);
+    
+            case 2:
+                return this.progress.hasItem(ItemType.GoldenBoomerang);
+    
+            default:
+                return false;
+        }
     }
     
 
@@ -81,7 +108,12 @@ export class SpecialNPC extends InteractableObject {
         case 0:
             
             this.progress.addCoins(-30);
-            this.progress.addOrbs(1);
+
+            // Happens automatically when applyItemEvent
+            // is called
+            // this.progress.addOrbs(1);
+
+            this.progress.markChestOpened(3, 16);
 
             return [16, 3];
         case 1:

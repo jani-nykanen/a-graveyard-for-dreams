@@ -62,7 +62,7 @@
         ["It lets you\nbreathe under-\nwater."],
         ["Now you can\nslide by holding\nthe down button\nand pressing the\njump button."],
         ["Hold down the\ndown button (heh)\nand press the\nattack button\non air to\nperform it."],
-        ["Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nrelease it."],
+        ["Perform a power\nattack by holding\nthe attack button\nafter attacking\nand then\nreleasing it."],
 
         ["You can perform\na wall jump\nnow."],
         ["Now you can flap\nyour arms by\nholding the\njump button to\nmimic flying."],
@@ -175,7 +175,7 @@
          "I wonder what\nhappened to\nit."],
 
         ["The nightmare\nthat got loose?\nWe call it\nThe Eye.",
-        "No on knows\nwhere The Eye\ncame from,\nthough."],
+        "No one knows\nwhere The Eye\ncame from,\nthough."],
 
         ["Are you dead\nor just\ndreaming, we\ndon't know.",
          "Maybe this is\nnot even your\nown dream."],

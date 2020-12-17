@@ -200,6 +200,8 @@ export class Player extends CollisionObject {
                 this.downAttack = true;
                 this.downAttackWaitTimer = 0;
 
+                this.slideTimer = 0;
+
                 this.setSwordHitbox(
                     this.pos.x,
                     this.pos.y + 16, 
@@ -1115,7 +1117,7 @@ export class Player extends CollisionObject {
             // Not the best idea to call this every frame,
             // but for some reason the other option did not work
             // properly
-            this.markRoomVisited(cam.pos.x, cam.pos.y);
+            this.markRoomVisited(cam.pos.x | 0, cam.pos.y | 0);
 
             if (!this.disableCollisions) {
 
@@ -1363,6 +1365,9 @@ export class Player extends CollisionObject {
     
         this.hurtTimer = 0;
         this.knockBackTimer = 0;
+
+        this.chargeTimer = 0;
+        this.charging = 0;
     }
 
 

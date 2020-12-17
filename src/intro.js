@@ -29,6 +29,12 @@ export class Intro extends Scene {
 
     refresh(ev) {
 
+        if (ev.input.anyPressed() &&
+            this.timer >= APPEAR_TIME && this.timer < APPEAR_TIME + WAIT_TIME) {
+
+            this.timer = APPEAR_TIME + WAIT_TIME;
+        }
+
         this.timer += ev.step;
         if (this.timer >= APPEAR_TIME*2 + WAIT_TIME) {
 

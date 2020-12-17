@@ -50,7 +50,13 @@ export class Game extends Scene {
             (this.stage.width/ROOM_WIDTH) | 0,
             (this.stage.height/ROOM_HEIGHT) | 0,
             true);
-        this.progress.setRoomCount(this.cam.screenCountX, this.cam.screenCountY);
+
+        if (!this.isIntro) {
+
+            this.progress.setRoomCount(
+                this.cam.screenCountX, 
+                this.cam.screenCountY);
+        }
 
         this.message = new MessageBox(ev);
         this.shop = new Shop(this.progress, this.message, ev);
@@ -93,7 +99,7 @@ export class Game extends Scene {
             this.objects.positionCamera(this.cam);
         }
         this.shop.disableButtons();
-
+        
         this.gameMap = new GameMap(this.stage.width, this.stage.height, ev);
     }
 
@@ -126,7 +132,8 @@ export class Game extends Scene {
         this.shop.constructMenu(this.objects.player, ev);
         this.shop.disableButtons();
 
-        this.playMainTheme(ev);
+        this.playMainTheme(ev); 
+        
     }
 
 
@@ -138,10 +145,19 @@ export class Game extends Scene {
         this.progress.isIntro = this.isIntro;
 
         this.stage = new Stage(ev.assets, this.isIntro);
+        this.gameMap = new GameMap(this.stage.width, this.stage.height, ev);
+
         this.cam = new Camera(0, 0, 160, 144,
             (this.stage.width/ROOM_WIDTH) | 0,
             (this.stage.height/ROOM_HEIGHT) | 0,
             true);    
+        if (!this.isIntro) {
+            
+            this.progress.setRoomCount(
+                this.cam.screenCountX, 
+                this.cam.screenCountY);
+        }
+
         this.reset(ev, true);
     }
 

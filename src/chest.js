@@ -78,7 +78,7 @@ export function addItemDescription(loc, message, type, id, currentOrbs, maxOrbs)
     if (currentOrbs != undefined &&
         maxOrbs != undefined) {
 
-        dif = maxOrbs - currentOrbs;
+        dif = maxOrbs - (currentOrbs+1);
     }
 
     // Add obtain text and description to the message queue

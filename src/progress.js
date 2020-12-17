@@ -4,6 +4,8 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { negMod } from "./core/util.js";
+
 
 export const ItemType = {
 
@@ -70,7 +72,7 @@ export class GameProgress {
 
         this.obtainedItems = (new Array(32)).fill(false);
 
-        this.visitedRooms = new Array();
+        this.visitedRooms = null; // new Array();
         this.roomCountX = 0;
         this.roomCountY = 0;
 
@@ -84,7 +86,10 @@ export class GameProgress {
 
     setRoomCount(roomCountX, roomCountY) {
 
-        this.visitedRooms = (new Array(roomCountX * roomCountY)).fill(false);
+        if (this.visitedRooms == null) {
+
+            this.visitedRooms = (new Array(roomCountX * roomCountY)).fill(false);
+        }
         this.roomCountX = roomCountX;
         this.roomCountY = roomCountY;
     }
@@ -126,6 +131,7 @@ export class GameProgress {
 
         if (obj["collectedStars"] != undefined)
             this.collectedStars = Array.from(obj["collectedStars"]);   
+
     }
 
 
@@ -266,13 +272,17 @@ export class GameProgress {
 
         if (this.isIntro) return;
 
-        this.visitedRooms[y * this.roomCountX + x] = true;
+
+        x = negMod(x, this.roomCountX);
+        y = negMod(y, this.roomCountY);
+
+        this.visitedRooms[(y * this.roomCountX + x) | 0] = true;
     }
 
 
     isRoomVisited(x, y) {
 
-        return this.visitedRooms[y * this.roomCountX + x];
+        return this.visitedRooms[(y * this.roomCountX + x) | 0];
     }
 
 

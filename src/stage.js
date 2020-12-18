@@ -1,7 +1,7 @@
 import { ROOM_HEIGHT, ROOM_WIDTH } from "./camera.js";
 import { Chip } from "./chip.js";
 /**
- * A Graveyard for Fools
+ * A Graveyard for Dreams
  * 
  * (c) 2020 Jani Nykänen
  */

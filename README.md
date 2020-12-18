@@ -1,4 +1,4 @@
-## A Graveyard for Fools
+## A Graveyard for Dreams
 
 ...is a yet another pixelart metroidvania for web browsers. That's all.
 

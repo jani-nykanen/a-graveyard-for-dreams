@@ -1,5 +1,5 @@
 /**
- * A Graveyard for Fools
+ * A Graveyard for Dreams
  * 
  * (c) 2020 Jani Nykänen
  */

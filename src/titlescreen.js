@@ -41,8 +41,6 @@ export class TitleScreen extends Scene {
                 new MenuButton(
                     this.loc["continue"], (ev) => {
 
-                        ev.audio.stopMusic();
-
                         let exist = false;
                         try {
 
@@ -60,6 +58,7 @@ export class TitleScreen extends Scene {
 
                             return;
                         }
+                        ev.audio.stopMusic();
 
                         this.load = true;
                         this.gotoGame(ev);
@@ -163,6 +162,11 @@ export class TitleScreen extends Scene {
         }
 
         this.message.draw(c, true);
+
+        if (this.phase > 0) {
+
+            c.drawText(c.bitmaps["fontYellow"], "v.0.9.1 BETA", 1, 1, -1, 0, false);
+        }
     }
 
 

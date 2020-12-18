@@ -106,14 +106,14 @@ export class GamePadListener {
     updateStick(pad) {
         
         const EPS1 = 0.1;
-        const EPS2 = 0.05;
+        const DEADZONE = 0.25;
 
         if (pad != null) {
             
             this.stick.x = 0;
             this.stick.y = 0;
 
-            if (Math.hypot(pad.axes[0], pad.axes[1]) > EPS2) {
+            if (Math.hypot(pad.axes[0], pad.axes[1]) >= DEADZONE) {
 
                 this.stick.x = pad.axes[0];
                 this.stick.y = pad.axes[1];

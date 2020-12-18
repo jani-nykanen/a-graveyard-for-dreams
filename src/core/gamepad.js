@@ -123,7 +123,7 @@ export class GamePadListener {
             // axes, not buttons
             if (pad.axes.length >= 8 &&
                 Math.hypot(this.stick.x, this.stick.y) < EPS1 &&
-                Math.hypot(pad.axes[6], pad.axes[7]) > EPS2) {
+                Math.hypot(pad.axes[6], pad.axes[7]) > DEADZONE) {
 
                 this.stick.x = pad.axes[6];
                 this.stick.y = pad.axes[7];

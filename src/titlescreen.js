@@ -165,7 +165,7 @@ export class TitleScreen extends Scene {
 
         if (this.phase > 0) {
 
-            c.drawText(c.bitmaps["fontYellow"], "v.0.9.1 BETA", 1, 1, -1, 0, false);
+            c.drawText(c.bitmaps["fontYellow"], "v.0.9.3 BETA", 1, 1, -1, 0, false);
         }
     }
 

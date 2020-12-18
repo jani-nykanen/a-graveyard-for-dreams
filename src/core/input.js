@@ -117,12 +117,13 @@ export class InputManager {
 
     updateStick() {
 
-        const DEADZONE = 0.1;
+        const DEADZONE = 0.25;
 
         this.oldStick = this.stick.clone();
 
         this.stick.zeros();
-        if (this.gamepad.stick.length() > DEADZONE) {
+        if (Math.abs(this.gamepad.stick.x) >= DEADZONE ||
+            Math.abs(this.gamepad.stick.y) >= DEADZONE) {
 
             this.stick = this.gamepad.stick.clone();
         }

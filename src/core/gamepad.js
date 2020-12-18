@@ -105,28 +105,36 @@ export class GamePadListener {
 
     updateStick(pad) {
         
-        const EPS1 = 0.1;
+        const EPS1 = 0.25;
         const DEADZONE = 0.25;
+
+        let noLeftStick = true;
 
         if (pad != null) {
             
             this.stick.x = 0;
             this.stick.y = 0;
 
-            if (Math.hypot(pad.axes[0], pad.axes[1]) >= DEADZONE) {
+            if (Math.abs(pad.axes[0]) >= DEADZONE) {
 
                 this.stick.x = pad.axes[0];
+                noLeftStick = false;
+            }
+            if (Math.abs(pad.axes[1]) >= DEADZONE) {
+
                 this.stick.y = pad.axes[1];
+                noLeftStick = false;
             }
 
             // On Firefox dpad is considered
             // axes, not buttons
-            if (pad.axes.length >= 8 &&
-                Math.hypot(this.stick.x, this.stick.y) < EPS1 &&
-                Math.hypot(pad.axes[6], pad.axes[7]) > DEADZONE) {
+            if (pad.axes.length >= 8 && noLeftStick) {
 
-                this.stick.x = pad.axes[6];
-                this.stick.y = pad.axes[7];
+                if (Math.abs(pad.axes[6]) >= DEADZONE)
+                    this.stick.x = pad.axes[6];
+
+                if (Math.abs(pad.axes[7]) >= DEADZONE)
+                    this.stick.y = pad.axes[7];
             }
         }
     }
